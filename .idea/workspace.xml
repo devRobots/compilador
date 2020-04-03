@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="04644b6e-8692-4fbf-8915-572efa9b9a67" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectId" id="1Zzhemqfde8rpDdvvYqbhdrCf5W" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="/opt/SceneBuilder/SceneBuilder" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.ide.settings.spelling" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/co/edu/uniquindio/lexico" />
+      <recent name="$PROJECT_DIR$/src/co/edu/uniquindio/app" />
+      <recent name="$PROJECT_DIR$/src/co/edu/uniquindio" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Kotlin.co.edu.uniquindio.Main">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="co.edu.uniquindio.Main" />
+      <module name="Compilador" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="co.edu.uniquindio.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="co.edu.uniquindio.Main" type="JetRunConfigurationType" factoryName="Kotlin" temporary="true" nameIsGenerated="true">
+      <module name="Compilador" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="MAIN_CLASS_NAME" value="co.edu.uniquindio.Main" />
+      <option name="WORKING_DIRECTORY" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Kotlin.co.edu.uniquindio.Main" />
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="04644b6e-8692-4fbf-8915-572efa9b9a67" name="Default Changelist" comment="" />
+      <created>1585847929295</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1585847929295</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="466" y="110" width="424" height="512" key="FileChooserDialogImpl" timestamp="1585856796356">
+      <screen x="0" y="0" width="1366" height="732" />
+    </state>
+    <state x="466" y="110" width="424" height="512" key="FileChooserDialogImpl/0.0.1366.732@0.0.1366.732" timestamp="1585856796356" />
+    <state width="1322" height="173" key="GridCell.Tab.0.bottom" timestamp="1585868881666">
+      <screen x="0" y="0" width="3286" height="732" />
+    </state>
+    <state width="1322" height="173" key="GridCell.Tab.0.bottom/0.0.1366.732@0.0.1366.732" timestamp="1585867364043" />
+    <state width="1322" height="173" key="GridCell.Tab.0.bottom/0.0.3286.732@0.0.3286.732" timestamp="1585868881666" />
+    <state width="1322" height="173" key="GridCell.Tab.0.center" timestamp="1585868881622">
+      <screen x="0" y="0" width="3286" height="732" />
+    </state>
+    <state width="1322" height="173" key="GridCell.Tab.0.center/0.0.1366.732@0.0.1366.732" timestamp="1585867364041" />
+    <state width="1322" height="173" key="GridCell.Tab.0.center/0.0.3286.732@0.0.3286.732" timestamp="1585868881622" />
+    <state width="1322" height="173" key="GridCell.Tab.0.left" timestamp="1585868881305">
+      <screen x="0" y="0" width="3286" height="732" />
+    </state>
+    <state width="1322" height="173" key="GridCell.Tab.0.left/0.0.1366.732@0.0.1366.732" timestamp="1585867364040" />
+    <state width="1322" height="173" key="GridCell.Tab.0.left/0.0.3286.732@0.0.3286.732" timestamp="1585868881305" />
+    <state width="1322" height="173" key="GridCell.Tab.0.right" timestamp="1585868881648">
+      <screen x="0" y="0" width="3286" height="732" />
+    </state>
+    <state width="1322" height="173" key="GridCell.Tab.0.right/0.0.1366.732@0.0.1366.732" timestamp="1585867364042" />
+    <state width="1322" height="173" key="GridCell.Tab.0.right/0.0.3286.732@0.0.3286.732" timestamp="1585868881622" />
+    <state x="179" y="1" key="SettingsEditor" timestamp="1585867352163">
+      <screen x="0" y="0" width="1366" height="732" />
+    </state>
+    <state x="179" y="1" key="SettingsEditor/0.0.1366.732@0.0.1366.732" timestamp="1585867352163" />
+    <state x="354" y="193" key="com.intellij.ide.util.TipDialog" timestamp="1585862667374">
+      <screen x="0" y="0" width="1366" height="732" />
+    </state>
+    <state x="354" y="193" key="com.intellij.ide.util.TipDialog/0.0.1366.732@0.0.1366.732" timestamp="1585862667374" />
+  </component>
+</project>
