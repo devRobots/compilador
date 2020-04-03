@@ -1,5 +1,14 @@
 package co.edu.uniquindio.lexico
 
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 1.1
+ *
+ * Categoria de los Token
+ */
 enum class Categoria {
     ENTERO,
     REAL,
@@ -21,6 +30,7 @@ enum class Categoria {
 
     PARENTESIS,
     LLAVES,
+
     FIN_SENTENCIA,
     SEPARADOR,
 

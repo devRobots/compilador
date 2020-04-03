@@ -1,17 +1,46 @@
 package co.edu.uniquindio.lexico
 
-import java.util.*
+import kotlin.collections.ArrayList
 
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 1.1
+ *
+ * Analizador Lexico
+ */
 class AnalizadorLexico(private val codigoFuente: String) {
+    /**
+     * Lista de tokens y errores generados por el analizador lexico
+     */
     val listaTokens: ArrayList<Token> = ArrayList()
     val listaErrores: ArrayList<String> = ArrayList()
 
+    /**
+     * Elementos necesarios del analizador lexico
+     */
     private var caracterActual: Char
     private var posicionActual = 0
     private var filaActual = 0
     private var columnaActual = 0
-    private val finCodigo: Char
+    private val finCodigo = 0.toChar()
 
+    init {
+        caracterActual = codigoFuente[posicionActual]
+    }
+
+    /**
+     * Funcion principal
+     *
+     * Analiza el codigo fuente
+     *
+     * @param codigoFuente El codigo que se analizara
+     *
+     * @return tokens La lista de tokens
+     * @return errores La rutina de errores
+     */
     fun analizar() {
         while (caracterActual != finCodigo) {
             if (caracterActual == ' ' || caracterActual == '\t' || caracterActual == '\n') {
@@ -34,7 +63,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             if (esOperadorRelacional()) continue
             if (esOperadorLogico()) continue
 
-            if (esParentesisLlaves()) continue
+            if (esParentesisLlave()) continue
             if (esTerminal()) continue
             if (esSeparador()) continue
 
@@ -45,10 +74,10 @@ class AnalizadorLexico(private val codigoFuente: String) {
             }
         }
 
-        val lista  = listaTokens.clone() as ArrayList<Token>
+        val lista = listaTokens.clone() as ArrayList<Token>
 
         for (token in lista) {
-            if(token.categoria == Categoria.DESCONOCIDO) {
+            if (token.categoria == Categoria.DESCONOCIDO) {
                 listaErrores.add("No se reconoce la palabra '" + token.palabra + "' en " + token.fila + ":" + token.columna)
                 // TODO: Por determinar -> listaTokens.remove(token)
             }
@@ -76,6 +105,11 @@ class AnalizadorLexico(private val codigoFuente: String) {
         }
     }
 
+    /**
+     * Verifica si la palabra actual es un numero entero
+     *
+     * @return esEntero retorna true si es entero
+     */
     private fun esEntero(): Boolean {
         val fila = filaActual
         val columna = columnaActual
@@ -98,6 +132,11 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return false
     }
 
+    /**
+     * Verifica si la palabra actual es un identificador
+     *
+     * @return esIdentificador retorna true si es identificador
+     */
     private fun esIdentificador(): Boolean {
         if (caracterActual == '@') {
             var palabra = ""
@@ -126,6 +165,11 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return false
     }
 
+    /**
+     * Verifica si la palabra actual es un numero real
+     *
+     * @return esReal retorna true si es real
+     */
     private fun esReal(): Boolean {
         val fila = filaActual
         val columna = columnaActual
@@ -165,7 +209,12 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return false
     }
 
-    //Metodo que verifica si la palabra es un operador aritmetico
+
+    /**
+     * Verifica si la palabra actual es un operador aritmetico
+     *
+     * @return esOperadorAritmetico retorna true si es un operador aritmetico
+     */
     private fun esOperadorAritmetico(): Boolean {
         val fila = filaActual
         val columna = columnaActual
@@ -189,11 +238,22 @@ class AnalizadorLexico(private val codigoFuente: String) {
         } else false
     }
 
+    /**
+     * Verifica si el caracter corresponde a un operador aritmetico
+     *
+     * @param caracter El caracter a verificar
+     *
+     * @return boolean retorna true si es un operador aritmetico valido
+     */
     private fun evaluarOperadorAritmetico(caracter: Char): Boolean {
         return caracter == '+' || caracter == '-' || caracter == 'x' || caracter == '%' || caracter == '/'
     }
 
-    //Metodo que verifica si la palabra es un operador de asignacion
+    /**
+     * Verifica si la palabra actual es un operador de asignacion
+     *
+     * @return esOperadorAsignacion retorna true si es un operador de asignacion
+     */
     private fun esOperadorAsignacion(): Boolean {
         val fila = filaActual
         val columna = columnaActual
@@ -205,7 +265,11 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return false
     }
 
-    //Metodo que verifica si la palabra es un operador de incremento y decremento
+    /**
+     * Verifica si la palabra actual es operador de incremento o decremento
+     *
+     * @return esOperadorIncreDecre retorna true si es operador de incremento o decremento
+     */
     private fun esOperadorIncreDecre(): Boolean {
         val fila = filaActual
         val columna = columnaActual
@@ -233,7 +297,11 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return false
     }
 
-    //Metodo que verifica si la palabra es un operador logico
+    /**
+     * Verifica si la palabra actual es un operador logico
+     *
+     * @return esOperadorLogico retorna true si es un operador logico
+     */
     private fun esOperadorLogico(): Boolean {
         val fila = filaActual
         val columna = columnaActual
@@ -245,8 +313,12 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return false
     }
 
-    //Metodo que verifica si la palabra es un parentesis
-    private fun esParentesisLlaves(): Boolean {
+    /**
+     * Verifica si la palabra actual es parentesis o llave
+     *
+     * @return esParentesisLlaves retorna true si es parentesis o llave
+     */
+    private fun esParentesisLlave(): Boolean {
         val fila = filaActual
         val columna = columnaActual
         if (caracterActual == '{' || caracterActual == '}') {
@@ -261,7 +333,11 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return false
     }
 
-    //Metodo que verifica si la palabra es terminal
+    /**
+     * Verifica si la palabra actual es terminal
+     *
+     * @return esTerminal retorna true si es terminal
+     */
     private fun esTerminal(): Boolean {
         val fila = filaActual
         val columna = columnaActual
@@ -273,7 +349,11 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return false
     }
 
-    //Metodo que verifica si la palabra es separador
+    /**
+     * Verifica si la palabra actual es un separador
+     *
+     * @return esSeparador retorna true si es separador
+     */
     private fun esSeparador(): Boolean {
         val fila = filaActual
         val columna = columnaActual
@@ -285,7 +365,11 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return false
     }
 
-    //Metodo que verifica si la palabra es un operador Relacional
+    /**
+     * Verifica si la palabra actual es un operador relacional
+     *
+     * @return esOperadorRelacional retorna true si es operador relacional
+     */
     private fun esOperadorRelacional(): Boolean {
         val fila = filaActual
         val columna = columnaActual
@@ -317,7 +401,11 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return false
     }
 
-    //Metodo que verifica si la palabra es operador hexadecimal
+    /**
+     * Verifica si la palabra actual es un numero hexadecimal
+     *
+     * @return esHexadecimal retorna true si es hexadecimal
+     */
     private fun esHexadecimal(): Boolean {
         if (caracterActual == '$') {
             var palabra = ""
@@ -340,7 +428,13 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return false
     }
 
-    //Metodo que verifica si la letra es hexadecimal
+    /**
+     * Verifica si el caracter es una letra hexadecimal
+     *
+     * @param caracter El caracter a verificar
+     *
+     * @return boolean retorna true si es una letra hexadecimal
+     */
     private fun esLetraHex(caracter: Char): Boolean {
         return when (caracter) {
             'A', 'B', 'C', 'D', 'E', 'F' -> true
@@ -348,7 +442,11 @@ class AnalizadorLexico(private val codigoFuente: String) {
         }
     }
 
-    // metodo que reconoce una cadena de caracteres
+    /**
+     * Verifica si la palabra actual es una cadena de caracteres
+     *
+     * @return esCadena retorna true si es cadena
+     */
     private fun esCadena(): Boolean {
         if (caracterActual == '(') {
             var palabra = ""
@@ -369,7 +467,11 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return false
     }
 
-    // metodo que reconoce los comentarios del lenguaje
+    /**
+     * Verifica si la palabra actual es un comentario
+     *
+     * @return esComentario retorna true si es comentario
+     */
     private fun esComentario(): Boolean {
         if (caracterActual == ':') {
             var palabra = ""
@@ -377,7 +479,6 @@ class AnalizadorLexico(private val codigoFuente: String) {
             val columna = columnaActual
             palabra += caracterActual
             obtenerSgteCaracter()
-            // Transici�n
             while (caracterActual != '\n') {
                 palabra += caracterActual
                 obtenerSgteCaracter()
@@ -388,14 +489,20 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return false
     }
 
-    //verifica si la palabra reservada
+    /**
+     * Verifica si la palabra actual es una palabra reservada
+     *
+     * Palabras Reservadas:
+     * cosa, caja, ent, estrato1, estrato6, dec, devolver, durante, meter, saltar
+     *
+     * @return esPalabraReservada retorna true si es palabra reservada
+     */
     private fun esPalabraReservada(): Boolean { // palabra reservada
         var palabra = ""
         val fila = filaActual
         val columna = columnaActual
 
         if (caracterActual == 'c') {
-            // Transici�n
             palabra += caracterActual
             obtenerSgteCaracter()
             if (caracterActual == 'o') {
@@ -426,7 +533,6 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 }
             }
         }
-        // palabra reservada
         if (caracterActual == 'e') {
             // Transici�n
             palabra += caracterActual
@@ -542,7 +648,6 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 }
             }
         }
-        // Palabra Reservada
         if (caracterActual == 'm') {
             // Transici�n
             palabra += caracterActual
@@ -566,7 +671,6 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 }
             }
         }
-        // Palabra Reservada
         if (caracterActual == 's') {
             // Transici�n
             palabra += caracterActual
@@ -595,8 +699,8 @@ class AnalizadorLexico(private val codigoFuente: String) {
             }
         }
 
-        if(palabra.isNotEmpty()) {
-            while(Character.isLetter(caracterActual)){
+        if (palabra.isNotEmpty()) {
+            while (Character.isLetter(caracterActual)) {
                 palabra += caracterActual
                 obtenerSgteCaracter()
             }
@@ -605,10 +709,5 @@ class AnalizadorLexico(private val codigoFuente: String) {
             return true
         }
         return false
-    }
-
-    init {
-        caracterActual = codigoFuente[posicionActual]
-        finCodigo = 0.toChar()
     }
 }

@@ -10,7 +10,19 @@ import javafx.scene.control.TableView
 import javafx.scene.control.TextArea
 import javafx.util.Callback
 
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 1.1
+ *
+ * Controlador de la Ventana Principal
+ */
 class VentanaPrincipalController {
+    /**
+     * Codigo fuente
+     */
     @FXML lateinit var texto: TextArea
 
     /**
@@ -27,10 +39,28 @@ class VentanaPrincipalController {
      */
     @FXML lateinit var erroresLexico: ListView<String>
 
+    /**
+     * Metodo initialize de JavaFX
+     *
+     * Inicializa las configuraciones basicas de los TableView
+     */
     @FXML
-    fun analizar( ) {
+    fun initialize() {
+        palabra.cellValueFactory = Callback { token: TableColumn.CellDataFeatures<TokenObservable, String?> -> token.value.palabra }
+        categoria.cellValueFactory = Callback { token: TableColumn.CellDataFeatures<TokenObservable, String?> -> token.value.categoria }
+        fila.cellValueFactory = Callback { token: TableColumn.CellDataFeatures<TokenObservable, String?> -> token.value.fila }
+        columna.cellValueFactory = Callback { token: TableColumn.CellDataFeatures<TokenObservable, String?> -> token.value.columna }
+    }
+
+    /**
+     * Obtiene el codigo fuente y lo envia a los analizadores
+     * lexico, sintactio y semantico para imprimir sus respectivas salidas
+     */
+    @FXML
+    fun analizar() {
         val codigoFuente = texto.text
 
+        // Analizador Lexico
         val al = AnalizadorLexico(codigoFuente)
         al.analizar()
 
@@ -53,13 +83,7 @@ class VentanaPrincipalController {
 
         erroresLexico.items = erroresObservables
         erroresLexico.refresh()
-    }
 
-    @FXML
-    fun initialize() {
-        palabra.cellValueFactory = Callback { token: TableColumn.CellDataFeatures<TokenObservable, String?> -> token.value.palabra }
-        categoria.cellValueFactory = Callback { token: TableColumn.CellDataFeatures<TokenObservable, String?> -> token.value.categoria }
-        fila.cellValueFactory = Callback { token: TableColumn.CellDataFeatures<TokenObservable, String?> -> token.value.fila }
-        columna.cellValueFactory = Callback { token: TableColumn.CellDataFeatures<TokenObservable, String?> -> token.value.columna }
+        // Analizador Sintactico
     }
 }

@@ -4,6 +4,15 @@ import co.edu.uniquindio.lexico.Token
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
 
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 1.1
+ *
+ * Token Observable
+ */
 class TokenObservable(token: Token) {
     val palabra: StringProperty
     val categoria: StringProperty
