@@ -669,7 +669,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * Verifica si la palabra actual es una palabra reservada
      *
      * Palabras Reservadas:
-     * cosa, caja, choose, ciclo, ent, estrato1, estrato6, dec, devolver, durante, meter, saltar, pal, bip, wi, wo
+     * cosa, caja, choose, ciclo, ent, estrato1, estrato6, dec, devolver, durante, meter, saltar, pal, bip, wi, wo, bit
      *
      * @return esPalabraReservada retorna true si es palabra reservada
      */
@@ -950,7 +950,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             if (caracterActual == 'i'){
                 palabra += caracterActual
                 obtenerSgteCaracter()
-                if (caracterActual == 'p'){
+                if (caracterActual == 'p' || caracterActual == 't') {
                     palabra += caracterActual
                     obtenerSgteCaracter()
                     listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
