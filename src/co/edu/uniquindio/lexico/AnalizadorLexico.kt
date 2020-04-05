@@ -50,6 +50,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             if (esEntero()) continue
             if (esReal()) continue
             if (esHexadecimal()) continue
+            if (esBooleano()) continue
 
             if (esIdentificador()) continue
             if (esPalabraReservada()) continue
@@ -84,6 +85,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             }
         }
     }
+
 
     /**
      * Metodo que obtiene el siguiente caracter
@@ -449,6 +451,76 @@ class AnalizadorLexico(private val codigoFuente: String) {
     }
 
     /**
+     * Verifica si la palabra actual es un Booleano
+     *
+     * Palabras Booleanas:
+     * .true , .false
+     *
+     * @return esBooleano retorna true si es una palabra Booleana
+     */
+    private fun esBooleano(): Boolean { // palabra reservada
+        if (caracterActual == '.') {
+            var palabra = ""
+            val fila = filaActual
+            val columna = columnaActual
+            palabra += caracterActual
+            obtenerSgteCaracter()
+            if (caracterActual == 't') {
+                palabra += caracterActual
+                obtenerSgteCaracter()
+                if (caracterActual == 'r') {
+                    palabra += caracterActual
+                    obtenerSgteCaracter()
+                    if (caracterActual == 'u') {
+                        palabra += caracterActual
+                        obtenerSgteCaracter()
+                        if (caracterActual == 'e'){
+                            palabra += caracterActual
+                            obtenerSgteCaracter()
+                            listaTokens.add(Token(palabra, Categoria.BOOLEANO, fila, columna))
+                            return true
+                        }
+                    }
+                }
+            }
+            if (caracterActual == 'f') {
+                palabra += caracterActual
+                obtenerSgteCaracter()
+                if (caracterActual == 'a') {
+                    palabra += caracterActual
+                    obtenerSgteCaracter()
+                    if (caracterActual == 'l') {
+                        palabra += caracterActual
+                        obtenerSgteCaracter()
+                        if (caracterActual == 's'){
+                            palabra += caracterActual
+                            obtenerSgteCaracter()
+                            if (caracterActual == 'e'){
+                                palabra += caracterActual
+                                obtenerSgteCaracter()
+                                listaTokens.add(Token(palabra, Categoria.BOOLEANO, fila, columna))
+                                return true
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (palabra.isNotEmpty()) {
+                while (Character.isLetter(caracterActual)) {
+                    palabra += caracterActual
+                    obtenerSgteCaracter()
+                }
+
+                listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
+                return true
+            }
+        }
+        return false
+    }
+
+
+    /**
      * Verifica si la palabra actual es una cadena de caracteres
      *
      * @return esCadena retorna true si es cadena
@@ -516,6 +588,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             val columna = columnaActual
             palabra += caracterActual
             obtenerSgteCaracter()
+            // Verifica si es un comentario de bloque o de linea
             if (caracterActual == '/'){
                 category = Categoria.COMENTARIO_BLOQUE
                 palabra += caracterActual
@@ -550,11 +623,12 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return false;
     }
 
+
     /**
      * Verifica si la palabra actual es una palabra reservada
      *
      * Palabras Reservadas:
-     * cosa, caja, ent, estrato1, estrato6, dec, devolver, durante, meter, saltar
+     * cosa, caja, ent, estrato1, estrato6, dec, devolver, durante, meter, saltar, pal, bip, wi, wo
      *
      * @return esPalabraReservada retorna true si es palabra reservada
      */

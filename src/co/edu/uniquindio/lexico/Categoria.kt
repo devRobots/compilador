@@ -13,6 +13,7 @@ enum class Categoria {
     ENTERO,
     REAL,
     HEXADECIMAL,
+    BOOLEANO,
 
     IDENTIFICADOR,
     PALABRA_RESERVADA,
