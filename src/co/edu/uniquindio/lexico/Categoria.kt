@@ -18,6 +18,7 @@ enum class Categoria {
     PALABRA_RESERVADA,
 
     CADENA_CARACTERES,
+    CARACTER,
 
     OPERADOR_ASIGNACION,
 

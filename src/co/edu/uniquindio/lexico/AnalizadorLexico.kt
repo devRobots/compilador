@@ -55,6 +55,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             if (esPalabraReservada()) continue
 
             if (esCadena()) continue
+            if (esCaracter()) continue
 
             if (esOperadorAsignacion()) continue
             if (esOperadorAritmetico()) continue
@@ -148,7 +149,8 @@ class AnalizadorLexico(private val codigoFuente: String) {
             if (Character.isLetter(caracterActual)) {
                 palabra += caracterActual
                 obtenerSgteCaracter()
-                while (Character.isLetter(caracterActual) || caracterActual == '_') { // Transicion
+                // Transicion
+                while (Character.isLetter(caracterActual) || caracterActual == '_' || Character.isDigit(caracterActual)) {
                     palabra += caracterActual
                     obtenerSgteCaracter()
                 }
@@ -377,26 +379,30 @@ class AnalizadorLexico(private val codigoFuente: String) {
         if (caracterActual == '<') {
             pal += caracterActual
             obtenerSgteCaracter()
-            if (caracterActual == '-') {
+            if (caracterActual == '-' || caracterActual == '<') {
                 pal += caracterActual
                 obtenerSgteCaracter()
-                if (caracterActual == '>') {
+                if (caracterActual == '>' && codigoFuente[posicionActual-1] == '-') {
                     pal += caracterActual
+                    obtenerSgteCaracter()
                 }
+                listaTokens.add(Token(pal, Categoria.OPERADOR_RELACIONAL, fila, columna))
+            } else {
+                listaTokens.add(Token(pal, Categoria.DESCONOCIDO, fila, columna))
+            }
+            return true
+        }
+        if (caracterActual == '>') {
+            pal += caracterActual
+            obtenerSgteCaracter()
+            if (caracterActual == '-' || caracterActual == '>') {
+                pal += caracterActual
                 obtenerSgteCaracter()
                 listaTokens.add(Token(pal, Categoria.OPERADOR_RELACIONAL, fila, columna))
             } else {
                 listaTokens.add(Token(pal, Categoria.DESCONOCIDO, fila, columna))
             }
             return true
-        } else if (caracterActual == '-') {
-            pal += caracterActual
-            obtenerSgteCaracter()
-            if (caracterActual == '>') {
-                pal += caracterActual
-                listaTokens.add(Token(pal, Categoria.OPERADOR_RELACIONAL, fila, columna))
-                return true
-            }
         }
         return false
     }
@@ -447,7 +453,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
      *
      * @return esCadena retorna true si es cadena
      */
-    private fun esCadena(): Boolean {
+    private fun esCadena(): Boolean { // TODO: corregir
         if (caracterActual == '(') {
             var palabra = ""
             val fila = filaActual
@@ -455,14 +461,43 @@ class AnalizadorLexico(private val codigoFuente: String) {
             // Transici�n
             palabra += caracterActual
             obtenerSgteCaracter()
-            while (caracterActual != ')') {
+            while (caracterActual != ')' && caracterActual !='\n' && caracterActual != finCodigo) {
                 palabra += caracterActual
                 obtenerSgteCaracter()
             }
             palabra += caracterActual
             obtenerSgteCaracter()
-            listaTokens.add(Token(palabra, Categoria.CADENA_CARACTERES, fila, columna))
+            if (palabra.endsWith(")")) {
+                listaTokens.add(Token(palabra, Categoria.CADENA_CARACTERES, fila, columna))
+            }else{
+                listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
+            }
             return true
+        }
+        return false
+    }
+
+    /**
+     * Verifica si la palabra actual es un caracter
+     *
+     * @return esCaracter retorna true si es un caracter
+     */
+    private fun esCaracter(): Boolean {
+        if (posicionActual+2 <= codigoFuente.length && caracterActual == '"') {
+            if (codigoFuente[posicionActual+2] == '"') {
+                var palabra = ""
+                val fila = filaActual
+                val columna = columnaActual
+                // obtiene el caracter
+                palabra += caracterActual
+                obtenerSgteCaracter()
+                palabra += caracterActual
+                obtenerSgteCaracter()
+                palabra += caracterActual
+                obtenerSgteCaracter()
+                listaTokens.add(Token(palabra, Categoria.CARACTER, fila, columna))
+                return true
+            }
         }
         return false
     }
@@ -475,18 +510,44 @@ class AnalizadorLexico(private val codigoFuente: String) {
     private fun esComentario(): Boolean {
         if (caracterActual == ':') {
             var palabra = ""
+            var terminal = '\n'
+            var category = Categoria.COMENTARIO_LINEA
             val fila = filaActual
             val columna = columnaActual
             palabra += caracterActual
             obtenerSgteCaracter()
-            while (caracterActual != '\n') {
+            if (caracterActual == '/'){
+                category = Categoria.COMENTARIO_BLOQUE
                 palabra += caracterActual
                 obtenerSgteCaracter()
+                while (caracterActual != finCodigo && !esTerminalBloque()) {
+                    palabra += caracterActual
+                    obtenerSgteCaracter()
+                }
+                palabra += caracterActual
+                obtenerSgteCaracter()
+            } else{
+                while (caracterActual != finCodigo && caracterActual != terminal) {
+                    palabra += caracterActual
+                    obtenerSgteCaracter()
+                }
             }
-            listaTokens.add(Token(palabra, Categoria.COMENTARIO_LINEA, fila, columna))
+            palabra += caracterActual
+            obtenerSgteCaracter()
+            listaTokens.add(Token(palabra, category, fila, columna))
             return true
         }
         return false
+    }
+
+    /**
+     * Metodo para validar si es un terminal de Comentario de bloque
+     */
+    private fun esTerminalBloque(): Boolean{
+        if (posicionActual+1 <= codigoFuente.length && caracterActual == '/' && codigoFuente[posicionActual+1] == ':'){
+            return true;
+        }
+        return false;
     }
 
     /**
