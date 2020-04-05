@@ -51,7 +51,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             if (esReal()) continue
             if (esHexadecimal()) continue
             if (esBooleano()) continue
-
+//TODO: Falta caracter especial
             if (esIdentificador()) continue
             if (esPalabraReservada()) continue
 
@@ -130,7 +130,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 }
                 listaTokens.add(Token(palabra, Categoria.ENTERO, fila, columna))
             } else {
-                listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
+                listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna)) //TODO: debe retornar a la posicion inicial
             }
             return true
         }
@@ -161,10 +161,10 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 if (!palabra.endsWith("_")) {
                     listaTokens.add(Token(palabra, Categoria.IDENTIFICADOR, fila, columna))
                 } else {
-                    listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
+                    listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))//TODO: debe retornar a la posicion inicial
                 }
             } else {
-                listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
+                listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))//TODO: debe retornar a la posicion inicial
             }
             return true
         }
@@ -203,12 +203,15 @@ class AnalizadorLexico(private val codigoFuente: String) {
                         obtenerSgteCaracter()
                     } else {
                         listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
+                        //TODO: debe retornar a la posicion inicial
                     }
                 } else {
                     listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
+                    //TODO: debe retornar a la posicion inicial
                 }
             } else {
                 listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
+                //TODO: debe retornar a la posicion inicial
             }
             return true
         }
@@ -253,14 +256,14 @@ class AnalizadorLexico(private val codigoFuente: String) {
      */
     private fun evaluarOperadorAritmetico(caracter: Char): Boolean {
         return caracter == '+' || caracter == '-' || caracter == 'x' || caracter == '%' || caracter == '/'
-    }
-
+    }//TODO: debe verificar que no sea de incremento. Bueno investigar despues
     /**
      * Verifica si la palabra actual es un operador de asignacion
      *
      * @return esOperadorAsignacion retorna true si es un operador de asignacion
      */
     private fun esOperadorAsignacion(): Boolean {
+        //TODO: Faltan operadores de asignacion
         val fila = filaActual
         val columna = columnaActual
         if (caracterActual.toString() + "" == "=") {
@@ -392,7 +395,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 }
                 listaTokens.add(Token(pal, Categoria.OPERADOR_RELACIONAL, fila, columna))
             } else {
-                listaTokens.add(Token(pal, Categoria.DESCONOCIDO, fila, columna))
+                listaTokens.add(Token(pal, Categoria.DESCONOCIDO, fila, columna))//TODO: debe retornar a la posicion inicial
             }
             return true
         }
@@ -404,9 +407,23 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 obtenerSgteCaracter()
                 listaTokens.add(Token(pal, Categoria.OPERADOR_RELACIONAL, fila, columna))
             } else {
-                listaTokens.add(Token(pal, Categoria.DESCONOCIDO, fila, columna))
+                listaTokens.add(Token(pal, Categoria.DESCONOCIDO, fila, columna))//TODO: debe retornar a la posicion inicial
             }
             return true
+        }
+        if (caracterActual == '¬') {
+            pal += caracterActual
+            obtenerSgteCaracter()
+            if (caracterActual == '-') {
+                pal += caracterActual
+                obtenerSgteCaracter()
+                listaTokens.add(Token(pal, Categoria.OPERADOR_RELACIONAL, fila, columna))
+                return true
+            } else {
+                posicionActual -= 2
+                obtenerSgteCaracter()
+                return false
+            }
         }
         return false
     }
@@ -417,6 +434,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * @return esHexadecimal retorna true si es hexadecimal
      */
     private fun esHexadecimal(): Boolean {
+        //TODO: no hace falta pero bueno :v, autodestruir mensaje despues
         if (caracterActual == '$') {
             var palabra = ""
             val fila = filaActual
@@ -514,7 +532,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
                     obtenerSgteCaracter()
                 }
 
-                listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
+                listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))//TODO: debe retornar a la posicion inicial
                 return true
             }
         }
@@ -527,7 +545,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
      *
      * @return esCadena retorna true si es cadena
      */
-    private fun esCadena(): Boolean { // TODO: corregir
+    private fun esCadena(): Boolean { // TODO: corregir, validar si encuentra caraccter especial
         if (caracterActual == '(') {
             var palabra = ""
             val fila = filaActual
@@ -557,6 +575,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * @return esCaracter retorna true si es un caracter
      */
     private fun esCaracter(): Boolean {
+        //TODO: validar si tiene caracter especial
         if (posicionActual+2 <= codigoFuente.length && caracterActual == '"') {
             if (codigoFuente[posicionActual+2] == '"') {
                 var palabra = ""
@@ -582,6 +601,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * @return esComentario retorna true si es comentario
      */
     private fun esComentario(): Boolean {
+        //TODO: verificar
         if (caracterActual == ':') {
             var palabra = ""
             var terminal = '\n'
@@ -625,11 +645,10 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return false;
     }
 
-
     /**
      * Verifica si hay dos punto o un punto
      *
-     * @return esComentario retorna true si es dos punto o un punto
+     * @return esPunto retorna true si es dos punto o un punto
     */
     private fun esPunto(): Boolean{
         val fila = filaActual
@@ -650,7 +669,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * Verifica si la palabra actual es una palabra reservada
      *
      * Palabras Reservadas:
-     * cosa, caja, ent, estrato1, estrato6, dec, devolver, durante, meter, saltar, pal, bip, wi, wo
+     * cosa, caja, choose, ciclo, ent, estrato1, estrato6, dec, devolver, durante, meter, saltar, pal, bip, wi, wo
      *
      * @return esPalabraReservada retorna true si es palabra reservada
      */
