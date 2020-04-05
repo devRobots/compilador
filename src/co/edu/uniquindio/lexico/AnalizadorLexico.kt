@@ -483,7 +483,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 palabra += caracterActual
                 obtenerSgteCaracter()
             }
-            listaTokens.add(Token(palabra, Categoria.COMENTARIOS, fila, columna))
+            listaTokens.add(Token(palabra, Categoria.COMENTARIO_LINEA, fila, columna))
             return true
         }
         return false
@@ -529,6 +529,27 @@ class AnalizadorLexico(private val codigoFuente: String) {
                         obtenerSgteCaracter()
                         listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
                         return true
+                    }
+                }
+            }else if (caracterActual == 'h'){
+                palabra += caracterActual
+                obtenerSgteCaracter()
+                if (caracterActual == 'o') {
+                    palabra += caracterActual
+                    obtenerSgteCaracter()
+                    if (caracterActual == 'o') {
+                        palabra += caracterActual
+                        obtenerSgteCaracter()
+                        if (caracterActual == 's') {
+                            palabra += caracterActual
+                            obtenerSgteCaracter()
+                            if (caracterActual == 'e') {
+                                palabra += caracterActual
+                                obtenerSgteCaracter()
+                                listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
+                                return true
+                            }
+                        }
                     }
                 }
             }
@@ -695,6 +716,52 @@ class AnalizadorLexico(private val codigoFuente: String) {
                             }
                         }
                     }
+                }
+            }
+        }
+
+        if (caracterActual == 'p') {
+            palabra += caracterActual
+            obtenerSgteCaracter()
+            if (caracterActual == 'a') {
+                palabra += caracterActual
+                obtenerSgteCaracter()
+                if (caracterActual == 'l') {
+                    palabra += caracterActual
+                    obtenerSgteCaracter()
+                    listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
+                    return true
+                }
+            }
+        }
+
+        if (caracterActual == 'w'){
+            palabra += caracterActual
+            obtenerSgteCaracter()
+            if (caracterActual == 'i'){
+                palabra += caracterActual
+                obtenerSgteCaracter()
+                listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
+                return true
+            }else if(caracterActual == 'o'){
+                palabra += caracterActual
+                obtenerSgteCaracter()
+                listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
+                return true
+            }
+        }
+
+        if (caracterActual == 'b'){
+            palabra += caracterActual
+            obtenerSgteCaracter()
+            if (caracterActual == 'i'){
+                palabra += caracterActual
+                obtenerSgteCaracter()
+                if (caracterActual == 'p'){
+                    palabra += caracterActual
+                    obtenerSgteCaracter()
+                    listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
+                    return true
                 }
             }
         }

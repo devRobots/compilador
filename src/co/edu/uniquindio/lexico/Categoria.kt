@@ -34,7 +34,8 @@ enum class Categoria {
     FIN_SENTENCIA,
     SEPARADOR,
 
-    COMENTARIOS,
+    COMENTARIO_LINEA,
+    COMENTARIO_BLOQUE,
 
     DESCONOCIDO
 }
