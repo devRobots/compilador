@@ -144,7 +144,9 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 }
 
                 listaTokens.add(Token(palabra, Categoria.ENTERO, fila, columna))
-            } else {
+            }
+
+            if(!centinela) {
                 backtracking(posicionInicial, fila, columna)
             }
         }
@@ -218,32 +220,29 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 if (caracterActual == '.') {
                     palabra += caracterActual
                     siguienteCaracter()
-                    
+
                     if (Character.isDigit(caracterActual)) {
                         palabra += caracterActual
                         siguienteCaracter()
+
+                        centinela = true
 
                         while (Character.isDigit(caracterActual)) { // Transicion
                             palabra += caracterActual
                             siguienteCaracter()
                         }
+                        
                         listaTokens.add(Token(palabra, Categoria.REAL, fila, columna))
                         siguienteCaracter()
-                    } else {
-                        listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
-                        //TODO: debe retornar a la posicion inicial
                     }
-                } else {
-                    listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
-                    //TODO: debe retornar a la posicion inicial
                 }
-            } else {
-                listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
-                //TODO: debe retornar a la posicion inicial
             }
-            return true
+
+            if(!centinela) {
+                backtracking(posicionInicial, fila, columna)
+            }
         }
-        return false
+        return centinela
     }
 
 
@@ -255,6 +254,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
     private fun esOperadorAritmetico(): Boolean {
         val fila = filaActual
         val columna = columnaActual
+
         return if (evaluarOperadorAritmetico(caracterActual)) {
             if (caracterActual != '-') {
                 listaTokens.add(Token(caracterActual.toString() + "", Categoria.OPERADOR_ARTIMETICO, fila, columna))
@@ -936,13 +936,9 @@ class AnalizadorLexico(private val codigoFuente: String) {
             siguienteCaracter()
             if (caracterActual == 'i'){
                 palabra += caracterActual
-<<<<<<< HEAD
-                obtenerSgteCaracter()
-                if (caracterActual == 'p' || caracterActual == 't') {
-=======
                 siguienteCaracter()
+
                 if (caracterActual == 'p'){
->>>>>>> master
                     palabra += caracterActual
                     siguienteCaracter()
                     listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
