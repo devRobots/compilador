@@ -39,5 +39,8 @@ enum class Categoria {
     COMENTARIO_LINEA,
     COMENTARIO_BLOQUE,
 
+    PUNTO,
+    DOS_PUNTOS,
+
     DESCONOCIDO
 }

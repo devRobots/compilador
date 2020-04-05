@@ -70,6 +70,8 @@ class AnalizadorLexico(private val codigoFuente: String) {
             if (esSeparador()) continue
 
             if (esComentario()) continue
+            if (esPunto()) continue
+
             if (caracterActual != finCodigo) {
                 listaTokens.add(Token("" + caracterActual, Categoria.DESCONOCIDO, filaActual, columnaActual))
                 obtenerSgteCaracter()
@@ -625,6 +627,26 @@ class AnalizadorLexico(private val codigoFuente: String) {
 
 
     /**
+     * Verifica si hay dos punto o un punto
+     *
+     * @return esComentario retorna true si es dos punto o un punto
+    */
+    private fun esPunto(): Boolean{
+        val fila = filaActual
+        val columna = columnaActual
+        if (caracterActual == '|') {
+            listaTokens.add(Token(caracterActual.toString() + "", Categoria.DOS_PUNTOS, fila, columna))
+            obtenerSgteCaracter()
+            return true
+        }else if (caracterActual == ';'){
+            listaTokens.add(Token(caracterActual.toString() + "", Categoria.PUNTO, fila, columna))
+            obtenerSgteCaracter()
+            return true
+        }
+        return false
+    }
+
+    /**
      * Verifica si la palabra actual es una palabra reservada
      *
      * Palabras Reservadas:
@@ -684,6 +706,23 @@ class AnalizadorLexico(private val codigoFuente: String) {
                                 listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
                                 return true
                             }
+                        }
+                    }
+                }
+            }else if(caracterActual == 'i'){
+                palabra += caracterActual
+                obtenerSgteCaracter()
+                if (caracterActual == 'c') {
+                    palabra += caracterActual
+                    obtenerSgteCaracter()
+                    if (caracterActual == 'l') {
+                        palabra += caracterActual
+                        obtenerSgteCaracter()
+                        if (caracterActual == 'o') {
+                            palabra += caracterActual
+                            obtenerSgteCaracter()
+                            listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
+                            return true
                         }
                     }
                 }
