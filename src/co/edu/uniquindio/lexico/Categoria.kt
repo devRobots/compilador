@@ -12,7 +12,6 @@ package co.edu.uniquindio.lexico
 enum class Categoria {
     ENTERO,
     REAL,
-    HEXADECIMAL,
     BOOLEANO,
 
     IDENTIFICADOR,
@@ -23,7 +22,7 @@ enum class Categoria {
 
     OPERADOR_ASIGNACION,
 
-    OPERADOR_ARTIMETICO,
+    OPERADOR_ARITMETICO,
     OPERADOR_INCREMENTO,
     OPERADOR_DECREMENTO,
 

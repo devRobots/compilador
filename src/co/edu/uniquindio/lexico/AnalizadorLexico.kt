@@ -71,7 +71,6 @@ class AnalizadorLexico(private val codigoFuente: String) {
             if (esComentario()) continue
             if (esPunto()) continue
 
-            //TODO: Hacer metodo de desconocidos, pero no es por caracter por caracter
             if (caracterActual != finCodigo) {
                 listaTokens.add(Token("" + caracterActual, Categoria.DESCONOCIDO, filaActual, columnaActual))
                 siguienteCaracter()
@@ -93,6 +92,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
         for (token in listaTokens) {
             if (token.categoria == Categoria.DESCONOCIDO) {
                 caracteresDesconocidos.add(token)
+                //listaTokens.remove(token)
             }
         }
 
@@ -105,7 +105,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 val tope = obtenerIndiceFinal(i, caracteresDesconocidos)
 
                 for (j in i until tope + 1) {
-                    if(j != i) {
+                    if (j != i) {
                         palabra += caracteresDesconocidos[j].palabra
                     }
                 }
@@ -117,7 +117,15 @@ class AnalizadorLexico(private val codigoFuente: String) {
         }
     }
 
-    private fun obtenerIndiceFinal(indice:Int, caracteres:ArrayList<Token>):Int {
+    /**
+     * Obtiene el indice del final de la palabra desconocida
+     *
+     * @param indice El indice en donde empieza la palabra
+     * @param caracteres La lista de los caracteres desconocidos
+     *
+     * @return indice El tope de la palabra desconocida
+     */
+    private fun obtenerIndiceFinal(indice: Int, caracteres: ArrayList<Token>): Int {
         val fila = caracteres[indice].fila
 
         var colActual = caracteres[indice].columna
@@ -125,14 +133,10 @@ class AnalizadorLexico(private val codigoFuente: String) {
 
         for (i in indice + 1 until caracteres.size) {
             if (fila == caracteres[i].fila) {
-
                 if (caracteres[i].columna == colActual + 1) {
                     final = i
                     colActual++
                 }
-            }
-            else {
-                break
             }
         }
 
@@ -323,12 +327,10 @@ class AnalizadorLexico(private val codigoFuente: String) {
             palabra += caracterActual
             siguienteCaracter()
 
-            println(caracterActual)
-
             if (caracterActual == '=') {
                 backtracking(posicionInicial, fila, columna)
             } else {
-                listaTokens.add(Token(palabra, Categoria.OPERADOR_ARTIMETICO, fila, columna))
+                listaTokens.add(Token(palabra, Categoria.OPERADOR_ARITMETICO, fila, columna))
                 centinela = true
             }
         }
@@ -374,8 +376,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             listaTokens.add(Token(caracterActual.toString() + "", Categoria.OPERADOR_ASIGNACION, fila, columna))
             siguienteCaracter()
             centinela = true
-        }
-        else if (evaluarOperadorAritmetico(caracterActual)) {
+        } else if (evaluarOperadorAritmetico(caracterActual)) {
             palabra += caracterActual
             siguienteCaracter()
             if (caracterActual == '=') {
@@ -615,7 +616,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             palabra += caracterActual
             siguienteCaracter()
             while (caracterActual != ')' && caracterActual != finCodigo) {
-                if (esCaracterEspecial()){
+                if (esCaracterEspecial()) {
                     palabra += caracterActual
                     siguienteCaracter()
                 }
@@ -628,9 +629,9 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 centinela = true
             }
         }
-        if (centinela){
+        if (centinela) {
             listaTokens.add(Token(palabra, Categoria.CADENA_CARACTERES, fila, columna))
-        }else{
+        } else {
             backtracking(posicionInicial, fila, columna)
         }
         return centinela
@@ -656,22 +657,22 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 siguienteCaracter()
                 palabra += caracterActual
                 siguienteCaracter()
-                if (caracterActual == '"'){
+                if (caracterActual == '"') {
                     centinela = true;
                 }
-            } else if (caracterActual != '"'){
+            } else if (caracterActual != '"') {
                 palabra += caracterActual
                 siguienteCaracter()
-                if (caracterActual == '"'){
+                if (caracterActual == '"') {
                     centinela = true
                 }
             }
         }
-        if (centinela){
+        if (centinela) {
             palabra += caracterActual
             siguienteCaracter()
             listaTokens.add(Token(palabra, Categoria.CARACTER, fila, columna))
-        } else{
+        } else {
             backtracking(posicionInicial, fila, columna)
         }
         return centinela
@@ -681,7 +682,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * Metodo para validar si es un caracter especial
      */
     private fun esCaracterEspecial(): Boolean {
-        if (posicionActual+1 <= codigoFuente.length && caracterActual == '$' && evaluarCaracterEspecial(codigoFuente[posicionActual + 1]) ) {
+        if (posicionActual + 1 <= codigoFuente.length && caracterActual == '$' && evaluarCaracterEspecial(codigoFuente[posicionActual + 1])) {
             return true;
         }
         return false;
