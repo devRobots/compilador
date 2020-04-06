@@ -30,7 +30,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
     init {
         if (codigoFuente.isNotEmpty()) {
             caracterActual = codigoFuente[posicionActual]
-        }else{
+        } else {
             caracterActual = finCodigo
         }
     }
@@ -622,11 +622,11 @@ class AnalizadorLexico(private val codigoFuente: String) {
         if (caracterActual == '(') {
             palabra += caracterActual
             siguienteCaracter()
-            while (caracterActual != ')'&& caracterActual != '(' && caracterActual != finCodigo) {
+            while (caracterActual != ')' && caracterActual != '(' && caracterActual != finCodigo) {
                 if (esCaracterEspecial()) {
                     palabra += caracterActual
                     siguienteCaracter()
-                }else if(caracterActual == '$'){
+                } else if (caracterActual == '$') {
                     break
                 }
                 palabra += caracterActual
@@ -634,7 +634,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             }
             palabra += caracterActual
             siguienteCaracter()
-            if (palabra.endsWith(")") && fila == filaActual){
+            if (palabra.endsWith(")") && fila == filaActual) {
                 centinela = true
             }
         }
@@ -661,18 +661,18 @@ class AnalizadorLexico(private val codigoFuente: String) {
         if (caracterActual == '"') {
             palabra += caracterActual
             siguienteCaracter()
-            if (esCaracterEspecial() && fila == filaActual ) {
+            if (esCaracterEspecial() && fila == filaActual) {
                 palabra += caracterActual
                 siguienteCaracter()
                 palabra += caracterActual
                 siguienteCaracter()
-                if (caracterActual == '"' && fila == filaActual ) {
+                if (caracterActual == '"' && fila == filaActual) {
                     centinela = true
                 }
             } else if (caracterActual != '"' && fila == filaActual) {
                 palabra += caracterActual
                 siguienteCaracter()
-                if (caracterActual == '"' && fila == filaActual ) {
+                if (caracterActual == '"' && fila == filaActual) {
                     centinela = true
                 }
             }
@@ -742,7 +742,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * Metodo para validar si es un terminal de Comentario de bloque
      */
     private fun esTerminalBloque(): Boolean {
-        if (posicionActual + 1 <= codigoFuente.length && caracterActual == '/' && codigoFuente[posicionActual + 1] == ':') {
+        if (posicionActual + 1 < codigoFuente.length && caracterActual == '/' && codigoFuente[posicionActual + 1] == ':') {
             return true
         }
         return false
@@ -915,7 +915,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
         return centinela
     }
 
-    /**
+    /**posicionActual + 1
      * Verifica digito a digito que una cadena es parte de una palabra
      *
      * @param palabra La cadena a verificar
