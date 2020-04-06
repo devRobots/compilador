@@ -71,6 +71,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             if (esComentario()) continue
             if (esPunto()) continue
 
+            //TODO: Hacer metodo de desconocidos, pero no es por caracter por caracter
             if (caracterActual != finCodigo) {
                 listaTokens.add(Token("" + caracterActual, Categoria.DESCONOCIDO, filaActual, columnaActual))
                 siguienteCaracter()
@@ -182,15 +183,14 @@ class AnalizadorLexico(private val codigoFuente: String) {
 
                 if (!palabra.endsWith("_")) {
                     listaTokens.add(Token(palabra, Categoria.IDENTIFICADOR, fila, columna))
-                } else {
-                    listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))//TODO: debe retornar a la posicion inicial
+                    centinela = true;
                 }
-            } else {
-                listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))//TODO: debe retornar a la posicion inicial
             }
-            return true
+            if(!centinela) {
+                backtracking(posicionInicial, fila, columna)
+            }
         }
-        return false
+        return centinela
     }
 
     /**
@@ -290,15 +290,31 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * @return esOperadorAsignacion retorna true si es un operador de asignacion
      */
     private fun esOperadorAsignacion(): Boolean {
-        //TODO: Faltan operadores de asignacion
+        val posicionInicial = posicionActual
         val fila = filaActual
         val columna = columnaActual
-        if (caracterActual.toString() + "" == "=") {
+
+        var palabra = ""
+        var centinela = false
+        if (caracterActual == '=') {
             listaTokens.add(Token(caracterActual.toString() + "", Categoria.OPERADOR_ASIGNACION, fila, columna))
             siguienteCaracter()
-            return true
+            centinela= true
         }
-        return false
+        if (caracterActual =='+' ||caracterActual =='-' ||caracterActual =='°' ||caracterActual =='/' ||caracterActual =='%' ){
+            palabra += caracterActual
+            siguienteCaracter()
+            if (caracterActual == '=') {
+                palabra += caracterActual
+                listaTokens.add(Token(palabra, Categoria.OPERADOR_ASIGNACION, fila, columna))
+                siguienteCaracter()
+                centinela = true
+            }
+        }
+        if(!centinela) {
+            backtracking(posicionInicial, fila, columna)
+        }
+        return centinela
     }
 
     /**
@@ -307,30 +323,32 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * @return esOperadorIncreDecre retorna true si es operador de incremento o decremento
      */
     private fun esOperadorIncreDecre(): Boolean {
+        val posicionInicial = posicionActual
         val fila = filaActual
         val columna = columnaActual
-        if (caracterActual == '^') {
-            var pal = caracterActual.toString() + ""
-            siguienteCaracter()
 
-            when (caracterActual) {
-                '+' -> {
-                    pal += caracterActual
-                    listaTokens.add(Token(pal, Categoria.OPERADOR_INCREMENTO, fila, columna))
-                    siguienteCaracter()
-                }
-                '-' -> {
-                    pal += caracterActual
-                    listaTokens.add(Token(pal, Categoria.OPERADOR_DECREMENTO, fila, columna))
-                    siguienteCaracter()
-                }
-                else -> {
-                    listaTokens.add(Token("^", Categoria.OPERADOR_LOGICO, fila, columna)) // TODO: Quiten esta wea xd
-                }
+        var palabra = ""
+        var centinela = false
+        var category = Categoria.OPERADOR_INCREMENTO
+        if (caracterActual == '^') {
+            palabra += caracterActual
+            siguienteCaracter()
+            if (caracterActual == '+'){
+                centinela = true
             }
-            return true
+            else if (caracterActual == '-'){
+                centinela = true
+                category = Categoria.OPERADOR_DECREMENTO
+            }
         }
-        return false
+        if (centinela){
+            palabra += caracterActual
+            listaTokens.add(Token(palabra, category, fila, columna))
+            siguienteCaracter()
+        }else {
+            backtracking(posicionInicial, fila, columna)
+        }
+        return centinela
     }
 
     /**
@@ -357,12 +375,16 @@ class AnalizadorLexico(private val codigoFuente: String) {
     private fun esParentesisLlave(): Boolean {
         val fila = filaActual
         val columna = columnaActual
-        if (caracterActual == '{' || caracterActual == '}') {
+        if (caracterActual == '{' || caracterActual == '}') { //parentesis
             listaTokens.add(Token(caracterActual.toString() + "", Categoria.PARENTESIS, fila, columna))
             siguienteCaracter()
             return true
-        } else if (caracterActual == '¿' || caracterActual == '?') {
+        } else if (caracterActual == '¿' || caracterActual == '?') { //llaves
             listaTokens.add(Token(caracterActual.toString() + "", Categoria.LLAVES, fila, columna))
+            siguienteCaracter()
+            return true
+        } else if (caracterActual == '[' || caracterActual == ']') { //corchetes
+            listaTokens.add(Token(caracterActual.toString() + "", Categoria.CORCHETES, fila, columna))
             siguienteCaracter()
             return true
         }
@@ -407,9 +429,12 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * @return esOperadorRelacional retorna true si es operador relacional
      */
     private fun esOperadorRelacional(): Boolean {
+        val posicionInicial = posicionActual
         val fila = filaActual
         val columna = columnaActual
+
         var pal = ""
+        var centinela = false
         if (caracterActual == '<') {
             pal += caracterActual
             siguienteCaracter()
@@ -420,11 +445,9 @@ class AnalizadorLexico(private val codigoFuente: String) {
                     pal += caracterActual
                     siguienteCaracter()
                 }
-                listaTokens.add(Token(pal, Categoria.OPERADOR_RELACIONAL, fila, columna))
-            } else {
-                listaTokens.add(Token(pal, Categoria.DESCONOCIDO, fila, columna))//TODO: debe retornar a la posicion inicial
+                centinela = true
             }
-            return true
+            centinela = true
         }
         if (caracterActual == '>') {
             pal += caracterActual
@@ -432,11 +455,8 @@ class AnalizadorLexico(private val codigoFuente: String) {
             if (caracterActual == '-' || caracterActual == '>') {
                 pal += caracterActual
                 siguienteCaracter()
-                listaTokens.add(Token(pal, Categoria.OPERADOR_RELACIONAL, fila, columna))
-            } else {
-                listaTokens.add(Token(pal, Categoria.DESCONOCIDO, fila, columna))//TODO: debe retornar a la posicion inicial
+                centinela = true
             }
-            return true
         }
         if (caracterActual == '¬') {
             pal += caracterActual
@@ -445,15 +465,15 @@ class AnalizadorLexico(private val codigoFuente: String) {
             if (caracterActual == '-') {
                 pal += caracterActual
                 siguienteCaracter()
-                listaTokens.add(Token(pal, Categoria.OPERADOR_RELACIONAL, fila, columna))
-                return true
-            } else {
-                posicionActual -= 2
-                siguienteCaracter()
-                return false
+                centinela = true
             }
         }
-        return false
+        if (centinela){
+            listaTokens.add(Token(pal, Categoria.OPERADOR_RELACIONAL, fila, columna))
+        }else{
+            backtracking(posicionInicial, fila, columna)
+        }
+        return centinela
     }
 
     /**
@@ -465,11 +485,13 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * @return esBooleano retorna true si es una palabra Booleana
      */
     private fun esBooleano(): Boolean { // palabra reservada
+        val posicionInicial = posicionActual
+        val fila = filaActual
+        val columna = columnaActual
+
+        var palabra = ""
+        var centinela = false
         if (caracterActual == '.') {
-            var palabra = ""
-            val fila = filaActual
-            val columna = columnaActual
-            palabra += caracterActual
             siguienteCaracter()
             if (caracterActual == 't') {
                 palabra += caracterActual
@@ -483,8 +505,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
                         if (caracterActual == 'e') {
                             palabra += caracterActual
                             siguienteCaracter()
-                            listaTokens.add(Token(palabra, Categoria.BOOLEANO, fila, columna))
-                            return true
+                            centinela = true;
                         }
                     }
                 }
@@ -504,26 +525,19 @@ class AnalizadorLexico(private val codigoFuente: String) {
                             if (caracterActual == 'e') {
                                 palabra += caracterActual
                                 siguienteCaracter()
-                                listaTokens.add(Token(palabra, Categoria.BOOLEANO, fila, columna))
-                                return true
+                                centinela = true
                             }
                         }
                     }
                 }
             }
-
-            if (palabra.isNotEmpty()) {
-                while (Character.isLetter(caracterActual)) {
-                    palabra += caracterActual
-                    siguienteCaracter()
-                }
-
-                listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
-                //TODO: debe retornar a la posicion inicial
-                return true
-            }
         }
-        return false
+        if (centinela){
+            listaTokens.add(Token(palabra, Categoria.BOOLEANO, fila, columna))
+        }else{
+            backtracking(posicionInicial, fila, columna)
+        }
+        return centinela
     }
 
 
@@ -533,8 +547,6 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * @return esCadena retorna true si es cadena
      */
     private fun esCadena(): Boolean { // TODO: corregir, validar si encuentra caracter especial
-
-
         if (caracterActual == '(') {
             var palabra = ""
             val fila = filaActual

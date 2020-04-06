@@ -32,6 +32,7 @@ enum class Categoria {
 
     PARENTESIS,
     LLAVES,
+    CORCHETES,
 
     FIN_SENTENCIA,
     SEPARADOR,
