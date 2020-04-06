@@ -1,4 +1,4 @@
-# Compilador NN
+# Elphy
 
 Compilador para el lenguaje de programacion **NN** propuesto como 
 proyecto para la materia Compiladores de la Universidad del Quindio.
@@ -35,7 +35,7 @@ transiciones que tendra una palabra caracter por caracter.
 
 El automata usado para este lenguaje es el siguiente:
 
-![AFD](automata.jpeg)
+![AFD](automata.jpg)
 
 ### Estructura Lexica
 
@@ -126,6 +126,7 @@ $t      :tab
 ¬-      :Es diferente igual relativo "!=" en java
 
 :Operadores Logicos
+
 ^       :Es relativo "&&" en Java
 ~       :Es relativo "||" en Java
 ¬       :Es relativo "!" en Java
@@ -170,7 +171,7 @@ ent @c!
 : "{" Es el relativo al "[" en java
 : "," Es el relativo al "," en Java 
 : ";" Es el relativo al "." en java
-: "|" Es el ralativo al ":" en java
+: "|" Es el relativo al ":" en java
 
 estrato1 cosa @clase ¿          : Las llaves son interrogaciones (¿?)
 
