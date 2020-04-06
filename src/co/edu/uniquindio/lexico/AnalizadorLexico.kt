@@ -107,7 +107,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * @param fila La fila inicial
      * @param columna La columna inicial
      */
-    private fun backtracking(posicionInicial:Int, fila:Int, columna:Int) {
+    private fun backtracking(posicionInicial: Int, fila: Int, columna: Int) {
         posicionActual = posicionInicial
         filaActual = fila
         columnaActual = columna
@@ -146,7 +146,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 listaTokens.add(Token(palabra, Categoria.ENTERO, fila, columna))
             }
 
-            if(!centinela) {
+            if (!centinela) {
                 backtracking(posicionInicial, fila, columna)
             }
         }
@@ -213,7 +213,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             if (Character.isDigit(caracterActual)) {
                 palabra += caracterActual
                 siguienteCaracter()
-                while (Character.isDigit(caracterActual)) { // Transicion
+                while (Character.isDigit(caracterActual)) {
                     palabra += caracterActual
                     siguienteCaracter()
                 }
@@ -227,18 +227,18 @@ class AnalizadorLexico(private val codigoFuente: String) {
 
                         centinela = true
 
-                        while (Character.isDigit(caracterActual)) { // Transicion
+                        while (Character.isDigit(caracterActual)) {
                             palabra += caracterActual
                             siguienteCaracter()
                         }
-                        
+
                         listaTokens.add(Token(palabra, Categoria.REAL, fila, columna))
                         siguienteCaracter()
                     }
                 }
             }
 
-            if(!centinela) {
+            if (!centinela) {
                 backtracking(posicionInicial, fila, columna)
             }
         }
@@ -252,27 +252,25 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * @return esOperadorAritmetico retorna true si es un operador aritmetico
      */
     private fun esOperadorAritmetico(): Boolean {
+        val posicionInicial = posicionActual
         val fila = filaActual
         val columna = columnaActual
 
-        return if (evaluarOperadorAritmetico(caracterActual)) {
-            if (caracterActual != '-') {
-                listaTokens.add(Token(caracterActual.toString() + "", Categoria.OPERADOR_ARTIMETICO, fila, columna))
-                siguienteCaracter()
-                true
+        var palabra = ""
+        var centinela = false
+
+        if (evaluarOperadorAritmetico(caracterActual)) {
+            palabra += caracterActual
+            siguienteCaracter()
+
+            if (caracterActual == '=') {
+                backtracking(posicionInicial, fila, columna)
             } else {
-                siguienteCaracter()
-                if (caracterActual != '>') {
-                    listaTokens.add(Token("-", Categoria.OPERADOR_ARTIMETICO, fila, columna))
-                    siguienteCaracter()
-                    true
-                } else {
-                    listaTokens.add(Token("->", Categoria.OPERADOR_RELACIONAL, fila, columna))
-                    siguienteCaracter()
-                    true
-                }
+                centinela = true
             }
-        } else false
+        }
+
+        return centinela
     }
 
     /**
@@ -285,6 +283,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
     private fun evaluarOperadorAritmetico(caracter: Char): Boolean {
         return caracter == '+' || caracter == '-' || caracter == 'x' || caracter == '%' || caracter == '/'
     }
+
     /**
      * Verifica si la palabra actual es un operador de asignacion
      *
@@ -326,7 +325,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
                     siguienteCaracter()
                 }
                 else -> {
-                    listaTokens.add(Token("^", Categoria.OPERADOR_LOGICO, fila, columna))
+                    listaTokens.add(Token("^", Categoria.OPERADOR_LOGICO, fila, columna)) // TODO: Quiten esta wea xd
                 }
             }
             return true
@@ -417,7 +416,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             if (caracterActual == '-' || caracterActual == '<') {
                 pal += caracterActual
                 siguienteCaracter()
-                if (caracterActual == '>' && codigoFuente[posicionActual-1] == '-') {
+                if (caracterActual == '>' && codigoFuente[posicionActual - 1] == '-') {
                     pal += caracterActual
                     siguienteCaracter()
                 }
@@ -442,6 +441,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
         if (caracterActual == '¬') {
             pal += caracterActual
             siguienteCaracter()
+
             if (caracterActual == '-') {
                 pal += caracterActual
                 siguienteCaracter()
@@ -480,7 +480,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
                     if (caracterActual == 'u') {
                         palabra += caracterActual
                         siguienteCaracter()
-                        if (caracterActual == 'e'){
+                        if (caracterActual == 'e') {
                             palabra += caracterActual
                             siguienteCaracter()
                             listaTokens.add(Token(palabra, Categoria.BOOLEANO, fila, columna))
@@ -498,10 +498,10 @@ class AnalizadorLexico(private val codigoFuente: String) {
                     if (caracterActual == 'l') {
                         palabra += caracterActual
                         siguienteCaracter()
-                        if (caracterActual == 's'){
+                        if (caracterActual == 's') {
                             palabra += caracterActual
                             siguienteCaracter()
-                            if (caracterActual == 'e'){
+                            if (caracterActual == 'e') {
                                 palabra += caracterActual
                                 siguienteCaracter()
                                 listaTokens.add(Token(palabra, Categoria.BOOLEANO, fila, columna))
@@ -542,7 +542,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             // Transici�n
             palabra += caracterActual
             siguienteCaracter()
-            while (caracterActual != ')' && caracterActual !='\n' && caracterActual != finCodigo) {
+            while (caracterActual != ')' && caracterActual != '\n' && caracterActual != finCodigo) {
                 palabra += caracterActual
                 siguienteCaracter()
             }
@@ -550,7 +550,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             siguienteCaracter()
             if (palabra.endsWith(")")) {
                 listaTokens.add(Token(palabra, Categoria.CADENA_CARACTERES, fila, columna))
-            }else{
+            } else {
                 listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
             }
             return true
@@ -565,8 +565,8 @@ class AnalizadorLexico(private val codigoFuente: String) {
      */
     private fun esCaracter(): Boolean {
         //TODO: validar si tiene caracter especial
-        if (posicionActual+2 <= codigoFuente.length && caracterActual == '"') {
-            if (codigoFuente[posicionActual+2] == '"') {
+        if (posicionActual + 2 <= codigoFuente.length && caracterActual == '"') {
+            if (codigoFuente[posicionActual + 2] == '"') {
                 var palabra = ""
                 val fila = filaActual
                 val columna = columnaActual
@@ -599,7 +599,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             palabra += caracterActual
             siguienteCaracter()
             // Verifica si es un comentario de bloque o de linea
-            if (caracterActual == '/'){
+            if (caracterActual == '/') {
                 category = Categoria.COMENTARIO_BLOQUE
                 palabra += caracterActual
                 siguienteCaracter()
@@ -609,7 +609,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 }
                 palabra += caracterActual
                 siguienteCaracter()
-            } else{
+            } else {
                 while (caracterActual != finCodigo && caracterActual != terminal) {
                     palabra += caracterActual
                     siguienteCaracter()
@@ -626,8 +626,8 @@ class AnalizadorLexico(private val codigoFuente: String) {
     /**
      * Metodo para validar si es un terminal de Comentario de bloque
      */
-    private fun esTerminalBloque(): Boolean{
-        if (posicionActual+1 <= codigoFuente.length && caracterActual == '/' && codigoFuente[posicionActual+1] == ':'){
+    private fun esTerminalBloque(): Boolean {
+        if (posicionActual + 1 <= codigoFuente.length && caracterActual == '/' && codigoFuente[posicionActual + 1] == ':') {
             return true;
         }
         return false;
@@ -637,15 +637,15 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * Verifica si hay dos punto o un punto
      *
      * @return esPunto retorna true si es dos punto o un punto
-    */
-    private fun esPunto(): Boolean{
+     */
+    private fun esPunto(): Boolean {
         val fila = filaActual
         val columna = columnaActual
         if (caracterActual == '|') {
             listaTokens.add(Token(caracterActual.toString() + "", Categoria.DOS_PUNTOS, fila, columna))
             siguienteCaracter()
             return true
-        }else if (caracterActual == ';'){
+        } else if (caracterActual == ';') {
             listaTokens.add(Token(caracterActual.toString() + "", Categoria.PUNTO, fila, columna))
             siguienteCaracter()
             return true
@@ -657,305 +657,174 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * Verifica si la palabra actual es una palabra reservada
      *
      * Palabras Reservadas:
-     * cosa, caja, choose, ciclo, ent, estrato1, estrato6, dec, devolver, durante, meter, saltar, pal, bip, wi, wo, bit
+     * bip, bit,
+     * cosa, caja, control, ciclo,
+     * ent, estrato1, estrato6,
+     * dec, devolver, durante,
+     * meter,
+     * pal,
+     * saltar,
+     * wi, wo
      *
      * @return esPalabraReservada retorna true si es palabra reservada
      */
-    private fun esPalabraReservada(): Boolean { // palabra reservada
-        var palabra = ""
+    private fun esPalabraReservada(): Boolean {
+        val posicionInicial = posicionActual
         val fila = filaActual
         val columna = columnaActual
 
-        if (caracterActual == 'c') {
+        var palabra = ""
+        var centinela = false
+
+        if(caracterActual == 'b') {
             palabra += caracterActual
             siguienteCaracter()
+
+            if(caracterActual == 'i') {
+                palabra += caracterActual
+                siguienteCaracter()
+
+                if (caracterActual == 'p' || caracterActual == 't') {
+                    palabra += caracterActual
+                    siguienteCaracter()
+
+                    centinela = true
+                }
+            }
+
+        } else if (caracterActual == 'c') {
+            palabra += caracterActual
+            siguienteCaracter()
+
             if (caracterActual == 'o') {
                 palabra += caracterActual
                 siguienteCaracter()
-                if (caracterActual == 's') {
-                    palabra += caracterActual
-                    siguienteCaracter()
-                    if (caracterActual == 'a') {
-                        palabra += caracterActual
-                        siguienteCaracter()
-                        listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                        return true
-                    }
+
+                if (esComplementoPalabraReservada("sa")) {
+                    palabra += "sa"
+                    centinela = true
                 }
-            } else if (caracterActual == 'a') {
+                else if (esComplementoPalabraReservada("ntrol")) {
+                    palabra += "ntrol"
+                    centinela = true
+                }
+            }
+            else {
+                if (esComplementoPalabraReservada("aja")) {
+                    palabra += "aja"
+                    centinela = true
+                }
+                else if (esComplementoPalabraReservada("iclo")) {
+                    palabra += "iclo"
+                    centinela = true
+                }
+            }
+        } else if (caracterActual == 'e') {
+            palabra += caracterActual
+            siguienteCaracter()
+
+            if (caracterActual == 's') {
                 palabra += caracterActual
                 siguienteCaracter()
-                if (caracterActual == 'j') {
-                    palabra += caracterActual
-                    siguienteCaracter()
-                    if (caracterActual == 'a') {
+
+                if (esComplementoPalabraReservada("trato")) {
+                    palabra += "trato"
+                    if (caracterActual == '1' || caracterActual == '6') {
                         palabra += caracterActual
                         siguienteCaracter()
-                        listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                        return true
-                    }
-                }
-            }else if (caracterActual == 'h'){
-                palabra += caracterActual
-                siguienteCaracter()
-                if (caracterActual == 'o') {
-                    palabra += caracterActual
-                    siguienteCaracter()
-                    if (caracterActual == 'o') {
-                        palabra += caracterActual
-                        siguienteCaracter()
-                        if (caracterActual == 's') {
-                            palabra += caracterActual
-                            siguienteCaracter()
-                            if (caracterActual == 'e') {
-                                palabra += caracterActual
-                                siguienteCaracter()
-                                listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                                return true
-                            }
-                        }
-                    }
-                }
-            }else if(caracterActual == 'i'){
-                palabra += caracterActual
-                siguienteCaracter()
-                if (caracterActual == 'c') {
-                    palabra += caracterActual
-                    siguienteCaracter()
-                    if (caracterActual == 'l') {
-                        palabra += caracterActual
-                        siguienteCaracter()
-                        if (caracterActual == 'o') {
-                            palabra += caracterActual
-                            siguienteCaracter()
-                            listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                            return true
-                        }
+                        centinela = true
                     }
                 }
             }
-        }
-        if (caracterActual == 'e') {
-            // Transici�n
-            palabra += caracterActual
-            siguienteCaracter()
-            if (caracterActual == 'n') {
-                palabra += caracterActual
-                siguienteCaracter()
-                if (caracterActual == 't') {
-                    palabra += caracterActual
-                    siguienteCaracter()
-                    listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                    return true
-                }
-            } else if (caracterActual == 's') {
-                palabra += caracterActual
-                siguienteCaracter()
-                if (caracterActual == 't') {
-                    palabra += caracterActual
-                    siguienteCaracter()
-                    if (caracterActual == 'r') {
-                        palabra += caracterActual
-                        siguienteCaracter()
-                        if (caracterActual == 'a') {
-                            palabra += caracterActual
-                            siguienteCaracter()
-                            if (caracterActual == 't') {
-                                palabra += caracterActual
-                                siguienteCaracter()
-                                if (caracterActual == 'o') {
-                                    palabra += caracterActual
-                                    siguienteCaracter()
-                                    if (caracterActual == '1') {
-                                        palabra += caracterActual
-                                        siguienteCaracter()
-                                        listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                                        return true
-                                    } else if (caracterActual == '6') {
-                                        palabra += caracterActual
-                                        siguienteCaracter()
-                                        listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                                        return true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+            else if (esComplementoPalabraReservada("nt")){
+                palabra += "nt"
+                centinela = true
             }
-        }
-        // Palabra Reservada
-        if (caracterActual == 'd') {
-            // Transici�n
+        } else if (caracterActual == 'd') {
             palabra += caracterActual
             siguienteCaracter()
+
             if (caracterActual == 'e') {
                 palabra += caracterActual
                 siguienteCaracter()
-                if (caracterActual == 'c') {
-                    palabra += caracterActual
-                    siguienteCaracter()
-                    listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                    return true
-                } else if (caracterActual == 'v') {
-                    palabra += caracterActual
-                    siguienteCaracter()
-                    if (caracterActual == 'o') {
-                        palabra += caracterActual
-                        siguienteCaracter()
-                        if (caracterActual == 'l') {
-                            palabra += caracterActual
-                            siguienteCaracter()
-                            if (caracterActual == 'v') {
-                                palabra += caracterActual
-                                siguienteCaracter()
-                                if (caracterActual == 'e') {
-                                    palabra += caracterActual
-                                    siguienteCaracter()
-                                    if (caracterActual == 'r') {
-                                        palabra += caracterActual
-                                        siguienteCaracter()
-                                        listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                                        return true
-                                    }
-                                }
-                            }
-                        }
-                    }
+
+                if (esComplementoPalabraReservada("volver")) {
+                    palabra += "volver"
+                    centinela = true
                 }
-            } else if (caracterActual == 'u') {
-                palabra += caracterActual
-                siguienteCaracter()
-                if (caracterActual == 'r') {
-                    palabra += caracterActual
-                    siguienteCaracter()
-                    if (caracterActual == 'a') {
-                        palabra += caracterActual
-                        siguienteCaracter()
-                        if (caracterActual == 'n') {
-                            palabra += caracterActual
-                            siguienteCaracter()
-                            if (caracterActual == 't') {
-                                palabra += caracterActual
-                                siguienteCaracter()
-                                if (caracterActual == 'e') {
-                                    palabra += caracterActual
-                                    siguienteCaracter()
-                                    listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                                    return true
-                                }
-                            }
-                        }
-                    }
+                else if (esComplementoPalabraReservada("c")) {
+                    palabra += "c"
+                    centinela = true
                 }
             }
-        }
-        if (caracterActual == 'm') {
+            else if (esComplementoPalabraReservada("urante")){
+                palabra += "urante"
+                centinela = true
+            }
+        } else if (caracterActual == 'm') {
             palabra += caracterActual
             siguienteCaracter()
-            if (caracterActual == 'e') {
-                palabra += caracterActual
-                siguienteCaracter()
-                if (caracterActual == 't') {
-                    palabra += caracterActual
-                    siguienteCaracter()
-                    if (caracterActual == 'e') {
-                        palabra += caracterActual
-                        siguienteCaracter()
-                        if (caracterActual == 'r') {
-                            palabra += caracterActual
-                            siguienteCaracter()
-                            listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                            return true
-                        }
-                    }
-                }
+
+            if (esComplementoPalabraReservada("eter")) {
+                palabra += "eter"
+                centinela = true
             }
-        }
-        if (caracterActual == 's') {
-            // Transici�n
+        } else if (caracterActual == 'p') {
             palabra += caracterActual
             siguienteCaracter()
-            if (caracterActual == 'a') {
-                palabra += caracterActual
-                siguienteCaracter()
-                if (caracterActual == 'l') {
-                    palabra += caracterActual
-                    siguienteCaracter()
-                    if (caracterActual == 't') {
-                        palabra += caracterActual
-                        siguienteCaracter()
-                        if (caracterActual == 'a') {
-                            palabra += caracterActual
-                            siguienteCaracter()
-                            if (caracterActual == 'r') {
-                                palabra += caracterActual
-                                siguienteCaracter()
-                                listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                                return true
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
-        if (caracterActual == 'p') {
+            if (esComplementoPalabraReservada("al")) {
+                palabra += "al"
+
+                centinela = true
+            }
+        } else if (caracterActual == 's') {
             palabra += caracterActual
             siguienteCaracter()
-            if (caracterActual == 'a') {
-                palabra += caracterActual
-                siguienteCaracter()
-                if (caracterActual == 'l') {
-                    palabra += caracterActual
-                    siguienteCaracter()
-                    listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                    return true
-                }
+
+            if (esComplementoPalabraReservada("altar")) {
+                palabra += "altar"
+                centinela = true
             }
         }
-
-        if (caracterActual == 'w'){
+        else if (caracterActual == 'w') {
             palabra += caracterActual
             siguienteCaracter()
-            if (caracterActual == 'i'){
+
+            if (caracterActual == 'i' || caracterActual == 'o' ) {
                 palabra += caracterActual
                 siguienteCaracter()
-                listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                return true
-            }else if(caracterActual == 'o'){
-                palabra += caracterActual
-                siguienteCaracter()
-                listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                return true
+                centinela = true
             }
         }
 
-        if (caracterActual == 'b'){
-            palabra += caracterActual
+        if(centinela) {
+            listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
+        } else if (palabra.isNotEmpty()){
+            backtracking(posicionInicial, fila, columna)
+        }
+
+        return centinela
+    }
+
+    /**
+     * Verifica digito a digito que una cadena es parte de una palabra reservada
+     *
+     * @param palabra La cadena a verificar
+     *
+     * @return retorna true si es la continuacion de la palabra reservada
+     */
+    private fun esComplementoPalabraReservada(palabra:String):Boolean {
+        var centinela = true
+
+        for (caracter in palabra) {
+            if (caracterActual != caracter) {
+                centinela = false
+                break
+            }
             siguienteCaracter()
-            if (caracterActual == 'i'){
-                palabra += caracterActual
-                siguienteCaracter()
-
-                if (caracterActual == 'p'){
-                    palabra += caracterActual
-                    siguienteCaracter()
-                    listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-                    return true
-                }
-            }
         }
 
-        if (palabra.isNotEmpty()) {
-            while (Character.isLetter(caracterActual)) {
-                palabra += caracterActual
-                siguienteCaracter()
-            }
-
-            listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
-            return true
-        }
-        return false
+        return centinela
     }
 }
