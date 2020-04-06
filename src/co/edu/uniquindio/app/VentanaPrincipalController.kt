@@ -78,7 +78,7 @@ class VentanaPrincipalController {
 
         val erroresObservables: ObservableList<String> = FXCollections.observableArrayList()
         for (error in errores) {
-            erroresObservables.add(error)
+            erroresObservables.add(error.toString())
         }
 
         erroresLexico.items = erroresObservables

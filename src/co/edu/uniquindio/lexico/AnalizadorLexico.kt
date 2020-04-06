@@ -16,7 +16,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * Lista de tokens y errores generados por el analizador lexico
      */
     val listaTokens: ArrayList<Token> = ArrayList()
-    val listaErrores: ArrayList<String> = ArrayList()
+    val listaErrores: ArrayList<ErrorLexico> = ArrayList()
 
     /**
      * Elementos necesarios del analizador lexico
@@ -77,8 +77,36 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 siguienteCaracter()
             }
         }
+
+        procesarErrores();
     }
 
+    /**
+     * Metodo que procesa los Tokens desconocidos
+     * Y extrae una rutina de errores
+     *
+     * @return listaErrores La lista con los errores
+     */
+    private fun procesarErrores() {
+        val caracteresDesconocidos = ArrayList<Token>()
+
+        for (token in listaTokens) {
+            if (token.categoria == Categoria.DESCONOCIDO) {
+                caracteresDesconocidos.add(token)
+            }
+        }
+
+        for (i in 0 until caracteresDesconocidos.size - 1) {
+            val actual = caracteresDesconocidos[i]
+            val siguiente = caracteresDesconocidos[i + 1]
+
+            if (actual.columna == siguiente.columna) {
+                if (actual.fila == siguiente.fila - 1) {
+
+                }
+            }
+        }
+    }
 
     /**
      * Metodo que avanza al siguiente caracter
@@ -186,7 +214,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
                     centinela = true;
                 }
             }
-            if(!centinela) {
+            if (!centinela) {
                 backtracking(posicionInicial, fila, columna)
             }
         }
@@ -263,9 +291,12 @@ class AnalizadorLexico(private val codigoFuente: String) {
             palabra += caracterActual
             siguienteCaracter()
 
+            println(caracterActual)
+
             if (caracterActual == '=') {
                 backtracking(posicionInicial, fila, columna)
             } else {
+                listaTokens.add(Token(palabra, Categoria.OPERADOR_ARTIMETICO, fila, columna))
                 centinela = true
             }
         }
@@ -299,9 +330,9 @@ class AnalizadorLexico(private val codigoFuente: String) {
         if (caracterActual == '=') {
             listaTokens.add(Token(caracterActual.toString() + "", Categoria.OPERADOR_ASIGNACION, fila, columna))
             siguienteCaracter()
-            centinela= true
+            centinela = true
         }
-        if (caracterActual =='+' ||caracterActual =='-' ||caracterActual =='°' ||caracterActual =='/' ||caracterActual =='%' ){
+        else if (evaluarOperadorAritmetico(caracterActual)) {
             palabra += caracterActual
             siguienteCaracter()
             if (caracterActual == '=') {
@@ -311,9 +342,11 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 centinela = true
             }
         }
-        if(!centinela) {
+
+        if (!centinela) {
             backtracking(posicionInicial, fila, columna)
         }
+
         return centinela
     }
 
@@ -329,25 +362,28 @@ class AnalizadorLexico(private val codigoFuente: String) {
 
         var palabra = ""
         var centinela = false
-        var category = Categoria.OPERADOR_INCREMENTO
+
         if (caracterActual == '^') {
             palabra += caracterActual
             siguienteCaracter()
-            if (caracterActual == '+'){
+
+            if (caracterActual == '+') {
+                palabra += caracterActual
+                siguienteCaracter()
+                listaTokens.add(Token(palabra, Categoria.OPERADOR_INCREMENTO, fila, columna))
                 centinela = true
-            }
-            else if (caracterActual == '-'){
+            } else if (caracterActual == '-') {
+                palabra += caracterActual
+                siguienteCaracter()
+                listaTokens.add(Token(palabra, Categoria.OPERADOR_DECREMENTO, fila, columna))
                 centinela = true
-                category = Categoria.OPERADOR_DECREMENTO
             }
         }
-        if (centinela){
-            palabra += caracterActual
-            listaTokens.add(Token(palabra, category, fila, columna))
-            siguienteCaracter()
-        }else {
+
+        if (!centinela) {
             backtracking(posicionInicial, fila, columna)
         }
+
         return centinela
     }
 
@@ -359,11 +395,13 @@ class AnalizadorLexico(private val codigoFuente: String) {
     private fun esOperadorLogico(): Boolean {
         val fila = filaActual
         val columna = columnaActual
+
         if (caracterActual == '^' || caracterActual == '~' || caracterActual == '¬') {
-            listaTokens.add(Token(caracterActual.toString() + "", Categoria.OPERADOR_LOGICO, fila, columna))
+            listaTokens.add(Token(caracterActual.toString(), Categoria.OPERADOR_LOGICO, fila, columna))
             siguienteCaracter()
             return true
         }
+
         return false
     }
 
@@ -375,15 +413,15 @@ class AnalizadorLexico(private val codigoFuente: String) {
     private fun esParentesisLlave(): Boolean {
         val fila = filaActual
         val columna = columnaActual
-        if (caracterActual == '{' || caracterActual == '}') { //parentesis
+        if (caracterActual == '[' || caracterActual == ']') {
             listaTokens.add(Token(caracterActual.toString() + "", Categoria.PARENTESIS, fila, columna))
             siguienteCaracter()
             return true
-        } else if (caracterActual == '¿' || caracterActual == '?') { //llaves
+        } else if (caracterActual == '¿' || caracterActual == '?') {
             listaTokens.add(Token(caracterActual.toString() + "", Categoria.LLAVES, fila, columna))
             siguienteCaracter()
             return true
-        } else if (caracterActual == '[' || caracterActual == ']') { //corchetes
+        } else if (caracterActual == '{' || caracterActual == '}') {
             listaTokens.add(Token(caracterActual.toString() + "", Categoria.CORCHETES, fila, columna))
             siguienteCaracter()
             return true
@@ -399,11 +437,13 @@ class AnalizadorLexico(private val codigoFuente: String) {
     private fun esTerminal(): Boolean {
         val fila = filaActual
         val columna = columnaActual
+
         if (caracterActual == '!') {
             listaTokens.add(Token(caracterActual.toString() + "", Categoria.FIN_SENTENCIA, fila, columna))
             siguienteCaracter()
             return true
         }
+
         return false
     }
 
@@ -415,11 +455,13 @@ class AnalizadorLexico(private val codigoFuente: String) {
     private fun esSeparador(): Boolean {
         val fila = filaActual
         val columna = columnaActual
-        if (caracterActual == '°') {
+
+        if (caracterActual == ',') {
             listaTokens.add(Token(caracterActual.toString() + "", Categoria.SEPARADOR, fila, columna))
             siguienteCaracter()
             return true
         }
+
         return false
     }
 
@@ -433,44 +475,45 @@ class AnalizadorLexico(private val codigoFuente: String) {
         val fila = filaActual
         val columna = columnaActual
 
-        var pal = ""
+        var palabra = ""
         var centinela = false
+
         if (caracterActual == '<') {
-            pal += caracterActual
+            palabra += caracterActual
             siguienteCaracter()
             if (caracterActual == '-' || caracterActual == '<') {
-                pal += caracterActual
+                palabra += caracterActual
                 siguienteCaracter()
                 if (caracterActual == '>' && codigoFuente[posicionActual - 1] == '-') {
-                    pal += caracterActual
+                    palabra += caracterActual
                     siguienteCaracter()
                 }
                 centinela = true
             }
-            centinela = true
         }
         if (caracterActual == '>') {
-            pal += caracterActual
+            palabra += caracterActual
             siguienteCaracter()
             if (caracterActual == '-' || caracterActual == '>') {
-                pal += caracterActual
+                palabra += caracterActual
                 siguienteCaracter()
                 centinela = true
             }
         }
         if (caracterActual == '¬') {
-            pal += caracterActual
+            palabra += caracterActual
             siguienteCaracter()
 
             if (caracterActual == '-') {
-                pal += caracterActual
+                palabra += caracterActual
                 siguienteCaracter()
                 centinela = true
             }
         }
-        if (centinela){
-            listaTokens.add(Token(pal, Categoria.OPERADOR_RELACIONAL, fila, columna))
-        }else{
+
+        if (centinela) {
+            listaTokens.add(Token(palabra, Categoria.OPERADOR_RELACIONAL, fila, columna))
+        } else {
             backtracking(posicionInicial, fila, columna)
         }
         return centinela
@@ -484,57 +527,28 @@ class AnalizadorLexico(private val codigoFuente: String) {
      *
      * @return esBooleano retorna true si es una palabra Booleana
      */
-    private fun esBooleano(): Boolean { // palabra reservada
+    private fun esBooleano(): Boolean {
         val posicionInicial = posicionActual
         val fila = filaActual
         val columna = columnaActual
 
         var palabra = ""
         var centinela = false
+
         if (caracterActual == '.') {
             siguienteCaracter()
-            if (caracterActual == 't') {
+            if (esComplementoPalabra("true")) {
+                palabra += "true"
+                centinela = true
+            } else if (esComplementoPalabra("false")) {
                 palabra += caracterActual
-                siguienteCaracter()
-                if (caracterActual == 'r') {
-                    palabra += caracterActual
-                    siguienteCaracter()
-                    if (caracterActual == 'u') {
-                        palabra += caracterActual
-                        siguienteCaracter()
-                        if (caracterActual == 'e') {
-                            palabra += caracterActual
-                            siguienteCaracter()
-                            centinela = true;
-                        }
-                    }
-                }
-            }
-            if (caracterActual == 'f') {
-                palabra += caracterActual
-                siguienteCaracter()
-                if (caracterActual == 'a') {
-                    palabra += caracterActual
-                    siguienteCaracter()
-                    if (caracterActual == 'l') {
-                        palabra += caracterActual
-                        siguienteCaracter()
-                        if (caracterActual == 's') {
-                            palabra += caracterActual
-                            siguienteCaracter()
-                            if (caracterActual == 'e') {
-                                palabra += caracterActual
-                                siguienteCaracter()
-                                centinela = true
-                            }
-                        }
-                    }
-                }
+                centinela = true
             }
         }
-        if (centinela){
+
+        if (centinela) {
             listaTokens.add(Token(palabra, Categoria.BOOLEANO, fila, columna))
-        }else{
+        } else {
             backtracking(posicionInicial, fila, columna)
         }
         return centinela
@@ -688,11 +702,11 @@ class AnalizadorLexico(private val codigoFuente: String) {
         var palabra = ""
         var centinela = false
 
-        if(caracterActual == 'b') {
+        if (caracterActual == 'b') {
             palabra += caracterActual
             siguienteCaracter()
 
-            if(caracterActual == 'i') {
+            if (caracterActual == 'i') {
                 palabra += caracterActual
                 siguienteCaracter()
 
@@ -712,21 +726,18 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 palabra += caracterActual
                 siguienteCaracter()
 
-                if (esComplementoPalabraReservada("sa")) {
+                if (esComplementoPalabra("sa")) {
                     palabra += "sa"
                     centinela = true
-                }
-                else if (esComplementoPalabraReservada("ntrol")) {
+                } else if (esComplementoPalabra("ntrol")) {
                     palabra += "ntrol"
                     centinela = true
                 }
-            }
-            else {
-                if (esComplementoPalabraReservada("aja")) {
+            } else {
+                if (esComplementoPalabra("aja")) {
                     palabra += "aja"
                     centinela = true
-                }
-                else if (esComplementoPalabraReservada("iclo")) {
+                } else if (esComplementoPalabra("iclo")) {
                     palabra += "iclo"
                     centinela = true
                 }
@@ -739,7 +750,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 palabra += caracterActual
                 siguienteCaracter()
 
-                if (esComplementoPalabraReservada("trato")) {
+                if (esComplementoPalabra("trato")) {
                     palabra += "trato"
                     if (caracterActual == '1' || caracterActual == '6') {
                         palabra += caracterActual
@@ -747,8 +758,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
                         centinela = true
                     }
                 }
-            }
-            else if (esComplementoPalabraReservada("nt")){
+            } else if (esComplementoPalabra("nt")) {
                 palabra += "nt"
                 centinela = true
             }
@@ -760,16 +770,14 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 palabra += caracterActual
                 siguienteCaracter()
 
-                if (esComplementoPalabraReservada("volver")) {
+                if (esComplementoPalabra("volver")) {
                     palabra += "volver"
                     centinela = true
-                }
-                else if (esComplementoPalabraReservada("c")) {
+                } else if (esComplementoPalabra("c")) {
                     palabra += "c"
                     centinela = true
                 }
-            }
-            else if (esComplementoPalabraReservada("urante")){
+            } else if (esComplementoPalabra("urante")) {
                 palabra += "urante"
                 centinela = true
             }
@@ -777,7 +785,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             palabra += caracterActual
             siguienteCaracter()
 
-            if (esComplementoPalabraReservada("eter")) {
+            if (esComplementoPalabra("eter")) {
                 palabra += "eter"
                 centinela = true
             }
@@ -785,7 +793,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             palabra += caracterActual
             siguienteCaracter()
 
-            if (esComplementoPalabraReservada("al")) {
+            if (esComplementoPalabra("al")) {
                 palabra += "al"
 
                 centinela = true
@@ -794,25 +802,24 @@ class AnalizadorLexico(private val codigoFuente: String) {
             palabra += caracterActual
             siguienteCaracter()
 
-            if (esComplementoPalabraReservada("altar")) {
+            if (esComplementoPalabra("altar")) {
                 palabra += "altar"
                 centinela = true
             }
-        }
-        else if (caracterActual == 'w') {
+        } else if (caracterActual == 'w') {
             palabra += caracterActual
             siguienteCaracter()
 
-            if (caracterActual == 'i' || caracterActual == 'o' ) {
+            if (caracterActual == 'i' || caracterActual == 'o') {
                 palabra += caracterActual
                 siguienteCaracter()
                 centinela = true
             }
         }
 
-        if(centinela) {
+        if (centinela) {
             listaTokens.add(Token(palabra, Categoria.PALABRA_RESERVADA, fila, columna))
-        } else if (palabra.isNotEmpty()){
+        } else if (palabra.isNotEmpty()) {
             backtracking(posicionInicial, fila, columna)
         }
 
@@ -820,13 +827,13 @@ class AnalizadorLexico(private val codigoFuente: String) {
     }
 
     /**
-     * Verifica digito a digito que una cadena es parte de una palabra reservada
+     * Verifica digito a digito que una cadena es parte de una palabra
      *
      * @param palabra La cadena a verificar
      *
-     * @return retorna true si es la continuacion de la palabra reservada
+     * @return retorna true si es la continuacion de la palabra
      */
-    private fun esComplementoPalabraReservada(palabra:String):Boolean {
+    private fun esComplementoPalabra(palabra: String): Boolean {
         var centinela = true
 
         for (caracter in palabra) {
