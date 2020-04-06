@@ -28,7 +28,11 @@ class AnalizadorLexico(private val codigoFuente: String) {
     private val finCodigo = 0.toChar()
 
     init {
-        caracterActual = codigoFuente[posicionActual]
+        if (codigoFuente.isNotEmpty()) {
+            caracterActual = codigoFuente[posicionActual]
+        }else{
+            caracterActual = finCodigo
+        }
     }
 
     /**
