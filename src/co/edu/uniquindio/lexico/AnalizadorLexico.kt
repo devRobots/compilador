@@ -621,15 +621,15 @@ class AnalizadorLexico(private val codigoFuente: String) {
                     palabra += caracterActual
                     siguienteCaracter()
                 }else if(caracterActual == '$'){
-                    centinela = true
+                    break
                 }
                 palabra += caracterActual
                 siguienteCaracter()
             }
             palabra += caracterActual
             siguienteCaracter()
-            if (caracterActual != finCodigo){
-                centinela = !centinela
+            if (palabra.endsWith(")") && fila == filaActual){
+                centinela = true
             }
         }
         if (centinela) {
