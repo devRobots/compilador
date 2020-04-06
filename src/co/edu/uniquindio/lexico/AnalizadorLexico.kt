@@ -79,7 +79,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             }
         }
 
-        procesarErrores();
+        procesarErrores()
     }
 
     /**
@@ -248,7 +248,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
 
                 if (!palabra.endsWith("_")) {
                     listaTokens.add(Token(palabra, Categoria.IDENTIFICADOR, fila, columna))
-                    centinela = true;
+                    centinela = true
                 }
             }
 
@@ -663,7 +663,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 palabra += caracterActual
                 siguienteCaracter()
                 if (caracterActual == '"' && fila == filaActual ) {
-                    centinela = true;
+                    centinela = true
                 }
             } else if (caracterActual != '"' && fila == filaActual) {
                 palabra += caracterActual
@@ -690,9 +690,9 @@ class AnalizadorLexico(private val codigoFuente: String) {
      */
     private fun esCaracterEspecial(): Boolean {
         if (posicionActual + 1 <= codigoFuente.length && caracterActual == '$' && evaluarCaracterEspecial(codigoFuente[posicionActual + 1])) {
-            return true;
+            return true
         }
-        return false;
+        return false
     }
 
     /**
@@ -739,9 +739,9 @@ class AnalizadorLexico(private val codigoFuente: String) {
      */
     private fun esTerminalBloque(): Boolean {
         if (posicionActual + 1 <= codigoFuente.length && caracterActual == '/' && codigoFuente[posicionActual + 1] == ':') {
-            return true;
+            return true
         }
-        return false;
+        return false
     }
 
     /**

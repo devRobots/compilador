@@ -85,7 +85,7 @@ class VentanaPrincipalController {
         // Analizador Sintactico
 
         // Salida final
-        if(erroresLexico.items.isEmpty()) {
+        if(erroresLexico.items.isNotEmpty()) {
             mensaje.text = "Se encontraron errores lexicos"
         }
         else {
