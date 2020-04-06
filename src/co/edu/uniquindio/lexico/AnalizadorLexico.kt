@@ -580,12 +580,13 @@ class AnalizadorLexico(private val codigoFuente: String) {
         var centinela = false
 
         if (caracterActual == '.') {
+            palabra += caracterActual
             siguienteCaracter()
             if (esComplementoPalabra("true")) {
                 palabra += "true"
                 centinela = true
             } else if (esComplementoPalabra("false")) {
-                palabra += caracterActual
+                palabra += "false"
                 centinela = true
             }
         }
@@ -680,6 +681,8 @@ class AnalizadorLexico(private val codigoFuente: String) {
 
     /**
      * Metodo para validar si es un caracter especial
+     *
+     * @return esCaracterEspecial retorna true si es caracter especial
      */
     private fun esCaracterEspecial(): Boolean {
         if (posicionActual + 1 <= codigoFuente.length && caracterActual == '$' && evaluarCaracterEspecial(codigoFuente[posicionActual + 1])) {
