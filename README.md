@@ -70,7 +70,14 @@ estrato6    : Modificador de acceso "private"
 
 durante     : Estructura de control ciclica "while"
 devolver    : Token relativo al "return" de Java
-saltar      : Token relativo al "continue" de Java
+saltar      : Token relativo al "Break" de Java
+control     : Estructura de control "Switch"
+ciclo       : Estructura de control ciclica "for"
+wi - wo     : Estructura condicional "if - else"
+
+bit         :Tipo de dato de caracter
+bip         :Tipo de dato de booleano
+
 ~~~
 
 ##### Identificadores:
@@ -80,18 +87,56 @@ saltar      : Token relativo al "continue" de Java
 @identificador
 ~~~
 
-##### Enteros, Reales y Cadenas:
+##### Enteros, Reales, Cadenas y valore T/F:
 ~~~
 #0123456789  : Enteros
 
-$0123.456789 : Reales
+*0123.456789 : Reales
 
 (Hola mundo) : Cadena de caracteres
+
+.false       : Valor booleano
+.true
+
+~~~
+
+##### Caracteres Especiales:
+~~~
+:$n      :Nueva linea
+:$u      :salto
+:$$      :Comillas simples
+:$”      :Comillas dobles
+:$(
+:$)
+:$r      :Retorno carro
+:$f      :Salto de linea (Formfeed)
+:$b      :Retroceso (Backspace)
+:$t      :tab
+
+~~~
+
+##### Operadores Relacionales + Operadores Logicos
+~~~
+:Operadores Relacionales
+:>>      :Es el mayor relativo ">" en Java
+:>-      :Es el mayor o igual relativo ">=" en Java
+:<<      :Es el menor relativo "<" en Java
+:<-      :Es el menor o igual relativo "<=" en Java
+:<->     :Es igual igual relativo "==" en Java
+:¬-      :Es diferente igual relativo "!=" en java
+
+:Operadores Logicos
+:^        Es relativo "&&" en Java
+:~        Es ralativo "||" en Java
+:¬        Es relativo "!" en Java
+
 ~~~
 
 ##### Operador de Asignacion y Terminal:
 ~~~
-: El operador de asignacion es el igual (=)
+: Los operadores de asignaciones
+(+ - ° / % ) U (=) y (=)
+
 : El terminal o final de sentencia es un signo de exclamacion (!)
  
 : Signatura en NN           | Signatura en JAVA
@@ -110,7 +155,7 @@ ent @b = #2!
 ent @c!
 @c = @a + @b!   : Suma
 @c = @a - @b!   : Resta
-@c = @a x @b!   : Multiplicacion
+@c = @a ° @b!   : Multiplicacion
 @c = @a / @b!   : Division
 @c = @a % @b!   : Modulo
 ~~~
@@ -119,15 +164,19 @@ ent @c!
 ~~~
 : "¿" Es el relativo al "{" en Java
 : "?" Es el relativo al "}" en Java
-: "{" Es el relativo al "(" en Java
-: "}" Es el relativo al ")" en Java
-: "°" Es el relativo al "," en Java
+: "]" Es el relativo al "(" en Java
+: "[" Es el relativo al ")" en Java
+: "}" es el relativo al "]" en java
+: "{" Es el relativo al "[" en java
+: "," Es el relativo al "," en Java 
+: ";" Es el relativo al "." en java
+: "|" Es el ralativo al ":" en java
 
 estrato1 cosa @clase ¿          : Las llaves son interrogaciones (¿?)
 
-    ent @a = #1! ° @b = #2!     : El separador es °
+    ent @a = #1! , @b = #2!     : El separador es ,
 
-    ent @c = {@a + @b} x @a     : Los operadores de agrupacion son ({})
+    ent @c = {@a + @b} ° @a     : Los operadores de agrupacion son ({})
  
 ?                                
 ~~~
