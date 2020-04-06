@@ -96,16 +96,47 @@ class AnalizadorLexico(private val codigoFuente: String) {
             }
         }
 
-        for (i in 0 until caracteresDesconocidos.size - 1) {
-            val actual = caracteresDesconocidos[i]
-            val siguiente = caracteresDesconocidos[i + 1]
+        var ultTope = -1
+        for (i in 0 until caracteresDesconocidos.size) {
+            if (ultTope < i) {
+                val actual = caracteresDesconocidos[i]
+                var palabra = actual.palabra
 
-            if (actual.columna == siguiente.columna) {
-                if (actual.fila == siguiente.fila - 1) {
+                val tope = obtenerIndiceFinal(i, caracteresDesconocidos)
 
+                for (j in i until tope + 1) {
+                    if(j != i) {
+                        palabra += caracteresDesconocidos[j].palabra
+                    }
                 }
+
+                ultTope = tope
+
+                listaErrores.add(ErrorLexico(palabra, actual.fila, actual.columna))
             }
         }
+    }
+
+    private fun obtenerIndiceFinal(indice:Int, caracteres:ArrayList<Token>):Int {
+        val fila = caracteres[indice].fila
+
+        var colActual = caracteres[indice].columna
+        var final = indice
+
+        for (i in indice + 1 until caracteres.size) {
+            if (fila == caracteres[i].fila) {
+
+                if (caracteres[i].columna == colActual + 1) {
+                    final = i
+                    colActual++
+                }
+            }
+            else {
+                break
+            }
+        }
+
+        return final
     }
 
     /**
@@ -214,6 +245,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
                     centinela = true;
                 }
             }
+
             if (!centinela) {
                 backtracking(posicionInicial, fila, columna)
             }

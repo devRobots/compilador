@@ -126,16 +126,16 @@ $t      :tab
 ¬-      :Es diferente igual relativo "!=" en java
 
 :Operadores Logicos
-^        :Es relativo "&&" en Java
-~        :Es ralativo "||" en Java
-¬        :Es relativo "!" en Java
+^       :Es relativo "&&" en Java
+~       :Es relativo "||" en Java
+¬       :Es relativo "!" en Java
 
 ~~~
 
 ##### Operador de Asignacion y Terminal:
 ~~~
 : Los operadores de asignaciones
-(+ - ° / % ) U (=) y (=)
+: (+,-,°,/,%)(=) U (=)
 
 : El terminal o final de sentencia es un signo de exclamacion (!)
  
