@@ -166,7 +166,7 @@ ent @c!
 : "?" Es el relativo al "}" en Java
 : "]" Es el relativo al "(" en Java
 : "[" Es el relativo al ")" en Java
-: "}" es el relativo al "]" en java
+: "}" Es el relativo al "]" en java
 : "{" Es el relativo al "[" en java
 : "," Es el relativo al "," en Java 
 : ";" Es el relativo al "." en java
@@ -176,7 +176,7 @@ estrato1 cosa @clase ¿          : Las llaves son interrogaciones (¿?)
 
     ent @a = #1! , @b = #2!     : El separador es ,
 
-    ent @c = {@a + @b} ° @a     : Los operadores de agrupacion son ({})
+    ent @c = [@a + @b] , @a     : Los operadores de agrupacion son ({})
  
 ?                                
 ~~~
