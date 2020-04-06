@@ -87,7 +87,7 @@ bip         :Tipo de dato de booleano
 @identificador
 ~~~
 
-##### Enteros, Reales, Cadenas y valore T/F:
+##### Enteros, Reales, Cadenas y valores T/F:
 ~~~
 #0123456789  : Enteros
 
@@ -102,33 +102,33 @@ bip         :Tipo de dato de booleano
 
 ##### Caracteres Especiales:
 ~~~
-:$n      :Nueva linea
-:$u      :salto
-:$$      :Comillas simples
-:$”      :Comillas dobles
-:$(
-:$)
-:$r      :Retorno carro
-:$f      :Salto de linea (Formfeed)
-:$b      :Retroceso (Backspace)
-:$t      :tab
+$n      :Nueva linea
+$u      :salto
+$$      :Comillas simples
+$”      :Comillas dobles
+$(
+$)
+$r      :Retorno carro
+$f      :Salto de linea (Formfeed)
+$b      :Retroceso (Backspace)
+$t      :tab
 
 ~~~
 
 ##### Operadores Relacionales + Operadores Logicos
 ~~~
 :Operadores Relacionales
-:>>      :Es el mayor relativo ">" en Java
-:>-      :Es el mayor o igual relativo ">=" en Java
-:<<      :Es el menor relativo "<" en Java
-:<-      :Es el menor o igual relativo "<=" en Java
-:<->     :Es igual igual relativo "==" en Java
-:¬-      :Es diferente igual relativo "!=" en java
+>>      :Es el mayor relativo ">" en Java
+>-      :Es el mayor o igual relativo ">=" en Java
+<<      :Es el menor relativo "<" en Java
+<-      :Es el menor o igual relativo "<=" en Java
+<->     :Es igual igual relativo "==" en Java
+¬-      :Es diferente igual relativo "!=" en java
 
 :Operadores Logicos
-:^        Es relativo "&&" en Java
-:~        Es ralativo "||" en Java
-:¬        Es relativo "!" en Java
+^        :Es relativo "&&" en Java
+~        :Es ralativo "||" en Java
+¬        :Es relativo "!" en Java
 
 ~~~
 
