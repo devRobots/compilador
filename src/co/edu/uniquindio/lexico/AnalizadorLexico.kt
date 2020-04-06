@@ -300,7 +300,6 @@ class AnalizadorLexico(private val codigoFuente: String) {
                 centinela = true
             }
         }
-
         return centinela
     }
 
@@ -312,7 +311,19 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * @return boolean retorna true si es un operador aritmetico valido
      */
     private fun evaluarOperadorAritmetico(caracter: Char): Boolean {
-        return caracter == '+' || caracter == '-' || caracter == 'x' || caracter == '%' || caracter == '/'
+        return caracter == '+' || caracter == '-' || caracter == '°' || caracter == '%' || caracter == '/'
+    }
+
+    /**
+     * Verifica si el caracter corresponde a un caracter especial
+     *
+     * @param caracter El caracter a verificar
+     *
+     * @return boolean retorna true si es un caracter especial
+     */
+    private fun evaluarCaracterEspecial(caracter: Char): Boolean {
+        return caracter == '$' || caracter == 'n' || caracter == 'u' || caracter == '"' || caracter == '('
+                || caracter == ')' || caracter == 'r' || caracter == 'f' || caracter == 'b' || caracter == 't'
     }
 
     /**
@@ -560,28 +571,37 @@ class AnalizadorLexico(private val codigoFuente: String) {
      *
      * @return esCadena retorna true si es cadena
      */
-    private fun esCadena(): Boolean { // TODO: corregir, validar si encuentra caracter especial
+    private fun esCadena(): Boolean {
+        val posicionInicial = posicionActual
+        val fila = filaActual
+        val columna = columnaActual
+
+        var palabra = ""
+        var centinela = false
+
         if (caracterActual == '(') {
-            var palabra = ""
-            val fila = filaActual
-            val columna = columnaActual
-            // Transici�n
             palabra += caracterActual
             siguienteCaracter()
-            while (caracterActual != ')' && caracterActual != '\n' && caracterActual != finCodigo) {
+            while (caracterActual != ')' && caracterActual != finCodigo) {
+                if (esCaracterEspecial()){
+                    palabra += caracterActual
+                    siguienteCaracter()
+                }
                 palabra += caracterActual
                 siguienteCaracter()
             }
             palabra += caracterActual
             siguienteCaracter()
             if (palabra.endsWith(")")) {
-                listaTokens.add(Token(palabra, Categoria.CADENA_CARACTERES, fila, columna))
-            } else {
-                listaTokens.add(Token(palabra, Categoria.DESCONOCIDO, fila, columna))
+                centinela = true
             }
-            return true
         }
-        return false
+        if (centinela){
+            listaTokens.add(Token(palabra, Categoria.CADENA_CARACTERES, fila, columna))
+        }else{
+            backtracking(posicionInicial, fila, columna)
+        }
+        return centinela
     }
 
     /**
@@ -590,24 +610,49 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * @return esCaracter retorna true si es un caracter
      */
     private fun esCaracter(): Boolean {
-        //TODO: validar si tiene caracter especial
+        val posicionInicial = posicionActual
+        val fila = filaActual
+        val columna = columnaActual
+
+        var palabra = ""
+        var centinela = false
         if (posicionActual + 2 <= codigoFuente.length && caracterActual == '"') {
-            if (codigoFuente[posicionActual + 2] == '"') {
-                var palabra = ""
-                val fila = filaActual
-                val columna = columnaActual
-                // obtiene el caracter
+            palabra += caracterActual
+            siguienteCaracter()
+            if (esCaracterEspecial()) {
                 palabra += caracterActual
                 siguienteCaracter()
                 palabra += caracterActual
                 siguienteCaracter()
+                if (caracterActual == '"'){
+                    centinela = true;
+                }
+            } else if (caracterActual != '"'){
                 palabra += caracterActual
                 siguienteCaracter()
-                listaTokens.add(Token(palabra, Categoria.CARACTER, fila, columna))
-                return true
+                if (caracterActual == '"'){
+                    centinela = true
+                }
             }
         }
-        return false
+        if (centinela){
+            palabra += caracterActual
+            siguienteCaracter()
+            listaTokens.add(Token(palabra, Categoria.CARACTER, fila, columna))
+        } else{
+            backtracking(posicionInicial, fila, columna)
+        }
+        return centinela
+    }
+
+    /**
+     * Metodo para validar si es un caracter especial
+     */
+    private fun esCaracterEspecial(): Boolean {
+        if (posicionActual+1 <= codigoFuente.length && caracterActual == '$' && evaluarCaracterEspecial(codigoFuente[posicionActual + 1]) ) {
+            return true;
+        }
+        return false;
     }
 
     /**
