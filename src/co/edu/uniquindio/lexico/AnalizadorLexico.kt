@@ -615,18 +615,20 @@ class AnalizadorLexico(private val codigoFuente: String) {
         if (caracterActual == '(') {
             palabra += caracterActual
             siguienteCaracter()
-            while (caracterActual != ')' && caracterActual != finCodigo) {
+            while (caracterActual != ')'&& caracterActual != '(' && caracterActual != finCodigo) {
                 if (esCaracterEspecial()) {
                     palabra += caracterActual
                     siguienteCaracter()
+                }else if(caracterActual == '$'){
+                    centinela = true
                 }
                 palabra += caracterActual
                 siguienteCaracter()
             }
             palabra += caracterActual
             siguienteCaracter()
-            if (palabra.endsWith(")")) {
-                centinela = true
+            if (caracterActual != finCodigo){
+                centinela = !centinela
             }
         }
         if (centinela) {
@@ -649,21 +651,21 @@ class AnalizadorLexico(private val codigoFuente: String) {
 
         var palabra = ""
         var centinela = false
-        if (posicionActual + 2 <= codigoFuente.length && caracterActual == '"') {
+        if (caracterActual == '"') {
             palabra += caracterActual
             siguienteCaracter()
-            if (esCaracterEspecial()) {
+            if (esCaracterEspecial() && fila == filaActual ) {
                 palabra += caracterActual
                 siguienteCaracter()
                 palabra += caracterActual
                 siguienteCaracter()
-                if (caracterActual == '"') {
+                if (caracterActual == '"' && fila == filaActual ) {
                     centinela = true;
                 }
-            } else if (caracterActual != '"') {
+            } else if (caracterActual != '"' && fila == filaActual) {
                 palabra += caracterActual
                 siguienteCaracter()
-                if (caracterActual == '"') {
+                if (caracterActual == '"' && fila == filaActual ) {
                     centinela = true
                 }
             }
