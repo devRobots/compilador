@@ -71,6 +71,8 @@ class AnalizadorLexico(private val codigoFuente: String) {
             if (esComentario()) continue
             if (esPunto()) continue
 
+
+
             if (caracterActual != finCodigo) {
                 listaTokens.add(Token("" + caracterActual, Categoria.DESCONOCIDO, filaActual, columnaActual))
                 siguienteCaracter()

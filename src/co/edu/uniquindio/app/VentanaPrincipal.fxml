@@ -25,7 +25,17 @@
                                     </AnchorPane>
                                  </center>
                                  <bottom>
-                                    <Button mnemonicParsing="false" onAction="#analizar" prefHeight="25.0" prefWidth="100.0" text="Analizar" BorderPane.alignment="CENTER" />
+                                    <BorderPane maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                       <right>
+                                          <Button mnemonicParsing="false" onAction="#analizar" prefHeight="25.0" prefWidth="100.0" text="Analizar" BorderPane.alignment="CENTER" />
+                                       </right>
+                                       <left>
+                                          <Button mnemonicParsing="false" onAction="#limpiar" text="Limpiar" BorderPane.alignment="CENTER" />
+                                       </left>
+                                       <center>
+                                          <Label fx:id="mensaje" textFill="RED" BorderPane.alignment="CENTER" />
+                                       </center>
+                                    </BorderPane>
                                  </bottom>
                               </BorderPane>
                            </children>

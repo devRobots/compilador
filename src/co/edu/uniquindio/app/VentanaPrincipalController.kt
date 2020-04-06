@@ -4,10 +4,7 @@ import co.edu.uniquindio.lexico.AnalizadorLexico
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.fxml.FXML
-import javafx.scene.control.ListView
-import javafx.scene.control.TableColumn
-import javafx.scene.control.TableView
-import javafx.scene.control.TextArea
+import javafx.scene.control.*
 import javafx.util.Callback
 
 /**
@@ -37,6 +34,7 @@ class VentanaPrincipalController {
     /**
      * Elementos de Rutina de errores
      */
+    @FXML lateinit var mensaje: Label
     @FXML lateinit var erroresLexico: ListView<String>
 
     /**
@@ -85,5 +83,21 @@ class VentanaPrincipalController {
         erroresLexico.refresh()
 
         // Analizador Sintactico
+
+        // Salida final
+        if(erroresLexico.items.isEmpty()) {
+            mensaje.text = "Se encontraron errores lexicos"
+        }
+        else {
+            mensaje.text = ""
+        }
+    }
+
+    /**
+     * Limpia el campo de texto
+     */
+    @FXML
+    fun limpiar() {
+        texto.clear()
     }
 }
