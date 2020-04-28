@@ -463,16 +463,32 @@ class AnalizadorLexico(private val codigoFuente: String) {
     private fun esParentesisLlave(): Boolean {
         val fila = filaActual
         val columna = columnaActual
-        if (caracterActual == '[' || caracterActual == ']') {
-            listaTokens.add(Token(caracterActual.toString() + "", Categoria.PARENTESIS, fila, columna))
+        if (caracterActual == '[') {
+            listaTokens.add(Token(caracterActual.toString() + "", Categoria.PARENTESIS_IZQUIERDO, fila, columna))
             siguienteCaracter()
             return true
-        } else if (caracterActual == '¿' || caracterActual == '?') {
-            listaTokens.add(Token(caracterActual.toString() + "", Categoria.LLAVES, fila, columna))
+        } else if ( caracterActual == ']' ){
+            listaTokens.add(Token(caracterActual.toString() + "", Categoria.PARENTESIS_DERECHO, fila, columna))
             siguienteCaracter()
             return true
-        } else if (caracterActual == '{' || caracterActual == '}') {
-            listaTokens.add(Token(caracterActual.toString() + "", Categoria.CORCHETES, fila, columna))
+        }
+        else if (caracterActual == '¿') {
+            listaTokens.add(Token(caracterActual.toString() + "", Categoria.LLAVE_IZQUIERDO, fila, columna))
+            siguienteCaracter()
+            return true
+        }
+        else if (caracterActual == '?') {
+            listaTokens.add(Token(caracterActual.toString() + "", Categoria.LLAVE_DERECHA, fila, columna))
+            siguienteCaracter()
+            return true
+        }
+        else if (caracterActual == '{' ) {
+            listaTokens.add(Token(caracterActual.toString() + "", Categoria.CORCHETE_IZQUIERDO, fila, columna))
+            siguienteCaracter()
+            return true
+        }
+        else if (caracterActual == '}') {
+            listaTokens.add(Token(caracterActual.toString() + "", Categoria.CORCHETE_DERECHO, fila, columna))
             siguienteCaracter()
             return true
         }
