@@ -20,7 +20,7 @@ class TokenObservable(token: Token) {
     val columna: StringProperty
 
     init {
-        val palabra = token.palabra
+        val palabra = token.lexema
         val categoria = token.categoria
         val fila = token.fila
         val columna = token.columna

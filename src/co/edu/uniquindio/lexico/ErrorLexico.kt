@@ -9,8 +9,8 @@ package co.edu.uniquindio.lexico
  *
  * Error Lexico
  */
-class ErrorLexico(var palabra: String, var fila: Int, var columna: Int) {
+class ErrorLexico(private var lexema: String, private var fila: Int, private var columna: Int) {
     override fun toString(): String {
-        return ("Error Lexico: No se reconoce el lexema '$palabra' en $fila:$columna")
+        return ("Error Lexico: No se reconoce el lexema '$lexema' en $fila:$columna")
     }
 }

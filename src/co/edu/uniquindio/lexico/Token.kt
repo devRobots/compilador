@@ -9,8 +9,8 @@ package co.edu.uniquindio.lexico
  *
  * Token
  */
-class Token(var palabra: String, var categoria: Categoria, var fila: Int, var columna: Int) {
+class Token(var lexema: String, var categoria: Categoria, var fila: Int, var columna: Int) {
     override fun toString(): String {
-        return ("[$palabra : $categoria] ($fila:$columna)")
+        return ("[$lexema : $categoria] ($fila:$columna)")
     }
 }

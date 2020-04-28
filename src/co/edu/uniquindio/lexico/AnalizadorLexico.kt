@@ -106,13 +106,13 @@ class AnalizadorLexico(private val codigoFuente: String) {
         for (i in 0 until caracteresDesconocidos.size) {
             if (ultTope < i) {
                 val actual = caracteresDesconocidos[i]
-                var palabra = actual.palabra
+                var palabra = actual.lexema
 
                 val tope = obtenerIndiceFinal(i, caracteresDesconocidos)
 
                 for (j in i until tope + 1) {
                     if (j != i) {
-                        palabra += caracteresDesconocidos[j].palabra
+                        palabra += caracteresDesconocidos[j].lexema
                     }
                 }
 
