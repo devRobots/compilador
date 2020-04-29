@@ -1,3 +1,5 @@
 package co.edu.uniquindio.sintaxis.bnf
 
-class Clase(var declaracion: DeclaracionClase)
+import co.edu.uniquindio.lexico.Token
+
+class Clase(var modificadorAcceso: Token?, var identificador: Token, var cuerpoClase: CuerpoClase?)
