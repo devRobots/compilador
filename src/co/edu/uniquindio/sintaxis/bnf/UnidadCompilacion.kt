@@ -1,4 +1,4 @@
-package co.edu.uniquindio.sintaxis
+package co.edu.uniquindio.sintaxis.bnf
 
 import co.edu.uniquindio.sintaxis.bnf.Clase
 import co.edu.uniquindio.sintaxis.bnf.Importacion
