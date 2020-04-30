@@ -1,22 +1,28 @@
 package co.edu.uniquindio.app
 
+import java.util.ArrayList
+
 import co.edu.uniquindio.lexico.AnalizadorLexico
+import co.edu.uniquindio.lexico.ErrorLexico
+import co.edu.uniquindio.lexico.Token
+
 import co.edu.uniquindio.sintaxis.AnalizadorSintactico
+import co.edu.uniquindio.sintaxis.ErrorSintactico
 import co.edu.uniquindio.sintaxis.bnf.UnidadCompilacion
+
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+
 import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.util.Callback
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.jvm.javaField
 
 /**
  * @author Samara Rincon
  * @author Yesid Rosas Toro
  * @author Cristian Camilo Quiceno
  *
- * @version 1.1
+ * @version 2.0
  *
  * Controlador de la Ventana Principal
  */
@@ -73,39 +79,22 @@ class VentanaPrincipalController {
         analizadorLexico.analizar()
 
         val tokens = analizadorLexico.listaTokens
-        val errores = analizadorLexico.listaErrores
+        val listaErroresLexicos = analizadorLexico.listaErrores
 
-        val tokensObservables: ObservableList<TokenObservable> = FXCollections.observableArrayList()
-        for (token in tokens) {
-            val observable = TokenObservable(token)
-            tokensObservables.add(observable)
-        }
-
-        salidaLexico.items = tokensObservables
-        salidaLexico.refresh()
-
-        val erroresObservables: ObservableList<String> = FXCollections.observableArrayList()
-        for (error in errores) {
-            erroresObservables.add(error.toString())
-        }
-
-        erroresLexicos.items = erroresObservables
-        erroresLexicos.refresh()
+        mostrarTokens(tokens)
+        mostrarErroresLexicos(listaErroresLexicos)
 
         // Analizador Sintactico
         val analizadorSintactico = AnalizadorSintactico(tokens)
+
         val unidadCompilacion: UnidadCompilacion? = analizadorSintactico.esUnidadDeCompilacion()
-        if (unidadCompilacion != null) {
-            contruirTreeView(unidadCompilacion)
-        }
+        val listaErroresSintacticos = analizadorSintactico.listaErrores
+
+        contruirTreeView(unidadCompilacion)
+        mostrarErroresSintacticos(listaErroresSintacticos)
 
         // Salida final
-        if(erroresLexicos.items.isNotEmpty()) {
-            mensaje.text = "Se encontraron errores lexicos"
-        }
-        else {
-            mensaje.text = ""
-        }
+        resolucionErrores(listaErroresLexicos, listaErroresSintacticos)
     }
 
     /**
@@ -114,42 +103,86 @@ class VentanaPrincipalController {
     @FXML
     fun limpiar() {
         texto.clear()
+        mensaje.text = ""
     }
 
     /**
-     * Construye el arbol
-     * en la interfaz
+     * Genera los tokens observables para posteriormente
+     * mostrarlos en un TableView
      */
-    fun contruirTreeView(unidadCompilacion: UnidadCompilacion) {
-        val nodo = TreeItem<String>("Unidad de Compilacion")
-        agregarNodosHijo(nodo, unidadCompilacion)
-        arbolSintactico.root = nodo
+    private fun mostrarTokens(listaTokens: ArrayList<Token>) {
+        val tokensObservables: ObservableList<TokenObservable> = FXCollections.observableArrayList()
+        for (token in listaTokens) {
+            val observable = TokenObservable(token)
+            tokensObservables.add(observable)
+        }
+
+        salidaLexico.items = tokensObservables
+        salidaLexico.refresh()
+    }
+
+    /**
+     * Extrae el TreeItem de la Unidad de Compilacion
+     * para crear el arbol sintactico en la interfaz
+     */
+    private fun contruirTreeView(unidadCompilacion: UnidadCompilacion?) {
+        val treeItem = unidadCompilacion?.getTreeItem()
+        arbolSintactico.root = treeItem
         arbolSintactico.refresh()
     }
 
-    fun agregarNodosHijo(raiz: TreeItem<String>, objeto: Any?) {
-        if (objeto != null) {
-            val listaAtributos = objeto::class.memberProperties
+    /**
+     * Genera los errores lexicos observables para posteriormente
+     * mostrarlos en un ListView
+     */
+    private fun mostrarErroresLexicos(listaErrores: ArrayList<ErrorLexico>) {
+        val erroresObservables = extraerErroresObservables(listaErrores as ArrayList<Any>)
+        erroresLexicos.items = erroresObservables
+        erroresLexicos.refresh()
+    }
 
-            for (atributo in listaAtributos) {
-                if (atributo.javaClass != ArrayList::class) {
-                    val nodo = TreeItem(atributo.name)
+    /**
+     * Genera los errores sintacticos observables para posteriormente
+     * mostrarlos en un ListView
+     */
+    private fun mostrarErroresSintacticos(listaErrores: ArrayList<ErrorSintactico>) {
+        val erroresObservables = extraerErroresObservables(listaErrores as ArrayList<Any>)
+        erroresSintacticos.items = erroresObservables
+        erroresSintacticos.refresh()
+    }
 
-                    val valor = objeto.javaClass.getDeclaredField(atributo.name)
+    /**
+     * Extrae el mensaje de cada error para ponerlos en una lista de
+     * errores observables
+     */
+    private fun extraerErroresObservables(listaErrores: ArrayList<Any>): ObservableList<String> {
+        val erroresObservables: ObservableList<String> = FXCollections.observableArrayList()
+        for (error in listaErrores) {
+            erroresObservables.add(error.toString())
+        }
 
-                    agregarNodosHijo(nodo, valor)
+        return erroresObservables
+    }
 
-                    raiz.children.add(nodo)
-                } else {
-                    val nodo = TreeItem(atributo.name)
-                    val lista: ArrayList<Any> = objeto.javaClass.getField(atributo.name) as ArrayList<Any>
+    /**
+     * Interpreta el flujo de errore
+     */
+    private fun resolucionErrores(erroresLexicos: ArrayList<ErrorLexico>, erroresSintacticos: ArrayList<ErrorSintactico>) {
+        mensaje.text = ""
 
-                    for (subatributo in lista) {
-                        agregarNodosHijo(nodo, subatributo)
-                    }
-
-                    raiz.children.add(nodo)
-                }
+        if(erroresLexicos.isNotEmpty()) {
+            if (erroresLexicos.size == 1) {
+                mensaje.text += "Se encontro 1 error lexico"
+            } else {
+                mensaje.text += "Se encontraron ${erroresLexicos.size} errores lexicos"
+            }
+            mensaje.text += "\n"
+        }
+        if (erroresSintacticos.isNotEmpty()) {
+            if (erroresSintacticos.size == 1) {
+                mensaje.text += "Se encontro 1 error sintactico"
+            } else {
+                mensaje.text += "Se encontraron ${erroresSintacticos.size} errores sintacticos"
             }
         }
     }

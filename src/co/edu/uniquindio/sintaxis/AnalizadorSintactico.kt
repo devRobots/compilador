@@ -20,7 +20,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     /**
      * Arbol sintactico y lista de errores por el analizador sintactico
      */
-    private val listaErrores = ArrayList<ErrorSintactico>()
+    val listaErrores = ArrayList<ErrorSintactico>()
 
     /**
      * Elementos necesarios del analizador lexico
@@ -49,7 +49,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * a la lista de errores
      */
     private fun reportarError(mensaje: String) {
-        val error = ErrorSintactico("Error Sintactico: $mensaje")
+        val error = ErrorSintactico("mensaje en ${tokenActual?.fila}:${tokenActual?.columna}")
         listaErrores.add(error)
     }
 
