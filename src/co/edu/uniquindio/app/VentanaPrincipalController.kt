@@ -1,21 +1,22 @@
 package co.edu.uniquindio.app
 
-import java.util.ArrayList
-
 import co.edu.uniquindio.lexico.AnalizadorLexico
 import co.edu.uniquindio.lexico.ErrorLexico
 import co.edu.uniquindio.lexico.Token
-
 import co.edu.uniquindio.sintaxis.AnalizadorSintactico
 import co.edu.uniquindio.sintaxis.ErrorSintactico
 import co.edu.uniquindio.sintaxis.bnf.UnidadCompilacion
-
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-
 import javafx.fxml.FXML
+import javafx.geometry.Insets
 import javafx.scene.control.*
+import javafx.scene.layout.BorderPane
+import javafx.scene.layout.GridPane
+import javafx.scene.layout.Priority
 import javafx.util.Callback
+import java.util.*
+
 
 /**
  * @author Samara Rincon
@@ -44,7 +45,8 @@ class VentanaPrincipalController {
     /**
      * Elementos del Analizador Sintactico
      */
-    @FXML lateinit var arbolSintactico: TreeView<String>
+    @FXML lateinit var arbolSintactico: TreeView<SintaxisObservable>
+    @FXML lateinit var propertiesPanel: BorderPane
 
     /**
      * Elementos de Rutina de errores
@@ -64,6 +66,39 @@ class VentanaPrincipalController {
         categoria.cellValueFactory = Callback { token: TableColumn.CellDataFeatures<TokenObservable, String?> -> token.value.categoria }
         fila.cellValueFactory = Callback { token: TableColumn.CellDataFeatures<TokenObservable, String?> -> token.value.fila }
         columna.cellValueFactory = Callback { token: TableColumn.CellDataFeatures<TokenObservable, String?> -> token.value.columna }
+
+
+        arbolSintactico.setCellFactory {
+            object : TreeCell<SintaxisObservable?>() {
+                override fun updateItem(item: SintaxisObservable?, empty: Boolean) {
+                    super.updateItem(item, empty)
+                    text = item?.toString()
+                }
+            }
+        }
+
+        arbolSintactico.selectionModel.selectedItemProperty().addListener { observable, oldValue, newValue ->
+            val panel = observable.value.value.sintaxis.getPropertiesPanel()
+
+            val title = GridPane()
+
+            var texto = Label("Objeto:")
+            texto.style = "-fx-font-weight: bold"
+            texto.padding = Insets(10.0)
+
+            GridPane.setHgrow(texto, Priority.ALWAYS)
+            title.add(texto, 0, 0)
+
+            var objeto = Label(observable.value.value.toString())
+            objeto.style = "-fx-font-weight: bold"
+            objeto.padding = Insets(10.0)
+
+            GridPane.setHgrow(objeto, Priority.ALWAYS)
+            title.add(objeto, 1, 0)
+
+            propertiesPanel.top = title
+            propertiesPanel.center = panel
+        }
     }
 
     /**
@@ -127,6 +162,7 @@ class VentanaPrincipalController {
      */
     private fun contruirTreeView(unidadCompilacion: UnidadCompilacion?) {
         val treeItem = unidadCompilacion?.getTreeItem()
+        treeItem?.expandedProperty()?.set(true)
         arbolSintactico.root = treeItem
         arbolSintactico.refresh()
     }
