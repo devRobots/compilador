@@ -496,6 +496,22 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         }
         return null
     }
+
+    /**
+     * Metodo Expresion Relacional
+     */
+
+    fun esExpresionRelacional(): ExpresionRelacional? {
+        return null
+    }
+
+    /**
+     * Metodo Expresion Logica
+     */
+    fun esExpresionLogica(): ExpresionLogica? {
+        return null
+    }
+
     /*
      Es Expresion Relacional
      */
@@ -506,6 +522,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         if (tokenActual?.categoria != Categoria.CADENA_CARACTERES){
 
         }
+        return null
     }
-
 }

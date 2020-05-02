@@ -16,6 +16,7 @@ class ExpresionAritmetica() : Expresion() {
 
     init {
         nombre = "Expresion Aritmetica"
+        estructura = " Cadena de Caracteres [+ Expresiones]"
     }
 
     constructor(izquierda: ExpresionAritmetica?, operador: Token?,derecho: ExpresionAritmetica?) : this() {
