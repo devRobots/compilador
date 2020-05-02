@@ -396,8 +396,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     private fun esRetorno(): Retorno? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "devolver") {
             siguienteToken()
-            TODO("Corregir")
-            val expresion = ExpresionAritmetica(null, null, null, ValorNumerico(Token("", Categoria.OPERADOR_ARITMETICO, 0, 0), null, null, Token("", Categoria.IDENTIFICADOR, 0, 0)))
+            val expresion = esExpresion()
 
             if (expresion != null) {
                 siguienteToken()
@@ -423,7 +422,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     /*
     Metodo para Determinar si es una Expresion
      */
-    fun esExpresion(): Expresion? {
+    private fun esExpresion(): Expresion? {
         val expAritmetica = esExpresionAritmetica()
         if (expAritmetica != null){
             return expAritmetica
@@ -442,10 +441,11 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         }
         return null
     }
-    /*
-    metodo para Determinar si es una Expresion Aritmetica
+
+    /**
+     * Metodo para Determinar si es una Expresion Aritmetica
      */
-    fun esExpresionAritmetica(): ExpresionAritmetica? {
+    private fun esExpresionAritmetica(): ExpresionAritmetica? {
         val izq: ExpresionAritmetica? = esExpresionAritmetica()
         if( izq != null ){
             if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO) {
@@ -456,7 +456,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                     return ExpresionAritmetica(izq, operador, der)
                 }
             }
-        }else if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
+        } else if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
             siguienteToken()
             val eap: ExpresionAritmetica? = esExpresionAritmetica()
             if (eap != null) {
@@ -478,7 +478,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     /*
     Es valor numerico
      */
-    fun esValorNumerico(): ValorNumerico?{
+    private fun esValorNumerico(): ValorNumerico?{
         var signo : Token? = null
         if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO && (tokenActual?.lexema == "-" ||  tokenActual?.lexema == "+")){
             signo = tokenActual
@@ -513,13 +513,14 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     /*
      Es Expresion Relacional
      */
-    fun esExpresionCadena(): ExpresionCadena? {
-        if (tokenActual != null){
+    private fun esExpresionCadena(): ExpresionCadena? {
+        if (tokenActual != null) {
 
         }
-        if (tokenActual?.categoria != Categoria.CADENA_CARACTERES){
+        if (tokenActual?.categoria != Categoria.CADENA_CARACTERES) {
 
         }
+
         return null
     }
 }

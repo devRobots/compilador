@@ -6,17 +6,22 @@ import javafx.scene.layout.GridPane
 
 class SentenciaSiNo(private val sentenciaSi : SentenciaSi?, private val sentenciaSiNo: SentenciaSiNo?) : SentenciaCondicional() {
     init {
-        this.nombre = "Sentencia Si-No"
+        nombre = "Sentencia Si-No"
+        estructura = "wi [ ... ] ¿ ... ? wo wi [ ... ] ¿ ... ? ... wo ¿ ... ?"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
+        val treeItem = TreeItem(observable)
 
-        return TreeItem(observable)
+        treeItem.children.add(sentenciaSi?.getTreeItem())
+        treeItem.children.add(sentenciaSiNo?.getTreeItem())
+
+        return treeItem
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("condición si", 0)
+        agregarAtributo("Condición si", 0)
         agregarValor(sentenciaSi.toString(), 0)
 
         agregarAtributo("Sentencia Sino", 1)
