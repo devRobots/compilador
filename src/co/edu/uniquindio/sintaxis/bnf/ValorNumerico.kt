@@ -5,11 +5,11 @@ import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.sintaxis.Sintaxis
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
-
-class ValorNumerico(private val signo: Token?,private val entero: Token?,private val real: Token?,private val identificador: Token?) : Sintaxis() {
+//TODO: Aqui puse solo identificador, pero hay que revisar si esta bien, o se pone las demas
+class ValorNumerico(private val signo: Token?,private val identificador: Token?) : Sintaxis() {
     init {
         nombre = "Valor Numerico"
-        estructura = "$signo$entero$real$identificador"
+        estructura = "${signo?.lexema}${identificador?.lexema}"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -21,8 +21,8 @@ class ValorNumerico(private val signo: Token?,private val entero: Token?,private
         agregarAtributo("Signo", 0)
         agregarValor(signo?.lexema, 0)
 
-        agregarAtributo("Valor", 0)
-        agregarValor("${entero?.lexema}${real?.lexema}${identificador?.lexema}", 0)
+        agregarAtributo("Valor", 1)
+        agregarValor("${identificador?.lexema}", 1)
 
         return panel
     }

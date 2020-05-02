@@ -421,4 +421,91 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         TODO("Falta")
         return null
     }
+
+    /*
+    Metodo para Determinar si es una Expresion
+     */
+    fun esExpresion(): Expresion? {
+        val expAritmetica = esExpresionAritmetica()
+        if (expAritmetica != null){
+            return expAritmetica
+        }
+        val expRelacional = esExpresionRelacional()
+        if (expRelacional != null){
+            return expRelacional
+        }
+        val expLogica = esExpresionLogica()
+        if (expLogica != null){
+            return expLogica
+        }
+        val expCadena = esExpresionCadena()
+        if (expCadena != null){
+            return expCadena
+        }
+        return null
+    }
+    /*
+    metodo para Determinar si es una Expresion Aritmetica
+     */
+    fun esExpresionAritmetica(): ExpresionAritmetica? {
+        val izq: ExpresionAritmetica? = esExpresionAritmetica()
+        if( izq != null ){
+            if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO) {
+                val operador: Token? = tokenActual
+                siguienteToken()
+                val der: ExpresionAritmetica? = esExpresionAritmetica()
+                if (der != null) {
+                    return ExpresionAritmetica(izq, operador, der)
+                }
+            }
+        }else if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
+            siguienteToken()
+            val eap: ExpresionAritmetica? = esExpresionAritmetica()
+            if (eap != null) {
+                if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
+                    siguienteToken()
+                    return ExpresionAritmetica(eap)
+                }
+            }
+        } else {
+            val valor: ValorNumerico? = esValorNumerico()
+            if (valor != null) {
+                siguienteToken()
+                return ExpresionAritmetica(valor)
+            }
+        }
+        return null
+    }
+
+    /*
+    Es valor numerico
+     */
+    fun esValorNumerico(): ValorNumerico?{
+        var signo : Token? = null
+        if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO && (tokenActual?.lexema == "-" ||  tokenActual?.lexema == "+")){
+            signo = tokenActual
+            siguienteToken()
+        }
+        var esTipo = when(tokenActual?.categoria) {
+            Categoria.ENTERO, Categoria.REAL, Categoria.IDENTIFICADOR -> true
+            else -> false
+        }
+        if (esTipo){
+            val num = tokenActual
+            return ValorNumerico(signo,num)
+        }
+        return null
+    }
+    /*
+     Es Expresion Relacional
+     */
+    fun esExpresionCadena(): ExpresionCadena? {
+        if (tokenActual != null){
+
+        }
+        if (tokenActual?.categoria != Categoria.CADENA_CARACTERES){
+
+        }
+    }
+
 }
