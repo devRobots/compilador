@@ -78,26 +78,28 @@ class VentanaPrincipalController {
         }
 
         arbolSintactico.selectionModel.selectedItemProperty().addListener { observable, oldValue, newValue ->
-            val panel = observable.value.value.sintaxis.getPropertiesPanel()
+            if (observable != null) {
+                val panel = observable.value.value.sintaxis.getPropertiesPanel()
 
-            val title = GridPane()
+                val title = GridPane()
 
-            var texto = Label("Objeto:")
-            texto.style = "-fx-font-weight: bold"
-            texto.padding = Insets(10.0)
+                var texto = Label("Objeto:")
+                texto.style = "-fx-font-weight: bold"
+                texto.padding = Insets(10.0)
 
-            GridPane.setHgrow(texto, Priority.ALWAYS)
-            title.add(texto, 0, 0)
+                GridPane.setHgrow(texto, Priority.ALWAYS)
+                title.add(texto, 0, 0)
 
-            var objeto = Label(observable.value.value.toString())
-            objeto.style = "-fx-font-weight: bold"
-            objeto.padding = Insets(10.0)
+                var objeto = Label(observable.value.value.toString())
+                objeto.style = "-fx-font-weight: bold"
+                objeto.padding = Insets(10.0)
 
-            GridPane.setHgrow(objeto, Priority.ALWAYS)
-            title.add(objeto, 1, 0)
+                GridPane.setHgrow(objeto, Priority.ALWAYS)
+                title.add(objeto, 1, 0)
 
-            propertiesPanel.top = title
-            propertiesPanel.center = panel
+                propertiesPanel.top = title
+                propertiesPanel.center = panel
+            }
         }
     }
 
@@ -125,7 +127,9 @@ class VentanaPrincipalController {
         val unidadCompilacion: UnidadCompilacion? = analizadorSintactico.esUnidadDeCompilacion()
         val listaErroresSintacticos = analizadorSintactico.listaErrores
 
-        contruirTreeView(unidadCompilacion)
+        if (unidadCompilacion != null) {
+            contruirTreeView(unidadCompilacion)
+        }
         mostrarErroresSintacticos(listaErroresSintacticos)
 
         // Salida final
@@ -160,9 +164,9 @@ class VentanaPrincipalController {
      * Extrae el TreeItem de la Unidad de Compilacion
      * para crear el arbol sintactico en la interfaz
      */
-    private fun contruirTreeView(unidadCompilacion: UnidadCompilacion?) {
-        val treeItem = unidadCompilacion?.getTreeItem()
-        treeItem?.expandedProperty()?.set(true)
+    private fun contruirTreeView(unidadCompilacion: UnidadCompilacion) {
+        val treeItem = unidadCompilacion.getTreeItem()
+        treeItem.expandedProperty().set(true)
         arbolSintactico.root = treeItem
         arbolSintactico.refresh()
     }
