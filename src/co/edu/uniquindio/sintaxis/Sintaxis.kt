@@ -17,6 +17,10 @@ abstract class Sintaxis() {
         panel.gridLinesVisibleProperty().set(true)
     }
 
+    override fun toString(): String {
+        return "$nombre: $estructura"
+    }
+
     abstract fun getTreeItem(): TreeItem<SintaxisObservable>
     abstract fun getPropertiesPanel(): GridPane
 

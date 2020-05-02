@@ -13,10 +13,6 @@ class Paquete(private val paquete: Token) : Sintaxis() {
         this.estructura = "caja ${paquete.lexema}!"
     }
 
-    override fun toString(): String {
-        return "$nombre: $estructura"
-    }
-
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         return TreeItem(observable)

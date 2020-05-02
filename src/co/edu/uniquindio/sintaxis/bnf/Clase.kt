@@ -13,10 +13,6 @@ class Clase(private val modificadorAcceso: Token?,private val identificador: Tok
         this.estructura = "${modificadorAcceso?.lexema} cosa ${identificador.lexema}"
     }
 
-    override fun toString(): String {
-        return "$nombre: $estructura"
-    }
-
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)

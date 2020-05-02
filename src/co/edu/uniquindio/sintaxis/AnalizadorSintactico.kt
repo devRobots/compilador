@@ -153,4 +153,25 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     private fun esCuerpoClase(): CuerpoClase? {
         return null
     }
+
+    private fun esTipoDato(): TipoDato? {
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA) {
+            var esTipo = when (tokenActual!!.lexema) {
+                "ent", "dec", "pal", "bip", "bit" -> true
+                else -> false
+            }
+
+            if (esTipo) {
+                val tipo = TipoDato(tokenActual!!)
+                siguienteToken()
+                return tipo
+            } else {
+                reportarError("Se esperaba un tipo de dato")
+            }
+        } else {
+            reportarError("Se esperaba un tipo de dato")
+        }
+
+        return null
+    }
 }

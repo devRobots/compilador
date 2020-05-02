@@ -3,14 +3,13 @@ package co.edu.uniquindio.sintaxis.bnf
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.sintaxis.Sintaxis
-
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class Importacion(private val importacion: Token) : Sintaxis() {
+class ValorNumerico(private val signo: Token?,private val entero: Token?,private val real: Token?,private val identificador: Token?) : Sintaxis() {
     init {
-        this.nombre = "Importacion"
-        this.estructura = "meter ${importacion.lexema}!"
+        nombre = "Valor Numerico"
+        estructura = "$signo$entero$real$identificador"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -19,8 +18,11 @@ class Importacion(private val importacion: Token) : Sintaxis() {
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Nombre de la importacion", 0)
-        agregarValor(importacion.lexema, 0)
+        agregarAtributo("Signo", 0)
+        agregarValor(signo?.lexema, 0)
+
+        agregarAtributo("Valor", 0)
+        agregarValor("${entero?.lexema}${real?.lexema}${identificador?.lexema}", 0)
 
         return panel
     }

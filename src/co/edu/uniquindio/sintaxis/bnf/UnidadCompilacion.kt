@@ -12,10 +12,6 @@ class UnidadCompilacion(var paquete: Paquete?, var listaImportaciones: ArrayList
         this.nombre = "Unidad de Compilacion"
     }
 
-    override fun toString(): String {
-        return "$nombre"
-    }
-
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
