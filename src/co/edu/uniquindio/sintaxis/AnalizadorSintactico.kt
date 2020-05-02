@@ -45,11 +45,22 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
+     * Metodo que devuelve el token hasta una posicion deseada
+     *
+     * Configura la posicion actual
+     * Verifica que no se desborde
+     */
+    private fun backtracking(posicion: Int){
+        posicionActual = posicion - 1
+        siguienteToken()
+    }
+
+    /**
      * Metodo que reporta un error y lo agrega
      * a la lista de errores
      */
     private fun reportarError(mensaje: String) {
-        val error = ErrorSintactico("mensaje en ${tokenActual?.fila}:${tokenActual?.columna}")
+        val error = ErrorSintactico("$mensaje en ${tokenActual?.fila}:${tokenActual?.columna}")
         listaErrores.add(error)
     }
 
@@ -151,6 +162,217 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     private fun esCuerpoClase(): CuerpoClase? {
+        if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
+            siguienteToken()
+
+            val listaBloqueSentencias = esListaBloqueSentencias()
+
+            if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                siguienteToken()
+                return CuerpoClase(listaBloqueSentencias)
+            } else {
+                reportarError("Se esperaba una llave izquierda")
+            }
+        }
+
+        return null
+    }
+
+    private fun esListaBloqueSentencias(): ArrayList<BloqueSentencia> {
+        val lista = ArrayList<BloqueSentencia>()
+
+        var bloque: BloqueSentencia? = esBloqueSentencia()
+        while (bloque != null) {
+            lista.add(bloque)
+            println(tokenActual)
+            bloque = esBloqueSentencia()
+        }
+
+        return lista
+    }
+
+    private fun esBloqueSentencia(): BloqueSentencia? {
+        val posicionInicial = posicionActual
+
+        val clase = esClase()
+        if (clase != null) {
+            return clase
+        } else {
+            backtracking(posicionInicial)
+        }
+
+        val metodo = esMetodo()
+        if (metodo != null) {
+            return metodo
+        } else {
+            backtracking(posicionInicial)
+        }
+
+        val funcion = esFuncion()
+        if (funcion != null) {
+            return funcion
+        } else {
+            backtracking(posicionInicial)
+        }
+
+        val variableGlobal = esVariableGlobal()
+        if (variableGlobal != null) {
+            return variableGlobal
+        } else {
+            backtracking(posicionInicial)
+        }
+
+        return null
+    }
+
+    private fun esMetodo(): Metodo? {
+        var modificadorAcceso: Token? = null
+
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA) {
+            if (tokenActual?.lexema == "estrato1" || tokenActual?.lexema == "estrato6") {
+                modificadorAcceso = tokenActual
+                siguienteToken()
+            }
+        }
+
+        if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
+            val identificador = tokenActual!!
+            siguienteToken()
+
+            if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
+                siguienteToken()
+
+                val listaArgumentos = esListaArgumentos()
+
+                if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
+                    siguienteToken()
+                    if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
+                        siguienteToken()
+
+                        val listaBloqueInstrucciones = esListaBloqueInstrucciones()
+
+                        if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                            siguienteToken()
+                            return Metodo(modificadorAcceso, identificador , listaArgumentos , listaBloqueInstrucciones)
+                        } else {
+                            reportarError("Se esperaba una llave derecha")
+                        }
+                    } else {
+                        reportarError("Se esperaba una llave izquierda")
+                    }
+                } else {
+                    reportarError("Se esperaba un parentesis derecho")
+                }
+            } else {
+                reportarError("Se esperaba un parentesis izquierdo")
+            }
+        }
+
+        return null
+    }
+
+    private fun esFuncion(): Funcion? {
+        var modificadorAcceso: Token? = null
+
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA) {
+            if (tokenActual?.lexema == "estrato1" || tokenActual?.lexema == "estrato6") {
+                modificadorAcceso = tokenActual
+                siguienteToken()
+            }
+        }
+
+        val tipoDato = esTipoDato()
+        if (tipoDato != null) {
+            if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
+                val identificador = tokenActual!!
+                siguienteToken()
+
+                if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
+                    siguienteToken()
+
+                    val listaArgumentos = esListaArgumentos()
+
+                    if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
+                        siguienteToken()
+                        if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
+                            siguienteToken()
+
+                            val listaBloqueInstrucciones = esListaBloqueInstrucciones()
+
+                            val retorno = esRetorno()
+
+                            if (retorno != null) {
+                                if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                                    siguienteToken()
+                                    return Funcion(modificadorAcceso, tipoDato, identificador , listaArgumentos , listaBloqueInstrucciones, retorno)
+                                } else {
+                                    reportarError("Se esperaba una llave derecha")
+                                }
+                            } else {
+                                reportarError("Se esperaba una sentencia de retorno")
+                            }
+                        } else {
+                            reportarError("Se esperaba una llave izquierda")
+                        }
+                    } else {
+                        reportarError("Se esperaba un parentesis derecho")
+                    }
+                } else {
+                    reportarError("Se esperaba un parentesis izquierdo")
+                }
+            } else {
+                reportarError("Se esperaba un identificador")
+            }
+        }
+
+        return null
+    }
+
+    private fun esListaArgumentos(): ArrayList<Argumento> {
+        val lista = ArrayList<Argumento>()
+
+        var argumento: Argumento? = esArgumento()
+        while (argumento != null ) {
+            lista.add(argumento)
+
+            argumento = if (tokenActual?.categoria == Categoria.SEPARADOR) {
+                siguienteToken()
+                esArgumento()
+            } else {
+                null
+            }
+        }
+
+        return lista
+    }
+
+    private fun esArgumento(): Argumento? {
+        val tipoDato = esTipoDato()
+        if (tipoDato != null) {
+            if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
+                val identificador = tokenActual!!
+                siguienteToken()
+                return Argumento(tipoDato, identificador)
+            }
+        }
+
+        return null
+    }
+
+    private fun esListaBloqueInstrucciones(): ArrayList<BloqueInstrucciones> {
+        val lista = ArrayList<BloqueInstrucciones>()
+
+        var bloque = esBloqueIntrucciones()
+        while (bloque != null) {
+            lista.add(bloque)
+            bloque = esBloqueIntrucciones()
+        }
+
+        return lista
+    }
+
+    private fun esBloqueIntrucciones(): BloqueInstrucciones? {
+        TODO("Falta")
         return null
     }
 
@@ -168,10 +390,35 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             } else {
                 reportarError("Se esperaba un tipo de dato")
             }
-        } else {
-            reportarError("Se esperaba un tipo de dato")
         }
 
+        return null
+    }
+
+    private fun esRetorno(): Retorno? {
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "devolver") {
+            siguienteToken()
+            TODO("Corregir")
+            val expresion = ExpresionAritmetica(null, null, null, ValorNumerico(Token("", Categoria.OPERADOR_ARITMETICO, 0, 0), null, null, Token("", Categoria.IDENTIFICADOR, 0, 0)))
+
+            if (expresion != null) {
+                siguienteToken()
+                if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
+                    siguienteToken()
+                    return Retorno(expresion)
+                } else {
+                    reportarError("Se esperaba un final de sentencia")
+                }
+            } else {
+                reportarError("Se esperaba una expresion, valor o indentificador")
+            }
+        }
+
+        return null
+    }
+
+    private fun esVariableGlobal(): BloqueSentencia? {
+        TODO("Falta")
         return null
     }
 }
