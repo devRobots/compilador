@@ -149,29 +149,23 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 val identificador = tokenActual!!
                 siguienteToken()
 
-                val cuerpoClase: CuerpoClase? = esCuerpoClase()
+                if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
+                    siguienteToken()
 
-                return Clase(modificadorAcceso, identificador, cuerpoClase)
+                    val listaBloqueSentencias = esListaBloqueSentencias()
+
+                    if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                        siguienteToken()
+                        return Clase(modificadorAcceso, identificador, listaBloqueSentencias)
+                    } else {
+                        reportarError("Se esperaba una llave izquierda")
+                    }
+                } else {
+                    reportarError("Se esperaba una llave izquierda")
+                }
             }
             else {
                 reportarError("Se esperaba un identificador")
-            }
-        }
-
-        return null
-    }
-
-    private fun esCuerpoClase(): CuerpoClase? {
-        if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
-            siguienteToken()
-
-            val listaBloqueSentencias = esListaBloqueSentencias()
-
-            if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
-                siguienteToken()
-                return CuerpoClase(listaBloqueSentencias)
-            } else {
-                reportarError("Se esperaba una llave izquierda")
             }
         }
 
@@ -215,12 +209,14 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             backtracking(posicionInicial)
         }
 
+        /*
         val variableGlobal = esVariableGlobal()
         if (variableGlobal != null) {
             return variableGlobal
         } else {
             backtracking(posicionInicial)
         }
+        */
 
         return null
     }
@@ -362,11 +358,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     private fun esListaBloqueInstrucciones(): ArrayList<BloqueInstrucciones> {
         val lista = ArrayList<BloqueInstrucciones>()
 
+        /*
         var bloque = esBloqueIntrucciones()
         while (bloque != null) {
             lista.add(bloque)
             bloque = esBloqueIntrucciones()
         }
+        */
 
         return lista
     }

@@ -2,12 +2,12 @@ package co.edu.uniquindio.sintaxis.bnf
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
-import co.edu.uniquindio.sintaxis.Sintaxis
+import co.edu.uniquindio.sintaxis.ListaSintactica
 
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class Clase(private val modificadorAcceso: Token?,private val identificador: Token,private val cuerpoClase: CuerpoClase?) : BloqueSentencia() {
+class Clase(private val modificadorAcceso: Token?,private val identificador: Token, private val listaBloquesSentencia: ArrayList<BloqueSentencia>) : BloqueSentencia() {
     init {
         this.nombre = "Clase"
         this.estructura = "${modificadorAcceso?.lexema} cosa ${identificador.lexema}"
@@ -17,7 +17,12 @@ class Clase(private val modificadorAcceso: Token?,private val identificador: Tok
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        treeItem.children.add(cuerpoClase?.getTreeItem())
+        val listaObservable = SintaxisObservable(ListaSintactica("Bloques de Sentencia"))
+        val treeBloquesSentencia = TreeItem(listaObservable)
+        for (bloqueSentencia in listaBloquesSentencia) {
+            treeBloquesSentencia.children.add(bloqueSentencia.getTreeItem())
+        }
+        treeItem.children.add(treeBloquesSentencia)
 
         return treeItem
     }
@@ -29,8 +34,8 @@ class Clase(private val modificadorAcceso: Token?,private val identificador: Tok
         agregarAtributo("Identificador", 1)
         agregarValor(identificador.lexema, 1)
 
-        agregarAtributo("Cuerpo de Clase", 2)
-        agregarValor(cuerpoClase.toString(), 2)
+        agregarAtributo("Lista de Bloques de Sentencia", 2)
+        agregarValor("Lista de Bloques de Sentencia", 2)
 
         return panel
     }
