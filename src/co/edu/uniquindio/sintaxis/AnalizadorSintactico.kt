@@ -178,7 +178,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         var bloque: BloqueSentencia? = esBloqueSentencia()
         while (bloque != null) {
             lista.add(bloque)
-            println(tokenActual)
             bloque = esBloqueSentencia()
         }
 
@@ -399,7 +398,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             val expresion = esExpresion()
 
             if (expresion != null) {
-                siguienteToken()
                 if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                     siguienteToken()
                     return Retorno(expresion)
@@ -446,32 +444,39 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo para Determinar si es una Expresion Aritmetica
      */
     private fun esExpresionAritmetica(): ExpresionAritmetica? {
-        val izq: ExpresionAritmetica? = esExpresionAritmetica()
-        if( izq != null ){
+        val valor: ValorNumerico? = esValorNumerico()
+        if (valor != null) {
             if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO) {
-                val operador: Token? = tokenActual
+                val operador = tokenActual!!
                 siguienteToken()
-                val der: ExpresionAritmetica? = esExpresionAritmetica()
-                if (der != null) {
-                    return ExpresionAritmetica(izq, operador, der)
+
+                val expresion = esExpresionAritmetica()
+                if (expresion != null) {
+                    return ExpresionAritmetica(valor, operador, expresion)
                 }
             }
-        } else if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
+            return ExpresionAritmetica(valor)
+        }
+
+        if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
             siguienteToken()
-            val eap: ExpresionAritmetica? = esExpresionAritmetica()
+            val eap = esExpresionAritmetica()
             if (eap != null) {
                 if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
                     siguienteToken()
+                    if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO) {
+                        val operador = tokenActual!!
+                        siguienteToken()
+
+                        val derecha = esExpresionAritmetica()
+
+                        return ExpresionAritmetica(eap, operador!!, derecha)
+                    }
                     return ExpresionAritmetica(eap)
                 }
             }
-        } else {
-            val valor: ValorNumerico? = esValorNumerico()
-            if (valor != null) {
-                siguienteToken()
-                return ExpresionAritmetica(valor)
-            }
         }
+
         return null
     }
 
@@ -489,8 +494,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             else -> false
         }
         if (esTipo){
-            val num = tokenActual
-            return ValorNumerico(signo,num)
+            val num = tokenActual!!
+            siguienteToken()
+            return ValorNumerico(signo, num)
         }
         return null
     }
@@ -499,14 +505,14 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo Expresion Relacional
      */
 
-    fun esExpresionRelacional(): ExpresionRelacional? {
+    private fun esExpresionRelacional(): ExpresionRelacional? {
         return null
     }
 
     /**
      * Metodo Expresion Logica
      */
-    fun esExpresionLogica(): ExpresionLogica? {
+    private fun esExpresionLogica(): ExpresionLogica? {
         return null
     }
 

@@ -6,37 +6,53 @@ import co.edu.uniquindio.lexico.Token
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class ExpresionAritmetica(private val izquierda: ExpresionAritmetica?, private val derecho: ExpresionAritmetica?,private val operador: Token?, private val valor: ValorNumerico?) : Expresion() {
+class ExpresionAritmetica(private val izquierda: ExpresionAritmetica?, private val derecho: ExpresionAritmetica?, private val operador: Token?, private val valor: ValorNumerico?) : Expresion() {
     init {
         nombre = "Expresion Aritmetica"
-        estructura = " Cadena de Caracteres [+ Expresiones]"
+        estructura = if (valor != null) {
+            valor?.estructura
+        } else {
+            izquierda?.estructura
+        }
+        if (operador != null) {
+            estructura += "${operador.lexema}$derecho"
+        }
     }
 
-    constructor(izquierda: ExpresionAritmetica?, operador: Token?,derecho: ExpresionAritmetica?) : this(izquierda, derecho, operador, null)
+    constructor(valor: ValorNumerico?, operador: Token, derecho: ExpresionAritmetica?) : this(null, derecho, operador, valor)
+    constructor(izquierda: ExpresionAritmetica?, operador: Token, derecho: ExpresionAritmetica?) : this(izquierda, derecho, operador, null)
     constructor(expresionAritmetica: ExpresionAritmetica) : this(expresionAritmetica, null, null, null)
-    constructor(valor: ValorNumerico?) : this(null, null, null, valor)
+    constructor(valor: ValorNumerico?) : this(null , null, null, valor)
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        treeItem.children.add(izquierda?.getTreeItem())
-        treeItem.children.add(derecho?.getTreeItem())
-
-        treeItem.children.add(valor?.getTreeItem())
+        if (izquierda != null) {
+            treeItem.children.add(izquierda?.getTreeItem())
+        }
+        if (derecho != null) {
+            treeItem.children.add(derecho?.getTreeItem())
+        }
+        if (valor != null) {
+            treeItem.children.add(valor.getTreeItem())
+        }
 
         return treeItem
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Izquierda", 0)
-        agregarValor(izquierda.toString(), 0)
+        agregarAtributo("Valor", 0)
+        agregarValor(valor?.nombre, 0)
 
-        agregarAtributo("Derecha", 1)
-        agregarValor(derecho.toString(), 1)
+        agregarAtributo("Izquierda", 1)
+        agregarValor(izquierda?.estructura, 1)
 
-        agregarAtributo("Valor", 2)
-        agregarValor(valor.toString(), 2)
+        agregarAtributo("Derecha", 2)
+        agregarValor(derecho?.estructura, 2)
+
+        agregarAtributo("Operador", 3)
+        agregarValor(operador?.lexema, 3)
 
         return panel
     }

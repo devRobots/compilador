@@ -77,8 +77,8 @@ class VentanaPrincipalController {
             }
         }
 
-        arbolSintactico.selectionModel.selectedItemProperty().addListener { observable, oldValue, newValue ->
-            if (observable != null) {
+        arbolSintactico.selectionModel.selectedItemProperty().addListener { observable, _, _ ->
+            if (observable.value != null) {
                 val panel = observable.value.value.sintaxis.getPropertiesPanel()
 
                 val title = GridPane()

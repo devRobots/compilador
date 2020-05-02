@@ -2,10 +2,11 @@ package co.edu.uniquindio.sintaxis.bnf
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.sintaxis.ListaSintactica
+
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class SentenciaSi(private val expLogica: ExpresionLogica?, private val listaBloqueInstrucciones: ArrayList<BloqueInstrucciones>): SentenciaCondicional() {
+class SentenciaSi(private val expLogica: ExpresionLogica, private val listaBloqueInstrucciones: ArrayList<BloqueInstrucciones>): SentenciaCondicional() {
     init {
         this.nombre = "Sentencia Si"
         this.estructura = "wi [ ... ] ¿ ... ?"
