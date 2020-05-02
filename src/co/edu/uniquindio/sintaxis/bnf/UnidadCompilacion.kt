@@ -4,6 +4,7 @@ import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.Sintaxis
 
+
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
