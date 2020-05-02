@@ -5,30 +5,33 @@ import co.edu.uniquindio.lexico.Token
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class ExpresionLogica(private val cadena: ExpresionLogica?, private val operacion: Token?, private val valor: ExpresionRelacional?) : Expresion() {
+class ExpresionLogica(private val logico: ExpresionLogica?, private val izquierda: ValorLogico?, private val operador: Token?, private val derecha: ValorLogico?) : Expresion() {
 
     init {
         nombre = "Expresion Cadena"
-        estructura = " <Expresion Logica> OpLogico <Expresion Logica>, ¬<Expresion Logica>, Expresion Relacional"
+        estructura = " $izquierda $operador $logico $derecha"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        treeItem.children.add(cadena?.getTreeItem())
-
-        treeItem.children.add(valor?.getTreeItem())
+        treeItem.children.add(logico?.getTreeItem())
+        treeItem.children.add(izquierda?.getTreeItem())
+        treeItem.children.add(derecha?.getTreeItem())
 
         return treeItem
     }
-
+    //TODO: es asi??
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Izquierda", 0)
-        agregarValor(cadena.toString(), 0)
+        agregarAtributo("valorLogico", 0)
+        agregarValor(izquierda.toString(), 0)
 
-        agregarAtributo("Derecha", 1)
-        agregarValor(valor.toString(), 1)
+        agregarAtributo("op", 1)
+        agregarValor(operador.toString(), 1)
+
+        agregarAtributo("ValorLogico", 2)
+        agregarValor(derecha.toString(), 2)
         return panel
     }
 }

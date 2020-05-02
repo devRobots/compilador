@@ -34,10 +34,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Configura la posicion actual
      * Verifica que no se desborde
      */
-    private fun siguienteToken(){
+    private fun siguienteToken() {
         posicionActual++
 
-        tokenActual = if( posicionActual < tokens.size ) {
+        tokenActual = if (posicionActual < tokens.size) {
             tokens[posicionActual]
         } else {
             null
@@ -50,7 +50,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Configura la posicion actual
      * Verifica que no se desborde
      */
-    private fun backtracking(posicion: Int){
+    private fun backtracking(posicion: Int) {
         posicionActual = posicion - 1
         siguienteToken()
     }
@@ -94,7 +94,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 } else {
                     reportarError("Se esperaba un terminal")
                 }
-            } else{
+            } else {
                 reportarError("Se esperaba un identificador")
             }
         }
@@ -163,8 +163,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 } else {
                     reportarError("Se esperaba una llave izquierda")
                 }
-            }
-            else {
+            } else {
                 reportarError("Se esperaba un identificador")
             }
         }
@@ -248,7 +247,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
                         if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                             siguienteToken()
-                            return Metodo(modificadorAcceso, identificador , listaArgumentos , listaBloqueInstrucciones)
+                            return Metodo(modificadorAcceso, identificador, listaArgumentos, listaBloqueInstrucciones)
                         } else {
                             reportarError("Se esperaba una llave derecha")
                         }
@@ -299,7 +298,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                             if (retorno != null) {
                                 if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                                     siguienteToken()
-                                    return Funcion(modificadorAcceso, tipoDato, identificador , listaArgumentos , listaBloqueInstrucciones, retorno)
+                                    return Funcion(modificadorAcceso, tipoDato, identificador, listaArgumentos, listaBloqueInstrucciones, retorno)
                                 } else {
                                     reportarError("Se esperaba una llave derecha")
                                 }
@@ -327,7 +326,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         val lista = ArrayList<Argumento>()
 
         var argumento: Argumento? = esArgumento()
-        while (argumento != null ) {
+        while (argumento != null) {
             lista.add(argumento)
 
             argumento = if (tokenActual?.categoria == Categoria.SEPARADOR) {
@@ -422,19 +421,19 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
     private fun esExpresion(): Expresion? {
         val expAritmetica = esExpresionAritmetica()
-        if (expAritmetica != null){
+        if (expAritmetica != null) {
             return expAritmetica
         }
-        val expRelacional = esExpresionRelacional()
-        if (expRelacional != null){
-            return expRelacional
-        }
         val expLogica = esExpresionLogica()
-        if (expLogica != null){
+        if (expLogica != null) {
             return expLogica
         }
+        val expRelacional = esExpresionRelacional()
+        if (expRelacional != null) {
+            return expRelacional
+        }
         val expCadena = esExpresionCadena()
-        if (expCadena != null){
+        if (expCadena != null) {
             return expCadena
         }
         return null
@@ -480,20 +479,21 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
+
     /*
     Es valor numerico
      */
-    private fun esValorNumerico(): ValorNumerico?{
-        var signo : Token? = null
-        if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO && (tokenActual?.lexema == "-" ||  tokenActual?.lexema == "+")){
+    fun esValorNumerico(): ValorNumerico? {
+        var signo: Token? = null
+        if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO && (tokenActual?.lexema == "-" || tokenActual?.lexema == "+")) {
             signo = tokenActual
             siguienteToken()
         }
-        var esTipo = when(tokenActual?.categoria) {
+        var esTipo = when (tokenActual?.categoria) {
             Categoria.ENTERO, Categoria.REAL, Categoria.IDENTIFICADOR -> true
             else -> false
         }
-        if (esTipo){
+        if (esTipo) {
             val num = tokenActual!!
             siguienteToken()
             return ValorNumerico(signo, num)
@@ -505,28 +505,123 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo Expresion Relacional
      */
 
-    private fun esExpresionRelacional(): ExpresionRelacional? {
+    fun esExpresionRelacional(): ExpresionRelacional? {
+        val izq = esExpresionAritmetica()
+        if (izq != null){
+            siguienteToken()
+            if (tokenActual?.categoria == Categoria.OPERADOR_RELACIONAL){
+                siguienteToken()
+                val der = esExpresionAritmetica()
+                if (der != null){
+                    siguienteToken()
+                    return ExpresionRelacional(izq,der)
+                }else{
+                    reportarError("La operacion relacional no esta Correcta")
+                }
+            }else{
+                reportarError("No tiene asignado Operador Relacional")
+            }
+        }
         return null
     }
 
     /**
      * Metodo Expresion Logica
      */
-    private fun esExpresionLogica(): ExpresionLogica? {
+    fun esExpresionLogica(): ExpresionLogica? {
+        if (tokenActual?.categoria == Categoria.OPERADOR_LOGICO && tokenActual?.lexema == "¬"){
+            val negacion = tokenActual
+            siguienteToken()
+            return ExpresionLogica(esExpresionLogica(),null,negacion,null)
+        }
+        val valor = esValorLogico()
+        if (valor != null){
+            siguienteToken()
+            if (tokenActual?.categoria == Categoria.OPERADOR_LOGICO ){
+                val op = tokenActual
+                siguienteToken()
+                val der = esExpresionLogica()
+                siguienteToken()
+                if (der != null){
+                    return ExpresionLogica(der,valor,op,null)
+                }else{
+                    reportarError("Expresion Logica incorrecta, mal asignacion en el operador logico binario")
+                }
+            }
+            return ExpresionLogica(null,valor,null,null)
+        }
+        return null
+    }
+
+    /**
+     *  Metodo para ver si es un valor logico
+     */
+    fun esValorLogico(): ValorLogico? {
+        if (tokenActual?.categoria == Categoria.BOOLEANO  || tokenActual?.categoria == Categoria.IDENTIFICADOR  ){
+            val valor = tokenActual
+            siguienteToken()
+            return ValorLogico(valor,null)
+        }
+        val exp = esExpresionRelacional()
+        if (exp != null){
+            siguienteToken()
+            return ValorLogico(null ,exp)
+        }
         return null
     }
 
     /*
      Es Expresion Relacional
+     TODO: hay que agregar siguiente token???
      */
-    private fun esExpresionCadena(): ExpresionCadena? {
-        if (tokenActual != null) {
-
-        }
+    fun esExpresionCadena(): ExpresionCadena? {
         if (tokenActual?.categoria != Categoria.CADENA_CARACTERES) {
-
+            val cadena = tokenActual
+            siguienteToken()
+            if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO && tokenActual?.lexema == "+") {
+                siguienteToken()
+                val expresion = esExpresion()
+                if (expresion != null) {
+                    return ExpresionCadena(cadena, expresion)
+                } else {
+                    reportarError(" la cadena no esta concatenada con nada")
+                    return null
+                }
+            }
+            return ExpresionCadena(cadena, null)
         }
+        return null
+    }
 
+    fun esExpresionCadena2(): ExpresionCadena? {
+        if (tokenActual?.categoria != Categoria.CADENA_CARACTERES) {
+            val cadena = tokenActual
+            siguienteToken()
+            if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO && tokenActual?.lexema == "+") {
+                siguienteToken()
+                val exp = esExpresionAritmetica()
+                val exp2 = esExpresionRelacional()
+                val exp3 = esExpresionLogica()
+                if (exp != null || exp2 != null || exp3 != null) {
+                    val expresion = esExpresion()
+                    siguienteToken()
+                    if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO && tokenActual?.lexema == "+") {
+                        siguienteToken()
+                        val expres = esExpresion()
+                        if (expres != null) {
+                            return (ExpresionCadena(cadena, expres))
+                        } else {
+                            reportarError("No hay nada concatenado al + ")
+                            return null
+                        }
+                    }
+                    return ExpresionCadena(cadena, expresion)
+                }
+                reportarError("No hay nada concatenado al + ")
+                return null
+            }
+            return ExpresionCadena(cadena, null)
+        }
         return null
     }
 }

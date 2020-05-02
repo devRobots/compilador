@@ -5,11 +5,11 @@ import co.edu.uniquindio.lexico.Token
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class ExpresionRelacional(private val izquierda: ExpresionRelacional?, private val derecho: ExpresionRelacional?, private val operador: Token?, private val valor: ExpresionAritmetica?) : Expresion() {
+class ExpresionRelacional(private val izquierda: ExpresionAritmetica?, private val derecho: ExpresionAritmetica?) : Expresion() {
 
     init {
         nombre = "Expresion Relacional"
-        estructura = "<Expresion Relacional> OpRelacional <Expresion Relacional> "
+        estructura = " @a << [*10 / #2] "
     }
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)

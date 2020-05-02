@@ -5,25 +5,25 @@ import co.edu.uniquindio.lexico.Token
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class ExpresionCadena(private val concatenar: Token?, private val valor: Expresion?) : Expresion() {
+class ValorLogico(private val identificador: Token?, private val expresionRelacional: ExpresionRelacional?) : Valor() {
 
     init {
-        nombre = "Expresion Cadena"
-        estructura = " $concatenar [+ Expresiones]"
+        nombre = "Valor Logico"
+        estructura = " ${expresionRelacional}$identificador"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-
-        treeItem.children.add(valor?.getTreeItem())
-
+        if (expresionRelacional != null) {
+            treeItem.children.add(expresionRelacional?.getTreeItem())
+        }
         return treeItem
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("cadena", 0)
+        agregarAtributo(nombre, 0)
         agregarValor(estructura, 0)
         return panel
     }
