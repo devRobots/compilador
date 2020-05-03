@@ -778,5 +778,41 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * lectura(nombreVariable:Token)
      */
 
+    /**
+     * Sentencia condicional si
+     */
+    fun esSentenciSi(): SentenciaSi?{
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema== "wi"){
+            siguienteToken()
+            if (tokenActual?.categoria== Categoria.PARENTESIS_IZQUIERDO){
+                siguienteToken()
+                val expLogica = esExpresionLogica()
+                if (expLogica != null) {
+                    if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
+                        siguienteToken()
+                        if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
+                            siguienteToken()
 
+                            val listaSentencia = esListaSentencia()
+
+                            if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                                return SentenciaSi(expLogica, listaSentencia)
+                            } else {
+                                reportarError("Se esperaba una llave derecha")
+                            }
+                        } else {
+                            reportarError("Se esperaba una llave izquierdo")
+                        }
+                    } else {
+                        reportarError("Se esperaba un parentesis derecho")
+                    }
+                } else {
+                    reportarError("Se esperaba una expresion logica")
+                }
+            } else {
+                reportarError("Se esperaba un parentesis izquierdo")
+            }
+        }
+        return null
+    }
 }
