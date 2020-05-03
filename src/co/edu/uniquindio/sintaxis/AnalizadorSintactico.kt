@@ -6,7 +6,6 @@ import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.lexico.Categoria
 
 import co.edu.uniquindio.sintaxis.bnf.*
-import kotlin.math.exp
 
 /**
  * @author Samara Rincon
@@ -397,6 +396,33 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
+    private fun esListaParametros() : ArrayList<Parametro> {
+        val lista = ArrayList<Parametro>()
+
+        var parametro = esParametro()
+        while (parametro != null) {
+            lista.add(parametro)
+            parametro = if (tokenActual?.categoria == Categoria.SEPARADOR) {
+                siguienteToken()
+                esParametro()
+            } else {
+                null
+            }
+        }
+
+        return lista
+    }
+
+    private fun esParametro(): Parametro? {
+        val expresion = esExpresion()
+
+        if (expresion != null) {
+            return Parametro(expresion)
+        }
+
+        return null
+    }
+
     /**
      * Metodo para Determinar si es una Lista de Sentencias
      * <ListaSentencia> ::= <Sentencia> [<ListaSentencia>]
@@ -413,37 +439,74 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return lista
     }
 
+    /**
+     * Metodo Para Determinar si es una Sentencia
+     * <Sentencia> ::=<SentenciaCondicional> | <SentenciaWhile> | <SentenciaFor> | <SentenciaSwitch> |
+     * <SentenciaRetorno> | <Incremento> | <Decremento> | <DeclaracionVariableLocal> | <Asignacion> |
+     * <InvocacionMetodo> | <Imprimir> | <Leer>
+     */
+    private fun esSentencia(): Sentencia? {
+        val init = posicionActual
+        val sentenciaSi = esSentenciaCondicional()
+        if (sentenciaSi!= null){
+            return sentenciaSi
+        }
+        backtracking(init)
+        val sentenciaWhile= esSenteciaWhile()
+        if (sentenciaWhile != null){
+            return sentenciaWhile
+        }
+        backtracking(init)
+        val sentenciaFor= esSentenciaFor()
+        if (sentenciaFor != null){
+            return sentenciaFor
+        }
+        backtracking(init)
+        val sentenciaRetorno= esRetorno()
+        if (sentenciaRetorno != null){
+            return sentenciaRetorno
+        }
+        backtracking(init)
+        val incremento = esSentenciaIncrementoDecremento()
+        if (incremento != null){
+            return incremento
+        }
+        backtracking(init)
+        val declaracionVariable = esDeclaracionVariableLocal()
+        if (declaracionVariable != null){
+            return declaracionVariable
+        }
+        backtracking(init)
+        val asignacion = esAsignacion()
+        if (asignacion != null){
+            return asignacion
+        }
+        backtracking(init)
+        val invocacionMetodo = esInvocacionMetodo()
+        if (invocacionMetodo != null){
+            return invocacionMetodo
+        }
+        backtracking(init)
+        return null
+    }
 
 
     /**
      * Metodo para Determinar si es una Sentencia de Incremento
      * <Incremento> ::= identificador operadorIncremento
      */
-    fun esSentenciaIncremento():SentenciaIncremento?{
+    private fun esSentenciaIncrementoDecremento(): SentenciaIncrementoDecremento?{
         if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
             val identificador = tokenActual
             siguienteToken()
             if (tokenActual?.categoria == Categoria.OPERADOR_INCREMENTO){
                 val incremento = tokenActual
                 siguienteToken()
-                return SentenciaIncremento(identificador,incremento)
-            }
-        }
-        return null
-    }
-
-    /**
-     * Metodo para Determinar si es una Sentencia de Decremento
-     * <Decremento> ::= identificador operadorDecremento
-     */
-    fun esSentenciaDecremento():SentenciaDecremento?{
-        if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
-            val identificador = tokenActual
-            siguienteToken()
-            if (tokenActual?.categoria == Categoria.OPERADOR_INCREMENTO){
+                return SentenciaIncrementoDecremento(identificador!!, incremento!!)
+            } else if (tokenActual?.categoria == Categoria.OPERADOR_INCREMENTO) {
                 val decremento = tokenActual
                 siguienteToken()
-                return SentenciaDecremento(identificador,decremento)
+                return SentenciaIncrementoDecremento(identificador!!, decremento!!)
             }
         }
         return null
@@ -452,18 +515,17 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo para Determinar si es una Impresion
      * <Imprimir> ::= @Syso ”[“ [<ExpCadena>]  “]” “!”
      */
-    fun esImprimir():Imprimir{
-        if (tokenActual?.categoria == Categoria.IDENTIFICADOR && tokenActual?.lexema == "@Syso"){
-            val syso = tokenActual
+    private fun esInvocacionMetodo(): InvocacionMetodo? {
+        if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
+            val identificador = tokenActual
             siguienteToken()
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO){
-                val expCadena = esExpresionCadena()
+                val listaParametros = esListaParametros()
                 if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO){
                     siguienteToken()
                     if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
-                        val terminal = tokenActual
                         siguienteToken()
-                        return Imprimir(syso,expCadena,terminal)
+                        return InvocacionMetodo(identificador!!, listaParametros)
                     }
                 }
             }
@@ -722,100 +784,21 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
 
     /**
-     * Metodo Para Determinar si es una Sentencia
-     * <Sentencia> ::=<SentenciaCondicional> | <SentenciaWhile> | <SentenciaFor> | <SentenciaSwitch> |
-     * <SentenciaRetorno> | <Incremento> | <Decremento> | <DeclaracionVariableLocal> | <Asignacion> |
-     * <InvocacionMetodo> | <Imprimir> | <Leer>
-     */
-    private fun esSentencia(): Sentencia? {
-        val init = posicionActual
-        val sentenciaSi = esSentenciaCondicional()
-        if (sentenciaSi!= null){
-            return sentenciaSi
-        }
-        backtracking(init)
-        val sentenciaWhile= esSentenciaWhile()
-        if (sentenciaWhile != null){
-            return sentenciaWhile
-        }
-        backtracking(init)
-        val sentenciaFor= esSentenciaFor()
-        if (sentenciaFor != null){
-            return sentenciaFor
-        }
-        backtracking(init)
-        val sentenciaRetorno= esRetorno()
-        if (sentenciaRetorno != null){
-            return sentenciaRetorno
-        }
-        backtracking(init)
-        val incremento = esSentenciaIncremento()
-        if (incremento != null){
-            return incremento
-        }
-        backtracking(init)
-        val decremento = esSentenciaDecremento()
-        if (decremento != null){
-            return decremento
-        }
-        backtracking(init)
-        val declaracionVariable = esDeclaracionVariableLocal()
-        if (declaracionVariable != null){
-            return declaracionVariable
-        }
-        backtracking(init)
-        val asignacion = esAsignacion()
-        if (asignacion != null){
-            return asignacion
-        }
-        backtracking(init)
-        val invocacionMetodo = esInvocacionMetodo()
-        if (invocacionMetodo != null){
-            return invocacionMetodo
-        }
-        backtracking(init)
-        val imprimir = esImprimir()
-        if (imprimir != null){
-            return imprimir
-        }
-        backtracking(init)
-        val leer = esLectura()
-        if (leer != null){
-            return leer
-        }
-        backtracking(init)
-        return null
-    }
-
-    /**
-     * Metodo de la sentencia condicional
-     */
-    private fun esSentenciaCondicional(): SentenciaCondicional?{
-        val sentenciasi = esSentenciaSi()
-        if (sentenciasi != null){
-            val sentenciaSino = esSentenciaSino()
-            return SentenciaCondicional(sentenciasi, sentenciaSino)
-        }
-        return null
-    }
-
-    /**
      * Metodo de la Sentencia condicional si
      */
-    private fun esSentenciaSi(): SentenciaSi?{
+    fun esSentenciSi(): SentenciaSi?{
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema== "wi"){
+            val sentenciasi = tokenActual
             siguienteToken()
             if (tokenActual?.categoria== Categoria.PARENTESIS_IZQUIERDO){
-                siguienteToken()
                 val expLogica = esExpresionLogica()
                 if (expLogica != null) {
                     if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
                         siguienteToken()
                         if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
                             siguienteToken()
-
                             val listaSentencia = esListaSentencia()
-
+                            siguienteToken()
                             if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                                 return SentenciaSi(expLogica, listaSentencia)
                             } else {
@@ -825,12 +808,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                             reportarError("Se esperaba una llave izquierdo")
                         }
                     } else {
-                        reportarError("Se esperaba un parentesis derecho")
+                        reportarError("Se esperba un parentesis derecho")
                     }
-                } else {
-                    reportarError("Se esperaba una expresion logica")
                 }
-            } else {
+            }else{
                 reportarError("Se esperaba un parentesis izquierdo")
             }
         }
@@ -838,36 +819,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
-     * Metodo de la sentencia sino
-     */
-    private fun esSentenciaSino(): SentenciaSiNo?{
-        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "wo"){
-            siguienteToken()
-            val sentenciaSi = esSentenciaSi()
-            if (sentenciaSi != null) {
-                val sentenciaSino = esSentenciaSino()
-                return SentenciaSiNo(ArrayList<Sentencia>(), sentenciaSi,sentenciaSino)
-            }else{
-                if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO){
-                    siguienteToken()
-                    val listaSentencia = esListaSentencia()
-                        if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
-                            return SentenciaSiNo(listaSentencia, null, null)
-                        }else{
-                            reportarError("Se esperaba una llave derecha")
-                        }
-                    }else{
-                    reportarError("Se esperaba una llave iquierdo")
-                    }
-                }
-            }
-        return null
-    }
-
-    /**
      * Metodo de la sentencia while
      */
-    private fun esSentenciaWhile(): SentenciaWhile? {
+    fun esSenteciaWhile(): SentenciaWhile? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "durante") {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
