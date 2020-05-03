@@ -784,21 +784,34 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
 
     /**
+     * Metodo de la sentencia condicional
+     */
+    private fun esSentenciaCondicional(): SentenciaCondicional?{
+        val sentenciasi = esSentenciaSi()
+        if (sentenciasi != null){
+            val sentenciaSino = esSentenciaSino()
+            return SentenciaCondicional(sentenciasi, sentenciaSino)
+        }
+        return null
+    }
+
+    /**
      * Metodo de la Sentencia condicional si
      */
-    fun esSentenciSi(): SentenciaSi?{
+    private fun esSentenciaSi(): SentenciaSi?{
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema== "wi"){
-            val sentenciasi = tokenActual
             siguienteToken()
             if (tokenActual?.categoria== Categoria.PARENTESIS_IZQUIERDO){
+                siguienteToken()
                 val expLogica = esExpresionLogica()
                 if (expLogica != null) {
                     if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
                         siguienteToken()
                         if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
                             siguienteToken()
+
                             val listaSentencia = esListaSentencia()
-                            siguienteToken()
+
                             if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                                 return SentenciaSi(expLogica, listaSentencia)
                             } else {
@@ -808,11 +821,38 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                             reportarError("Se esperaba una llave izquierdo")
                         }
                     } else {
-                        reportarError("Se esperba un parentesis derecho")
+                        reportarError("Se esperaba un parentesis derecho")
                     }
+                } else {
+                    reportarError("Se esperaba una expresion logica")
                 }
-            }else{
+            } else {
                 reportarError("Se esperaba un parentesis izquierdo")
+            }
+        }
+        return null
+    }
+
+
+    private fun esSentenciaSino(): SentenciaSiNo?{
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "wo"){
+            siguienteToken()
+            val sentenciaSi = esSentenciaSi()
+            if (sentenciaSi != null) {
+                val sentenciaSino = esSentenciaSino()
+                return SentenciaSiNo(ArrayList<Sentencia>(), sentenciaSi,sentenciaSino)
+            }else{
+                if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO){
+                    siguienteToken()
+                    val listaSentencia = esListaSentencia()
+                    if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                        return SentenciaSiNo(listaSentencia, null, null)
+                    }else{
+                        reportarError("Se esperaba una llave derecha")
+                    }
+                }else{
+                    reportarError("Se esperaba una llave iquierdo")
+                }
             }
         }
         return null
