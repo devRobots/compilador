@@ -3,11 +3,12 @@ package co.edu.uniquindio.sintaxis.bnf
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.sintaxis.ListaSintactica
+
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 import java.util.ArrayList
 
-class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoDato, private val identificador: Token, private val listaArgumentos: ArrayList<Argumento>, private val bloqueSentencia: BloqueSentencia, private val retorno: Retorno) : MetodoFuncion(modificadorAcceso, identificador, listaArgumentos,bloqueSentencia) {
+class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoDato, private val identificador: Token, private val listaArgumentos: ArrayList<Argumento>, private val bloqueSentencia: BloqueSentencia) : MetodoFuncion(modificadorAcceso, identificador, listaArgumentos, bloqueSentencia) {
     init {
         nombre = "Funcion"
         estructura = "$modificadorAcceso ${tipoDato.estructura} $identificador [ ... ] ¿ ... ?"
@@ -29,8 +30,6 @@ class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoD
         treeItem.children.add(bloqueSentencia.getTreeItem())
         treeItem.children.add(treeBloques)
 
-        treeItem.children.add(retorno.getTreeItem())
-
         return treeItem
     }
 
@@ -49,9 +48,6 @@ class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoD
 
         agregarAtributo("Bloques de Sentencia", 4)
         agregarValor(bloqueSentencia.toString(), 4)
-
-        agregarAtributo("Retorno", 5)
-        agregarValor(retorno.estructura, 5)
 
         return panel
     }
