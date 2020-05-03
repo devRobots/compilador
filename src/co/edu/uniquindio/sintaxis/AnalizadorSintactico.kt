@@ -480,6 +480,62 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
+     * Metodo para Determinar si es una Sentencia de Incremento
+     * <Incremento> ::= identificador operadorIncremento
+     */
+    fun esSentenciaIncremento():SentenciaIncremento?{
+        if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
+            val identificador = tokenActual
+            siguienteToken()
+            if (tokenActual?.categoria == Categoria.OPERADOR_INCREMENTO){
+                val incremento = tokenActual
+                siguienteToken()
+                return SentenciaIncremento(identificador,incremento)
+            }
+        }
+        return null
+    }
+
+    /**
+     * Metodo para Determinar si es una Sentencia de Decremento
+     * <Decremento> ::= identificador operadorDecremento
+     */
+    fun esSentenciaDecremento():SentenciaDecremento?{
+        if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
+            val identificador = tokenActual
+            siguienteToken()
+            if (tokenActual?.categoria == Categoria.OPERADOR_INCREMENTO){
+                val decremento = tokenActual
+                siguienteToken()
+                return SentenciaDecremento(identificador,decremento)
+            }
+        }
+        return null
+    }
+    /**
+     * Metodo para Determinar si es una Impresion
+     * <Imprimir> ::= @Syso ”[“ [<ExpCadena>]  “]” “!”
+     */
+    fun esImprimir():Imprimir{
+        if (tokenActual?.categoria == Categoria.IDENTIFICADOR && tokenActual?.lexema == "@Syso"){
+            val syso = tokenActual
+            siguienteToken()
+            if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO){
+                val expCadena = esExpresionCadena()
+                if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO){
+                    siguienteToken()
+                    if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
+                        val terminal = tokenActual
+                        siguienteToken()
+                        return Imprimir(syso,expCadena,terminal)
+                    }
+                }
+            }
+        }
+        return null
+    }
+
+    /**
      * Metodo para Determinar si es un Tipo de Dato
      * <TipoDato> ::= ent | dec | pal | bip | bit
      */
@@ -838,7 +894,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     /**
      * Sentencia condicional si
      */
-    fun esSentenciSi(): SentenciaSi?{
+    fun esSentenciaSi(): SentenciaSi?{
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema== "wi"){
             siguienteToken()
             if (tokenActual?.categoria== Categoria.PARENTESIS_IZQUIERDO){
