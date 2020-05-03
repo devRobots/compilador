@@ -330,11 +330,18 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                             siguienteToken()
 
                             val listaSentencias = esListaSentencia()
-                            if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
-                                siguienteToken()
-                                return Funcion(modificadorAcceso, tipoDato, identificador, listaArgumentos, listaSentencias)
+
+                            val retorno = esRetorno()
+
+                            if (retorno != null) {
+                                if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                                    siguienteToken()
+                                    return Funcion(modificadorAcceso, tipoDato, identificador, listaArgumentos, listaSentencias, retorno)
+                                } else {
+                                    reportarError("Se esperaba una llave derecha")
+                                }
                             } else {
-                                reportarError("Se esperaba una llave derecha")
+                                reportarError("Se esperaba una sentencia de retorno")
                             }
                         } else {
                             reportarError("Se esperaba una llave izquierda")
@@ -648,7 +655,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             signo = tokenActual
             siguienteToken()
         }
-        var esTipo = when (tokenActual?.categoria) {
+        val esTipo = when (tokenActual?.categoria) {
             Categoria.ENTERO, Categoria.REAL, Categoria.IDENTIFICADOR -> true
             else -> false
         }

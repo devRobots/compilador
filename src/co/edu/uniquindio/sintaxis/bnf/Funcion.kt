@@ -8,7 +8,7 @@ import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 import java.util.ArrayList
 
-class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoDato, private val identificador: Token, private val listaArgumentos: ArrayList<Argumento>, private val bloqueSentencia: BloqueSentencia) : MetodoFuncion(modificadorAcceso, identificador, listaArgumentos, bloqueSentencia) {
+class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoDato, private val identificador: Token, private val listaArgumentos: ArrayList<Argumento>, private val listaSentencias: ArrayList<Sentencia>, private val retorno: Retorno) : MetodoFuncion(modificadorAcceso, identificador, listaArgumentos, listaSentencias) {
     init {
         nombre = "Funcion"
         estructura = "$modificadorAcceso ${tipoDato.estructura} $identificador [ ... ] ¿ ... ?"
@@ -25,10 +25,14 @@ class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoD
         }
         treeItem.children.add(treeParametros)
 
-        val listaBloquesObservable = SintaxisObservable(ListaSintactica("Bloques de Sentencias"))
-        val treeBloques = TreeItem(listaBloquesObservable)
-        treeItem.children.add(bloqueSentencia.getTreeItem())
-        treeItem.children.add(treeBloques)
+        val listaSentenciasObservable = SintaxisObservable(ListaSintactica("Sentencias"))
+        val treeSentencias = TreeItem(listaSentenciasObservable)
+        for (sentencia in listaSentencias) {
+            treeSentencias.children.add(sentencia.getTreeItem())
+        }
+        treeItem.children.add(treeSentencias)
+
+        treeItem.children.add(retorno.getTreeItem())
 
         return treeItem
     }
@@ -38,7 +42,7 @@ class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoD
         agregarValor(modificadorAcceso?.lexema, 0)
 
         agregarAtributo("Tipo de Dato de Retorno", 1)
-        agregarValor(tipoDato.estructura, 1)
+        agregarValor(tipoDato.nombre, 1)
 
         agregarAtributo("Identificador", 2)
         agregarValor(identificador.lexema, 2)
@@ -47,7 +51,10 @@ class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoD
         agregarValor(listaArgumentos.toString(), 3)
 
         agregarAtributo("Bloques de Sentencia", 4)
-        agregarValor(bloqueSentencia.toString(), 4)
+        agregarValor(listaSentencias.toString(), 4)
+
+        agregarAtributo("Sentencia de Retorno", 5)
+        agregarValor(retorno.nombre, 5)
 
         return panel
     }
