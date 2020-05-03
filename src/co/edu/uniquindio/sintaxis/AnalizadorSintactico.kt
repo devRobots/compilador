@@ -478,7 +478,45 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
         return null
     }
-
+    /*
+    fun esExpresionAritmetica(): ExpresionAritmetica? {
+	if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
+        siguienteToken()
+        val izq: ExpresionAritmetica? = esExpresionAritmetica()
+            if (izq!= null) {
+                if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
+                    siguienteToken()
+                    if(tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO){
+                        val op = tokenActual
+                        siguienteToken()
+                        val der = esExpresionAritmetica()
+                        if(der != null){
+                            return ExpresionAritmetica(izq, op, der)
+                        }
+                    }else {
+                        return ExpresionAritmetica(izq)
+                    }
+                }
+            }
+    } else{
+        val valor = esValorNumerico()
+        if(valor != null){
+            siguienteToken()
+			if( tokenActual.categoria == Categoria.OPERADOR_ARITMETICO) {
+				val op = tokenActual
+				siguienteToken()
+				val der = esExpresionAritmetica()
+				if(der!= null){
+					return ExpresionAritmetica(valor,op,der)
+				}
+            } else{
+				return ExpresionAritmetica(valor)
+			}
+        }
+    }
+	return null
+    }
+*/
 
     /*
     Es valor numerico
@@ -621,6 +659,16 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 return null
             }
             return ExpresionCadena(cadena, null)
+        }
+        return null
+    }
+
+    /**
+     * Lee el Comentario pero se descarta
+     */
+    fun Comentario(): Token? {
+        if (tokenActual?.categoria == Categoria.COMENTARIO_LINEA || tokenActual?.categoria == Categoria.COMENTARIO_BLOQUE){
+            siguienteToken()
         }
         return null
     }
