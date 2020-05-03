@@ -413,71 +413,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return lista
     }
 
-    /**
-     * Metodo Para Determinar si es una Sentencia
-     * <Sentencia> ::=<SentenciaCondicional> | <SentenciaWhile> | <SentenciaFor> | <SentenciaSwitch> |
-     * <SentenciaRetorno> | <Incremento> | <Decremento> | <DeclaracionVariableLocal> | <Asignacion> |
-     * <InvocacionMetodo> | <Imprimir> | <Leer>
-     */
-    private fun esSentencia(): Sentencia? {
-        val init = posicionActual
-        val sentenciaSi = esSentenciaCondicional()
-        if (sentenciaSi!= null){
-            return sentenciaSi
-        }
-        backtracking(init)
-        val sentenciaWhile= esSentenciaWhile()
-        if (sentenciaWhile != null){
-            return sentenciaWhile
-        }
-        backtracking(init)
-        val sentenciaFor= esSentenciaFor()
-        if (sentenciaFor != null){
-            return sentenciaFor
-        }
-        backtracking(init)
-        val sentenciaRetorno= esRetorno()
-        if (sentenciaRetorno != null){
-            return sentenciaRetorno
-        }
-        backtracking(init)
-        val incremento = esSentenciaIncremento()
-        if (incremento != null){
-            return incremento
-        }
-        backtracking(init)
-        val decremento = esSentenciaDecremento()
-        if (decremento != null){
-            return decremento
-        }
-        backtracking(init)
-        val declaracionVariable = esDeclaracionVariableLocal()
-        if (declaracionVariable != null){
-            return declaracionVariable
-        }
-        backtracking(init)
-        val asignacion = esAsignacion()
-        if (asignacion != null){
-            return asignacion
-        }
-        backtracking(init)
-        val invocacionMetodo = esInvocacionMetodo()
-        if (invocacionMetodo != null){
-            return invocacionMetodo
-        }
-        backtracking(init)
-        val imprimir = esImprimir()
-        if (imprimir != null){
-            return imprimir
-        }
-        backtracking(init)
-        val leer = esLectura()
-        if (leer != null){
-            return leer
-        }
-        backtracking(init)
-        return null
-    }
+
 
     /**
      * Metodo para Determinar si es una Sentencia de Incremento
@@ -786,21 +722,100 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
 
     /**
+     * Metodo Para Determinar si es una Sentencia
+     * <Sentencia> ::=<SentenciaCondicional> | <SentenciaWhile> | <SentenciaFor> | <SentenciaSwitch> |
+     * <SentenciaRetorno> | <Incremento> | <Decremento> | <DeclaracionVariableLocal> | <Asignacion> |
+     * <InvocacionMetodo> | <Imprimir> | <Leer>
+     */
+    private fun esSentencia(): Sentencia? {
+        val init = posicionActual
+        val sentenciaSi = esSentenciaCondicional()
+        if (sentenciaSi!= null){
+            return sentenciaSi
+        }
+        backtracking(init)
+        val sentenciaWhile= esSentenciaWhile()
+        if (sentenciaWhile != null){
+            return sentenciaWhile
+        }
+        backtracking(init)
+        val sentenciaFor= esSentenciaFor()
+        if (sentenciaFor != null){
+            return sentenciaFor
+        }
+        backtracking(init)
+        val sentenciaRetorno= esRetorno()
+        if (sentenciaRetorno != null){
+            return sentenciaRetorno
+        }
+        backtracking(init)
+        val incremento = esSentenciaIncremento()
+        if (incremento != null){
+            return incremento
+        }
+        backtracking(init)
+        val decremento = esSentenciaDecremento()
+        if (decremento != null){
+            return decremento
+        }
+        backtracking(init)
+        val declaracionVariable = esDeclaracionVariableLocal()
+        if (declaracionVariable != null){
+            return declaracionVariable
+        }
+        backtracking(init)
+        val asignacion = esAsignacion()
+        if (asignacion != null){
+            return asignacion
+        }
+        backtracking(init)
+        val invocacionMetodo = esInvocacionMetodo()
+        if (invocacionMetodo != null){
+            return invocacionMetodo
+        }
+        backtracking(init)
+        val imprimir = esImprimir()
+        if (imprimir != null){
+            return imprimir
+        }
+        backtracking(init)
+        val leer = esLectura()
+        if (leer != null){
+            return leer
+        }
+        backtracking(init)
+        return null
+    }
+
+    /**
+     * Metodo de la sentencia condicional
+     */
+    private fun esSentenciaCondicional(): SentenciaCondicional?{
+        val sentenciasi = esSentenciaSi()
+        if (sentenciasi != null){
+            val sentenciaSino = esSentenciaSino()
+            return SentenciaCondicional(sentenciasi, sentenciaSino)
+        }
+        return null
+    }
+
+    /**
      * Metodo de la Sentencia condicional si
      */
-    fun esSentenciSi(): SentenciaSi?{
+    private fun esSentenciaSi(): SentenciaSi?{
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema== "wi"){
-            val sentenciasi = tokenActual
             siguienteToken()
             if (tokenActual?.categoria== Categoria.PARENTESIS_IZQUIERDO){
+                siguienteToken()
                 val expLogica = esExpresionLogica()
                 if (expLogica != null) {
                     if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
                         siguienteToken()
                         if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
                             siguienteToken()
+
                             val listaSentencia = esListaSentencia()
-                            siguienteToken()
+
                             if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                                 return SentenciaSi(expLogica, listaSentencia)
                             } else {
@@ -810,10 +825,12 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                             reportarError("Se esperaba una llave izquierdo")
                         }
                     } else {
-                        reportarError("Se esperba un parentesis derecho")
+                        reportarError("Se esperaba un parentesis derecho")
                     }
+                } else {
+                    reportarError("Se esperaba una expresion logica")
                 }
-            }else{
+            } else {
                 reportarError("Se esperaba un parentesis izquierdo")
             }
         }
@@ -821,9 +838,36 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
+     * Metodo de la sentencia sino
+     */
+    private fun esSentenciaSino(): SentenciaSiNo?{
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "wo"){
+            siguienteToken()
+            val sentenciaSi = esSentenciaSi()
+            if (sentenciaSi != null) {
+                val sentenciaSino = esSentenciaSino()
+                return SentenciaSiNo(ArrayList<Sentencia>(), sentenciaSi,sentenciaSino)
+            }else{
+                if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO){
+                    siguienteToken()
+                    val listaSentencia = esListaSentencia()
+                        if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                            return SentenciaSiNo(listaSentencia, null, null)
+                        }else{
+                            reportarError("Se esperaba una llave derecha")
+                        }
+                    }else{
+                    reportarError("Se esperaba una llave iquierdo")
+                    }
+                }
+            }
+        return null
+    }
+
+    /**
      * Metodo de la sentencia while
      */
-    fun esSenteciaWhile(): SentenciaWhile? {
+    private fun esSentenciaWhile(): SentenciaWhile? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "durante") {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
@@ -891,41 +935,4 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * lectura(nombreVariable:Token)
      */
 
-    /**
-     * Sentencia condicional si
-     */
-    fun esSentenciaSi(): SentenciaSi?{
-        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema== "wi"){
-            siguienteToken()
-            if (tokenActual?.categoria== Categoria.PARENTESIS_IZQUIERDO){
-                siguienteToken()
-                val expLogica = esExpresionLogica()
-                if (expLogica != null) {
-                    if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
-                        siguienteToken()
-                        if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
-                            siguienteToken()
-
-                            val listaSentencia = esListaSentencia()
-
-                            if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
-                                return SentenciaSi(expLogica, listaSentencia)
-                            } else {
-                                reportarError("Se esperaba una llave derecha")
-                            }
-                        } else {
-                            reportarError("Se esperaba una llave izquierdo")
-                        }
-                    } else {
-                        reportarError("Se esperaba un parentesis derecho")
-                    }
-                } else {
-                    reportarError("Se esperaba una expresion logica")
-                }
-            } else {
-                reportarError("Se esperaba un parentesis izquierdo")
-            }
-        }
-        return null
-    }
 }
