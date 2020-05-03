@@ -415,12 +415,67 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
     /**
      * Metodo Para Determinar si es una Sentencia
-     * <Sentencia> ::=<SentenciaCondicional> | <SentenciaWhile> | <SentenciaFor> | <SentenciaSwicth> |
+     * <Sentencia> ::=<SentenciaCondicional> | <SentenciaWhile> | <SentenciaFor> | <SentenciaSwitch> |
      * <SentenciaRetorno> | <Incremento> | <Decremento> | <DeclaracionVariableLocal> | <Asignacion> |
      * <InvocacionMetodo> | <Imprimir> | <Leer>
      */
     private fun esSentencia(): Sentencia? {
-        TODO("Falta")
+        val init = posicionActual
+        val sentenciaSi = esSentenciaCondicional()
+        if (sentenciaSi!= null){
+            return sentenciaSi
+        }
+        backtracking(init)
+        val sentenciaWhile= esSentenciaWhile()
+        if (sentenciaWhile != null){
+            return sentenciaWhile
+        }
+        backtracking(init)
+        val sentenciaFor= esSentenciaFor()
+        if (sentenciaFor != null){
+            return sentenciaFor
+        }
+        backtracking(init)
+        val sentenciaRetorno= esRetorno()
+        if (sentenciaRetorno != null){
+            return sentenciaRetorno
+        }
+        backtracking(init)
+        val incremento = esSentenciaIncremento()
+        if (incremento != null){
+            return incremento
+        }
+        backtracking(init)
+        val decremento = esSentenciaDecremento()
+        if (decremento != null){
+            return decremento
+        }
+        backtracking(init)
+        val declaracionVariable = esDeclaracionVariableLocal()
+        if (declaracionVariable != null){
+            return declaracionVariable
+        }
+        backtracking(init)
+        val asignacion = esAsignacion()
+        if (asignacion != null){
+            return asignacion
+        }
+        backtracking(init)
+        val invocacionMetodo = esInvocacionMetodo()
+        if (invocacionMetodo != null){
+            return invocacionMetodo
+        }
+        backtracking(init)
+        val imprimir = esImprimir()
+        if (imprimir != null){
+            return imprimir
+        }
+        backtracking(init)
+        val leer = esLectura()
+        if (leer != null){
+            return leer
+        }
+        backtracking(init)
         return null
     }
 
@@ -487,25 +542,27 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <Expresion> ::= <ExpAritmetica> | <ExpRelacional> | <ExpLogica> | <ExpoCadena>
      */
     private fun esExpresion(): Expresion? {
+        val init = posicionActual
         val expAritmetica = esExpresionAritmetica()
         if (expAritmetica != null) {
             return expAritmetica
         }
-
+        backtracking(init)
         val expLogica = esExpresionLogica()
         if (expLogica != null) {
             return expLogica
         }
-
+        backtracking(init)
         val expRelacional = esExpresionRelacional()
         if (expRelacional != null) {
             return expRelacional
         }
-
+        backtracking(init)
         val expCadena = esExpresionCadena()
         if (expCadena != null) {
             return expCadena
         }
+        backtracking(init)
         return null
     }
 

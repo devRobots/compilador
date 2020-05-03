@@ -5,7 +5,7 @@ import co.edu.uniquindio.sintaxis.ListaSintactica
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class SentenciaWhile(private val expLogica : ExpresionLogica, private val bloqueInstrucciones: ArrayList<Sentencia>) :Sentencia(){
+class SentenciaWhile(private val expLogica : ExpresionLogica, private val listaSentencia: ArrayList<Sentencia>) :Sentencia(){
    init {
        nombre = "Sentencia while"
        estructura = "durante [ ... ] ¿ ... ?"
@@ -17,23 +17,23 @@ class SentenciaWhile(private val expLogica : ExpresionLogica, private val bloque
 
         treeItem.children.add(expLogica.getTreeItem())
 
-        val listaObservable = SintaxisObservable(ListaSintactica("Bloques de Intrucciones"))
-        val treeBloqueInstrucciones = TreeItem(listaObservable)
-        for (bloque in bloqueInstrucciones) {
-            treeBloqueInstrucciones.children.add(bloque.getTreeItem())
+        val listaSentenciasObservable = SintaxisObservable(ListaSintactica("Sentencias"))
+        val treeSentencias = TreeItem(listaSentenciasObservable)
+        for (sentencia in listaSentencia) {
+            treeSentencias.children.add(sentencia.getTreeItem())
         }
-
-        treeItem.children.add(treeBloqueInstrucciones)
+        treeItem.children.add(treeSentencias)
 
         return treeItem
+
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Sentencia", 0)
+        agregarAtributo("Expresion Logica", 0)
         agregarValor(expLogica.toString(), 0)
 
-        agregarAtributo("Instrucciones", 1)
-        agregarValor("Lista de Bloques de Intrucciones", 1)
+        agregarAtributo("Bloques de Sentencia", 1)
+        agregarValor(listaSentencia.toString(), 1)
 
         return panel
     }
