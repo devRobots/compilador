@@ -7,7 +7,7 @@ import co.edu.uniquindio.sintaxis.ListaSintactica
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class Clase(private val modificadorAcceso: Token?,private val identificador: Token, private val listaBloquesSentencia: ArrayList<BloqueSentencia>) : BloqueSentencia() {
+class Clase(private val modificadorAcceso: Token?,private val identificador: Token, private val listaBloquesSentencia: ArrayList<Bloque>) : Bloque() {
     init {
         this.nombre = "Clase"
         this.estructura = "${modificadorAcceso?.lexema} cosa ${identificador.lexema}"
