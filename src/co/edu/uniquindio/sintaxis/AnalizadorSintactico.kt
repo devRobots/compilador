@@ -828,9 +828,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                         siguienteToken()
                         if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
                             siguienteToken()
-
                             val listaSentencia = esListaSentencia()
-
                             if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                                 return SentenciaSi(expLogica, listaSentencia)
                             } else {
@@ -913,6 +911,57 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Metodo de la sentencia FOR
+     */
+    private fun esSentenciaFor(): SentenciaFor? {
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "ciclo"){
+            siguienteToken()
+            if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
+                siguienteToken()
+                val decVariableLocal = esDeclaracionVariableLocal
+                if (tokenActual?.categoria == Categoria.DOS_PUNTOS){
+                    siguienteToken()
+                    val expLogica = esExpresionLogica()
+                    if (expLogica != null){
+                        if (tokenActual?.categoria == Categoria.DOS_PUNTOS) {
+                            siguienteToken()
+                            val asigCiclo = esSentenciaIncrementoDecremento()
+                            if (asigCiclo != null){
+                                if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO){
+                                    siguienteToken()
+                                    if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
+                                        siguienteToken()
+                                        val listaSentencia = esListaSentencia()
+                                        if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                                            return SentenciaFor(decVariableLocal, expLogica, asigCiclo, listaSentencia)
+                                        }else{
+                                            reportarError("Se esperaba una llave derecha")
+                                        }
+                                    }else{
+                                        reportarError("Se esperaba una llave izquierda")
+                                    }
+                                 }else{
+                                    reportarError("Se esperaba un parentesis derecho")
+                                }
+                            }else{
+                                reportarError("Se esperaba una asignacion de ciclo")
+                            }
+                        }else{
+                            reportarError("Se esperaba una separación de dos puntos")
+                        }
+                    }else{
+                        reportarError("Se esperaba una expresion logica")
+                    }
+                }else{
+                    reportarError("Se esperaba una separación de dos puntos")
+                }
+            }else{
+                reportarError("Se esperaba un parentesis izquierdo")
+            }
+        }
+        return null
+    }
 
     /**
      * Metodo para Determinar si es una Lista de Parametros
