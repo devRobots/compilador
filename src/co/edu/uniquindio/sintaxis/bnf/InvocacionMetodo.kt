@@ -7,6 +7,11 @@ import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
 class InvocacionMetodo(private val identificador: Token, private val listaParametros: ArrayList<Parametro>) : Sentencia() {
+    init {
+        nombre = "Invocacion de Metodo"
+        estructura = "$identificador[ ... ]"
+    }
+
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)

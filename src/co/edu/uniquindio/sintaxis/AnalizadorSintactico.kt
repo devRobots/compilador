@@ -232,14 +232,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             backtracking(posicionInicial)
         }
 
-        /*
+
         val variableGlobal = esVariableGlobal()
         if (variableGlobal != null) {
             return variableGlobal
         } else {
             backtracking(posicionInicial)
         }
-        */
 
         return null
     }
@@ -490,6 +489,26 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
+    private fun esAsignacion() : Asignacion? {
+        if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
+            val identificador = tokenActual
+            siguienteToken()
+            if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION) {
+                siguienteToken()
+
+                val expresion = esExpresion()
+                if (expresion != null) {
+                    return Asignacion(identificador!!, expresion!!)
+                } else {
+                    reportarError("Se esperaba una expresion")
+                }
+            } else {
+                reportarError("Se esperaba un operador de asignacion")
+            }
+        }
+
+        return null
+    }
 
     /**
      * Metodo para Determinar si es una Sentencia de Incremento
@@ -840,7 +859,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             val sentenciaSi = esSentenciaSi()
             if (sentenciaSi != null) {
                 val sentenciaSino = esSentenciaSino()
-                return SentenciaSiNo(ArrayList<Sentencia>(), sentenciaSi,sentenciaSino)
+                return SentenciaSiNo(ArrayList(), sentenciaSi,sentenciaSino)
             }else{
                 if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO){
                     siguienteToken()
@@ -861,7 +880,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     /**
      * Metodo de la sentencia while
      */
-    fun esSenteciaWhile(): SentenciaWhile? {
+    private fun esSenteciaWhile(): SentenciaWhile? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "durante") {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {

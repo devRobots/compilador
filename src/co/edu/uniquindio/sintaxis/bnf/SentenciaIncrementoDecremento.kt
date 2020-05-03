@@ -6,6 +6,11 @@ import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
 class SentenciaIncrementoDecremento(private val identificador: Token, private val operacion: Token) : Sentencia(){
+    init {
+        nombre = "Sentencia de Incremento/Decremento"
+        estructura = "${identificador.lexema}${operacion.lexema}"
+    }
+
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         return TreeItem(observable)

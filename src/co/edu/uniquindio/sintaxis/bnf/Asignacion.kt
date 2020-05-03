@@ -1,14 +1,14 @@
 package co.edu.uniquindio.sintaxis.bnf
 
 import co.edu.uniquindio.app.SintaxisObservable
-import co.edu.uniquindio.sintaxis.Sintaxis
+import co.edu.uniquindio.lexico.Token
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class Parametro(private val expresion: Expresion) : Sintaxis() {
+class Asignacion(private val identificador: Token, private val expresion: Expresion): Sentencia() {
     init {
-        nombre = "Parametro"
-        estructura = expresion.estructura
+        nombre = "Asignacion"
+        estructura = "${identificador.lexema} = ${expresion.estructura}"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -21,8 +21,11 @@ class Parametro(private val expresion: Expresion) : Sintaxis() {
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Parametro", 0)
-        agregarValor(expresion.nombre, 0)
+        agregarAtributo("Identificador", 0)
+        agregarValor(identificador.lexema, 0)
+
+        agregarAtributo("Expresion", 1)
+        agregarValor(expresion.nombre, 1)
 
         return panel
     }
