@@ -7,7 +7,7 @@ import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 import java.util.ArrayList
 
-class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoDato, private val identificador: Token, private val listaArgumentos: ArrayList<Argumento>, private val bloqueInstrucciones: ArrayList<Sentencia>, private val retorno: Retorno) : MetodoFuncion(modificadorAcceso, identificador, listaArgumentos, bloqueInstrucciones) {
+class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoDato, private val identificador: Token, private val listaArgumentos: ArrayList<Argumento>, private val bloqueSentencia: BloqueSentencia, private val retorno: Retorno) : MetodoFuncion(modificadorAcceso, identificador, listaArgumentos,bloqueSentencia) {
     init {
         nombre = "Funcion"
         estructura = "$modificadorAcceso ${tipoDato.estructura} $identificador [ ... ] ¿ ... ?"
@@ -24,11 +24,9 @@ class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoD
         }
         treeItem.children.add(treeParametros)
 
-        val listaBloquesObservable = SintaxisObservable(ListaSintactica("Bloques de Intrucciones"))
+        val listaBloquesObservable = SintaxisObservable(ListaSintactica("Bloques de Sentencias"))
         val treeBloques = TreeItem(listaBloquesObservable)
-        for (bloque in bloqueInstrucciones) {
-            treeBloques.children.add(bloque.getTreeItem())
-        }
+        treeItem.children.add(bloqueSentencia.getTreeItem())
         treeItem.children.add(treeBloques)
 
         treeItem.children.add(retorno.getTreeItem())
@@ -49,8 +47,8 @@ class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoD
         agregarAtributo("Argumentos", 3)
         agregarValor(listaArgumentos.toString(), 3)
 
-        agregarAtributo("Bloques de Intrucciones", 4)
-        agregarValor(bloqueInstrucciones.toString(), 4)
+        agregarAtributo("Bloques de Sentencia", 4)
+        agregarValor(bloqueSentencia.toString(), 4)
 
         agregarAtributo("Retorno", 5)
         agregarValor(retorno.estructura, 5)
