@@ -6,6 +6,7 @@ import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.lexico.Categoria
 
 import co.edu.uniquindio.sintaxis.bnf.*
+import kotlin.math.exp
 
 /**
  * @author Samara Rincon
@@ -672,6 +673,78 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
 
     /**
+     * Metodo de la Sentencia condicional si
+     */
+    fun esSentenciSi(): SentenciaSi?{
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema== "wi"){
+            val sentenciasi = tokenActual
+            siguienteToken()
+            if (tokenActual?.categoria== Categoria.PARENTESIS_IZQUIERDO){
+                val expLogica = esExpresionLogica()
+                if (expLogica != null) {
+                    if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
+                        siguienteToken()
+                        if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
+                            siguienteToken()
+                            val listaSentencia = esListaSentencia()
+                            siguienteToken()
+                            if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                                return SentenciaSi(expLogica, listaSentencia)
+                            } else {
+                                reportarError("Se esperaba una llave derecha")
+                            }
+                        } else {
+                            reportarError("Se esperaba una llave izquierdo")
+                        }
+                    } else {
+                        reportarError("Se esperba un parentesis derecho")
+                    }
+                }
+            }else{
+                reportarError("Se esperaba un parentesis izquierdo")
+            }
+        }
+        return null
+    }
+
+    /**
+     * Metodo de la sentencia while
+     */
+    fun esSenteciaWhile(): SentenciaWhile? {
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "durante") {
+            siguienteToken()
+            if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
+                siguienteToken()
+                val expLogico = esExpresionLogica()
+                if (expLogico != null) {
+                    if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
+                        siguienteToken()
+                        if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
+                            siguienteToken()
+                            val listaSentencia = esListaSentencia()
+                            if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                                return SentenciaWhile(expLogico, listaSentencia)
+                            }else{
+                                reportarError("Se esperaba una llave derecha")
+                            }
+                        }else{
+                            reportarError("Se esperaba una llave izquierda")
+                        }
+                    }else{
+                        reportarError("Se esperaba un parentesis derecho")
+                    }
+                }else{
+                    reportarError("Se esperaba una expresión lógica")
+                }
+            }else{
+                reportarError("Se esperaba un parentesis izquierdo")
+            }
+        }
+        return null
+    }
+
+
+    /**
      * Metodo para Determinar si es una Lista de Parametros
      */
 
@@ -705,38 +778,5 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * lectura(nombreVariable:Token)
      */
 
-    /**
-     * Sentencia condicional si
-     */
-    fun esSentenciSi(): SentenciaSi?{
-        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema== "wi"){
-            val sentenciasi = tokenActual
-            siguienteToken()
-            if (tokenActual?.categoria== Categoria.PARENTESIS_IZQUIERDO){
-                val expLogica = esExpresionLogica()
-                if (expLogica != null) {
-                    if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
-                        siguienteToken()
-                        if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
-                            siguienteToken()
-                            val listaSentencia = esListaSentencia()
-                            siguienteToken()
-                            if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
-                                return SentenciaSi(expLogica, listaSentencia)
-                            } else {
-                                reportarError("Se esperaba una llave derecha")
-                            }
-                        } else {
-                            reportarError("Se esperaba una llave izquierdo")
-                        }
-                    } else {
-                        reportarError("Se esperba un parentesis derecho")
-                    }
-                }
-            }else{
-                reportarError("Se esperaba un parentesis izquierdo")
-            }
-        }
-        return null
-    }
+
 }

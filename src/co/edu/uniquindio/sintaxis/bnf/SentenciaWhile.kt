@@ -1,6 +1,7 @@
 package co.edu.uniquindio.sintaxis.bnf
 
 import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.sintaxis.ListaSintactica
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
@@ -16,10 +17,25 @@ class SentenciaWhile(private val expLogica : ExpresionLogica, private val bloque
 
         treeItem.children.add(expLogica.getTreeItem())
 
+        val listaObservable = SintaxisObservable(ListaSintactica("Bloques de Intrucciones"))
+        val treeBloqueInstrucciones = TreeItem(listaObservable)
+        for (bloque in bloqueInstrucciones) {
+            treeBloqueInstrucciones.children.add(bloque.getTreeItem())
+        }
+
+        treeItem.children.add(treeBloqueInstrucciones)
+
+        return treeItem
     }
 
     override fun getPropertiesPanel(): GridPane {
-        TODO("Not yet implemented")
+        agregarAtributo("Sentencia", 0)
+        agregarValor(expLogica.toString(), 0)
+
+        agregarAtributo("Instrucciones", 1)
+        agregarValor("Lista de Bloques de Intrucciones", 1)
+
+        return panel
     }
 
 }
