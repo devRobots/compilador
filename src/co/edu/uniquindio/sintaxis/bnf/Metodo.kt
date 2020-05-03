@@ -7,7 +7,7 @@ import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 import java.util.ArrayList
 
-class Metodo(private val modificadorAcceso: Token?, private val identificador: Token, private val listaArgumentos: ArrayList<Argumento>, private val bloqueInstrucciones: ArrayList<Sentencia>) : MetodoFuncion(modificadorAcceso, identificador, listaArgumentos, bloqueInstrucciones) {
+class Metodo(private val modificadorAcceso: Token?, private val identificador: Token, private val listaArgumentos: ArrayList<Argumento>, private val bloqueSentencia: BloqueSentencia) : MetodoFuncion(modificadorAcceso, identificador, listaArgumentos, bloqueSentencia) {
     init {
         nombre = "Metodo"
         estructura = "$modificadorAcceso $identificador [ ... ] ¿ ... ?"
@@ -24,11 +24,9 @@ class Metodo(private val modificadorAcceso: Token?, private val identificador: T
         }
         treeItem.children.add(treeParametros)
 
-        val listaBloquesObservable = SintaxisObservable(ListaSintactica("Bloques de Intrucciones"))
+        val listaBloquesObservable = SintaxisObservable(ListaSintactica("Bloques de Sentencias"))
         val treeBloques = TreeItem(listaBloquesObservable)
-        for (bloque in bloqueInstrucciones) {
-            treeBloques.children.add(bloque.getTreeItem())
-        }
+        treeItem.children.add(bloqueSentencia.getTreeItem())
         treeItem.children.add(treeBloques)
 
         return treeItem
@@ -44,8 +42,8 @@ class Metodo(private val modificadorAcceso: Token?, private val identificador: T
         agregarAtributo("Argumentos", 2)
         agregarValor(listaArgumentos.toString(), 2)
 
-        agregarAtributo("Bloques de Intrucciones", 3)
-        agregarValor(bloqueInstrucciones.toString(), 3)
+        agregarAtributo("Bloques de Sentencia", 3)
+        agregarValor(bloqueSentencia.toString(), 3)
 
         return panel
     }

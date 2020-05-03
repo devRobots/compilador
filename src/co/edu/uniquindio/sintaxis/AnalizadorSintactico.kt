@@ -168,11 +168,11 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
                     siguienteToken()
 
-                    val listaBloqueSentencias = esListaBloqueSentencias()
+                    val listaBloque = esListaBloque()
 
                     if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                         siguienteToken()
-                        return Clase(modificadorAcceso, identificador, listaBloqueSentencias)
+                        return Clase(modificadorAcceso, identificador, listaBloque)
                     } else {
                         reportarError("Se esperaba una llave izquierda")
                     }
@@ -209,7 +209,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      *     <DeclaracionVariableGlobal>
      */
     private fun esBloque(): Bloque? {
-        TODO(Debe tener listas de clases y funciones y variables Globales)
+        //TODO(Debe tener listas de clases y funciones y variables Globales)
         val posicionInicial = posicionActual
 
         val clase = esClase()
@@ -274,11 +274,11 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                     if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
                         siguienteToken()
 
-                        val listaBloqueInstrucciones = esListaBloqueInstrucciones()
+                        val listaBloqueSentencia = esBloqueSentencia()
 
                         if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                             siguienteToken()
-                            return Metodo(modificadorAcceso, identificador, listaArgumentos, listaBloqueInstrucciones)
+                            return Metodo(modificadorAcceso, identificador, listaArgumentos, listaBloqueSentencia)
                         } else {
                             reportarError("Se esperaba una llave derecha")
                         }
@@ -298,7 +298,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     /**
      *
      */
-    fun BloqueSentencia(): BloqueSentencia?{
+    fun esBloqueSentencia(): BloqueSentencia?{
         if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
             siguienteToken()
             val lista = esListaSentencia()
@@ -321,6 +321,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <BloqueSentencia> es equivalente a “¿” [<ListaSentencia>] “?”
      *  <Funcion> ::= [<ModificarAcceso>] <TipoRetorno> Identificador “[“ [<ListaParametros>] ”]” “¿” [<ListaSentencia>] “?”
      */
+   // TODO: Cambiar que reciba Bloque de sentencias no Lista de Bloques y lo mismo hacer con metodos
     private fun esFuncion(): Funcion? {
         var modificadorAcceso: Token? = null
 
@@ -342,30 +343,20 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
                     val listaArgumentos = esListaArgumentos()
 
-                    if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
-                        siguienteToken()
-                        if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
-                            siguienteToken()
+                    val bloqueSentencia = esListaSentencia()
 
-                            val listaBloqueInstrucciones = esListaBloqueInstrucciones()
-
-                            val retorno = esRetorno()
-
-                            if (retorno != null) {
-                                if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
-                                    siguienteToken()
-                                    return Funcion(modificadorAcceso, tipoDato, identificador, listaArgumentos, listaBloqueInstrucciones, retorno)
-                                } else {
-                                    reportarError("Se esperaba una llave derecha")
-                                }
+                    if (bloqueSentencia != null){
+                        val retorno = esRetorno()
+                        if (retorno != null) {
+                            if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                                siguienteToken()
+                                return Funcion(modificadorAcceso, tipoDato, identificador, listaArgumentos, bloqueSentencia, retorno)
                             } else {
-                                reportarError("Se esperaba una sentencia de retorno")
+                                reportarError("Se esperaba una llave derecha")
                             }
                         } else {
-                            reportarError("Se esperaba una llave izquierda")
+                            reportarError("Se esperaba una sentencia de retorno")
                         }
-                    } else {
-                        reportarError("Se esperaba un parentesis derecho")
                     }
                 } else {
                     reportarError("Se esperaba un parentesis izquierdo")
@@ -530,43 +521,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     /**
      * Metodo para Determinar si es una Expresion Aritmetica
      */
-    private fun esExpresionAritmetica(): ExpresionAritmetica? {
-        val valor: ValorNumerico? = esValorNumerico()
-        if (valor != null) {
-            if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO) {
-                val operador = tokenActual!!
-                siguienteToken()
-
-                val expresion = esExpresionAritmetica()
-                if (expresion != null) {
-                    return ExpresionAritmetica(valor, operador, expresion)
-                }
-            }
-            return ExpresionAritmetica(valor)
-        }
-
-        if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
-            siguienteToken()
-            val eap = esExpresionAritmetica()
-            if (eap != null) {
-                if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
-                    siguienteToken()
-                    if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO) {
-                        val operador = tokenActual!!
-                        siguienteToken()
-
-                        val derecha = esExpresionAritmetica()
-
-                        return ExpresionAritmetica(eap, operador!!, derecha)
-                    }
-                    return ExpresionAritmetica(eap)
-                }
-            }
-        }
-
-        return null
-    }
-    /*
     fun esExpresionAritmetica(): ExpresionAritmetica? {
 	if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
         siguienteToken()
@@ -579,6 +533,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                         siguienteToken()
                         val der = esExpresionAritmetica()
                         if(der != null){
+                            //TODO: Yesid ponga mis constructores >:v
                             return ExpresionAritmetica(izq, op, der)
                         }
                     }else {
@@ -604,7 +559,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 	return null
     }
-*/
+
     /**
      * Metodo para Determinar si es una Expresion Relacional
      * <ExpRelacional> ::= <ExpAritmetica> OpRelacional <ExpAritmetica>
