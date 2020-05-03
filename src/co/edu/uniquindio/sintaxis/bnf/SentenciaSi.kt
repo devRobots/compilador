@@ -6,7 +6,7 @@ import co.edu.uniquindio.sintaxis.ListaSintactica
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class SentenciaSi(private val expLogica: ExpresionLogica, private val listaBloqueInstrucciones: ArrayList<BloqueInstrucciones>): SentenciaCondicional() {
+class SentenciaSi(private val expLogica: ExpresionLogica, private val bloqueInstrucciones: ArrayList<Sentencia>): SentenciaCondicional() {
     init {
         this.nombre = "Sentencia Si"
         this.estructura = "wi [ ... ] ¿ ... ?"
@@ -20,7 +20,7 @@ class SentenciaSi(private val expLogica: ExpresionLogica, private val listaBloqu
 
         val listaObservable = SintaxisObservable(ListaSintactica("Bloques de Intrucciones"))
         val treeBloqueInstrucciones = TreeItem(listaObservable)
-        for (bloque in listaBloqueInstrucciones) {
+        for (bloque in bloqueInstrucciones) {
             treeBloqueInstrucciones.children.add(bloque.getTreeItem())
         }
         treeItem.children.add(treeBloqueInstrucciones)

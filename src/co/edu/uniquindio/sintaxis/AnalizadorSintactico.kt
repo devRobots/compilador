@@ -82,6 +82,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         }
     }
 
+    /**
+     * Metodo para Determinar si es una parquete
+     * <DeclaracionPaquete> ::= caja identificador “!”
+     */
     private fun esPaquete(): Paquete? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "caja") {
             siguienteToken()
@@ -102,6 +106,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Metodo para Determinar si es una Lista de Importaciones
+     * <ListaImportaciones> ::= <Importacion> [<ListaImportaciones>]
+     */
     private fun esListaImportaciones(): ArrayList<Importacion> {
         val lista: ArrayList<Importacion> = ArrayList<Importacion>()
 
@@ -114,6 +122,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return lista
     }
 
+    /**
+     * Metodo para Determinar si es una Importacion
+     * <Importacion> ::= meter identificador “!”
+     */
     private fun esImportacion(): Importacion? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "meter") {
             siguienteToken()
@@ -133,6 +145,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Metodo para Determinar si es una clase
+     * <DeclaracionClase> ::=  [ <ModificadorAcceso> ] cosa identificador “¿” [<ListaBloque>] “?”
+     */
     private fun esClase(): Clase? {
         var modificadorAcceso: Token? = null
 
@@ -171,19 +187,29 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
-    private fun esListaBloqueSentencias(): ArrayList<BloqueSentencia> {
-        val lista = ArrayList<BloqueSentencia>()
+    /**
+     * Metodo para Determinar si es una Lista de Bloques
+     * <ListaSentenciaBloque> ::= <SentenciaBloque> [<ListaBloque>]
+     */
+    private fun esListaBloque(): ArrayList<Bloque> {
+        val lista = ArrayList<Bloque>()
 
-        var bloque: BloqueSentencia? = esBloqueSentencia()
+        var bloque: Bloque? = esBloque()
         while (bloque != null) {
             lista.add(bloque)
-            bloque = esBloqueSentencia()
+            bloque = esBloque()
         }
 
         return lista
     }
 
-    private fun esBloqueSentencia(): BloqueSentencia? {
+    /**
+     * Metodo para Determinar si es un bloque
+     * <Bloque>::= <ListaClases> | <ListaFunciones> | <ListaVariablesGlobales>
+     *     <DeclaracionVariableGlobal>
+     */
+    private fun esBloque(): Bloque? {
+        TODO(Debe tener listas de clases y funciones y variables Globales)
         val posicionInicial = posicionActual
 
         val clase = esClase()
@@ -219,6 +245,11 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Metodo Para Determinar si es un Metodo
+     * <Metodo>::= [<ModificarAcceso>] identificador “[“ [<ListaParametros>] ”]” <BloqueSentencia>
+     * <BloqueSentencia> es equivalente a “¿” [<ListaSentencia>] “?”
+     */
     private fun esMetodo(): Metodo? {
         var modificadorAcceso: Token? = null
 
@@ -237,7 +268,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 siguienteToken()
 
                 val listaArgumentos = esListaArgumentos()
-
+//TODO: Los parentesis si estan bien??, en fin despues hay que reemplazar por BloqueSentencia :V
                 if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
                     siguienteToken()
                     if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
@@ -264,7 +295,32 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
         return null
     }
+    /**
+     *
+     */
+    fun BloqueSentencia(): BloqueSentencia?{
+        if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
+            siguienteToken()
+            val lista = esListaSentencia()
+            siguienteToken()
+            if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                siguienteToken()
+                return BloqueSentencia(lista)
+            } else {
+                reportarError("Se esperaba una llave Derecha")
+            }
+        }else {
+            reportarError("Se esperaba llave Izquierda")
+        }
+        return null
+    }
 
+    /**
+     * Metodo Para Determinar si es una Funcion
+     * <Funcion> ::= [<ModificarAcceso>] <TipoRetorno> Identificador “[“ [<ListaParametros>] ”]” <BloqueSentencia>
+     * <BloqueSentencia> es equivalente a “¿” [<ListaSentencia>] “?”
+     *  <Funcion> ::= [<ModificarAcceso>] <TipoRetorno> Identificador “[“ [<ListaParametros>] ”]” “¿” [<ListaSentencia>] “?”
+     */
     private fun esFuncion(): Funcion? {
         var modificadorAcceso: Token? = null
 
@@ -322,6 +378,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Metodo para Determinar si es una Lista de Argumentos
+     */
     private fun esListaArgumentos(): ArrayList<Argumento> {
         val lista = ArrayList<Argumento>()
 
@@ -340,6 +399,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return lista
     }
 
+    /**
+     * Metodo para Determinar si es un Argumento
+     * <Argumento> ::= <TipoDato><Identificador>
+     */
     private fun esArgumento(): Argumento? {
         val tipoDato = esTipoDato()
         if (tipoDato != null) {
@@ -353,8 +416,12 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
-    private fun esListaBloqueInstrucciones(): ArrayList<BloqueInstrucciones> {
-        val lista = ArrayList<BloqueInstrucciones>()
+    /**
+     * Metodo para Determinar si es una Lista de Sentencias
+     * <ListaSentencia> ::= <Sentencia> [<ListaSentencia>]
+     */
+    private fun esListaSentencia(): ArrayList<Sentencia>? {
+        val lista = ArrayList<Sentencia>()
 
         /*
         var bloque = esBloqueIntrucciones()
@@ -367,11 +434,21 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return lista
     }
 
-    private fun esBloqueIntrucciones(): BloqueInstrucciones? {
+    /**
+     * Metodo Para Determinar si es una Sentencia
+     * <Sentencia> ::=<SentenciaCondicional> | <SentenciaWhile> | <SentenciaFor> | <SentenciaSwicth> |
+     * <SentenciaRetorno> | <Incremento> | <Decremento> | <DeclaracionVariableLocal> | <Asignacion> |
+     * <InvocacionMetodo> | <Imprimir> | <Leer>
+     */
+    private fun esSentencia(): Sentencia? {
         TODO("Falta")
         return null
     }
 
+    /**
+     * Metodo para Determinar si es un Tipo de Dato
+     * <TipoDato> ::= ent | dec | pal | bip | bit
+     */
     private fun esTipoDato(): TipoDato? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA) {
             var esTipo = when (tokenActual!!.lexema) {
@@ -391,6 +468,12 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Metodo Para Determinar si es una SentenciaRetorno
+     * <SentenciaRetorno> ::= devolver identificador “!”
+     * Como el identificador es una Expresion tambien es equivalente a
+     * <SentenciaRetorno> ::= devolver <Expresion> “!”
+     */
     private fun esRetorno(): Retorno? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "devolver") {
             siguienteToken()
@@ -411,13 +494,18 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
-    private fun esVariableGlobal(): BloqueSentencia? {
+    /**
+     * Metodo Para Determinar si es una Variable Global
+     * TODO: Inserte BNF asignacion o declaracion de variable Global
+     */
+    private fun esVariableGlobal(): Bloque? {
         TODO("Falta")
         return null
     }
 
-    /*
-    Metodo para Determinar si es una Expresion
+    /**
+     * Metodo para Determinar si es una Expresion
+     * <Expresion> ::= <ExpAritmetica> | <ExpRelacional> | <ExpLogica> | <ExpoCadena>
      */
     private fun esExpresion(): Expresion? {
         val expAritmetica = esExpresionAritmetica()
@@ -517,30 +605,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 	return null
     }
 */
-
-    /*
-    Es valor numerico
-     */
-    fun esValorNumerico(): ValorNumerico? {
-        var signo: Token? = null
-        if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO && (tokenActual?.lexema == "-" || tokenActual?.lexema == "+")) {
-            signo = tokenActual
-            siguienteToken()
-        }
-        var esTipo = when (tokenActual?.categoria) {
-            Categoria.ENTERO, Categoria.REAL, Categoria.IDENTIFICADOR -> true
-            else -> false
-        }
-        if (esTipo) {
-            val num = tokenActual!!
-            siguienteToken()
-            return ValorNumerico(signo, num)
-        }
-        return null
-    }
-
     /**
-     * Metodo Expresion Relacional
+     * Metodo para Determinar si es una Expresion Relacional
+     * <ExpRelacional> ::= <ExpAritmetica> OpRelacional <ExpAritmetica>
      */
 
     fun esExpresionRelacional(): ExpresionRelacional? {
@@ -564,7 +631,8 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
-     * Metodo Expresion Logica
+     * Metodo para Determinar si es una Expresion Logica
+     * <ExpLogica> ::= “[“ <ExpLogica> “]” [ OpLogicoBinario <ExpLogica>] | ValorLogico |  Negacion<ExpLogica>
      */
     fun esExpresionLogica(): ExpresionLogica? {
         if (tokenActual?.categoria == Categoria.OPERADOR_LOGICO && tokenActual?.lexema == "¬"){
@@ -592,25 +660,8 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
-     *  Metodo para ver si es un valor logico
-     */
-    fun esValorLogico(): ValorLogico? {
-        if (tokenActual?.categoria == Categoria.BOOLEANO  || tokenActual?.categoria == Categoria.IDENTIFICADOR  ){
-            val valor = tokenActual
-            siguienteToken()
-            return ValorLogico(valor,null)
-        }
-        val exp = esExpresionRelacional()
-        if (exp != null){
-            siguienteToken()
-            return ValorLogico(null ,exp)
-        }
-        return null
-    }
-
-    /*
-     Es Expresion Relacional
-     TODO: hay que agregar siguiente token???
+     * Metodo para Determinar si es una Expresion Cadena
+     * <Exp Cadena> ::=  cadenaDeCaracteres [ "+" <Expresion> ]
      */
     fun esExpresionCadena(): ExpresionCadena? {
         if (tokenActual?.categoria != Categoria.CADENA_CARACTERES) {
@@ -631,6 +682,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
+    /**
+     * TODO: es que no sabia cual de los dos es mejor :p
+     */
     fun esExpresionCadena2(): ExpresionCadena? {
         if (tokenActual?.categoria != Categoria.CADENA_CARACTERES) {
             val cadena = tokenActual
@@ -664,9 +718,88 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
-     * Lee el Comentario pero se descarta
+     *  Metodo para Determinar si es un valor logico
+     *  <ValorLogico> ::= .true | .false | <ExpRelacional> | identificador
      */
-    fun Comentario(): Token? {
+    fun esValorLogico(): ValorLogico? {
+        if (tokenActual?.categoria == Categoria.BOOLEANO  || tokenActual?.categoria == Categoria.IDENTIFICADOR  ){
+            val valor = tokenActual
+            siguienteToken()
+            return ValorLogico(valor,null)
+        }
+        val exp = esExpresionRelacional()
+        if (exp != null){
+            siguienteToken()
+            return ValorLogico(null ,exp)
+        }
+        return null
+    }
+
+    /**
+     * Metodo para Determinar si es un Valor Numerico
+     * <ValorNumerico> ::= [<Signo>] real | [<Signo>] entero | [<Signo>] identificador
+     */
+    fun esValorNumerico(): ValorNumerico? {
+        var signo: Token? = null
+        if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO && (tokenActual?.lexema == "-" || tokenActual?.lexema == "+")) {
+            signo = tokenActual
+            siguienteToken()
+        }
+        var esTipo = when (tokenActual?.categoria) {
+            Categoria.ENTERO, Categoria.REAL, Categoria.IDENTIFICADOR -> true
+            else -> false
+        }
+        if (esTipo) {
+            val num = tokenActual!!
+            siguienteToken()
+            return ValorNumerico(signo, num)
+        }
+        return null
+    }
+
+
+    /**
+     * Terminar todas las Sentencias
+     */
+
+    /**
+     * Metodo para Determinar si es una Lista de Parametros
+     */
+
+    /**
+     * Metodo para Determinar si es un Parametro
+     */
+
+    /**
+     * Metodo para Determinar si es una Lista De Variables
+     */
+
+    /**
+     * Metodo para Determinar si es una Variable
+     */
+
+    /**
+     * Metodo para Determinar si es una Asignacion
+     */
+
+    /**
+     * Metodo para Determinar si es un Arreglo
+     */
+
+    /**
+     * Metodo para Determinar si es una Impresion
+     * Impresion(Expresion)
+     */
+
+    /**
+     * Metodo para Determinar si es una Lectura
+     * lectura(nombreVariable:Token)
+     */
+
+    /**
+     * Lee el Comentario pero se descarta en el analizador Sintactico
+     */
+    fun esComentario(): Token? {
         if (tokenActual?.categoria == Categoria.COMENTARIO_LINEA || tokenActual?.categoria == Categoria.COMENTARIO_BLOQUE){
             siguienteToken()
         }

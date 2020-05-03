@@ -5,7 +5,7 @@ import co.edu.uniquindio.sintaxis.Sintaxis
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class Retorno(private val expresion: Expresion) : Sintaxis() {
+class Retorno(private val expresion: Expresion) : Sentencia() {
     init {
         nombre = "Retorno"
         estructura = "devolver ${expresion.estructura} !"
