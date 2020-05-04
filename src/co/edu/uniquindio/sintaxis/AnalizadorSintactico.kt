@@ -872,10 +872,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
-     * Terminar todas las Sentencias
-     */
-
-    /**
      * Metodo de la sentencia condicional
      */
     private fun esSentenciaCondicional(): SentenciaCondicional?{
@@ -1045,34 +1041,43 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
 
     /**
-     * Metodo para Determinar si es un Arreglo
-     */
-
-    /**
      * Metodo para declarar un arreglo
      */
     private fun esArreglo() : Arreglo?{
-        if (tokenActual?.categoria == Categoria.CORCHETE_IZQUIERDO){
-            val listaArguemento = esListaArgumentos()
+        val tipoDato = esTipoDato()
+        if (tipoDato != null){
             siguienteToken()
-            if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO){
-                return Arreglo(listaArguemento, null, null )
-            }else{
-                reportarError("Se esperaba un corchete derecho")
-            }
-        }
-        else if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO){
-            val tipoDato = esTipoDato()
-            val expresion = esExpresion()
-            siguienteToken()
-            if (expresion != null && tipoDato != null){
-                if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO){
-                    return Arreglo(ArrayList<Argumento>(),tipoDato,expresion)
+            if (tokenActual?.categoria == Categoria.CORCHETE_IZQUIERDO){
+                siguienteToken()
+                if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO){
+                    siguienteToken()
+                    if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
+                        val identificador = tokenActual!!
+                        siguienteToken()
+                        if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "="){
+                            siguienteToken()
+                            if (tokenActual?.categoria == Categoria.CORCHETE_IZQUIERDO){
+                                val listaParametros = esListaParametros()
+                                siguienteToken()
+                                if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO){
+                                    return Arreglo(tipoDato,identificador,listaParametros)
+                                }else{
+                                    reportarError("Se esperaba un corchete derecho")
+                                }
+                            }else{
+                                reportarError("Se esperaba un corchete izquierdo")
+                            }
+                        }else{
+                            reportarError("Se esperaba el operador de asignación")
+                        }
+                    }else{
+                        reportarError("Se esperaba un identificador")
+                    }
                 }else{
-                    reportarError("Se esperaba un parentesis derecho")
+                    reportarError("Se esperaba un corchete derecho")
                 }
             }else{
-                reportarError("Se esperaba una expresion y el tipo de dato")
+                reportarError("Se esperaba un corchete izquierdo")
             }
         }
         return null

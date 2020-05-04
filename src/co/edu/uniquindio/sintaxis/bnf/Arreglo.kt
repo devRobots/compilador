@@ -1,41 +1,41 @@
 package co.edu.uniquindio.sintaxis.bnf
 
 import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.Sintaxis
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class Arreglo (private val listArgumento: ArrayList<Argumento>, private val tipoDato : TipoDato?, private val expresion : Expresion? ): Sintaxis() {
+class Arreglo (private val tipoDato : TipoDato, private val identificador : Token, private val listParametros: ArrayList<Parametro>): Sentencia() {
     init {
         nombre = "Declarar arreglo"
-        estructura = "{ ... } o ent [ ... ]"
+        estructura = "...{} @... = { ... }"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        treeItem.children.add(expresion?.getTreeItem())
-        treeItem.children.add(tipoDato?.getTreeItem())
+        treeItem.children.add(tipoDato.getTreeItem())
 
-        val listaObservable = SintaxisObservable(ListaSintactica("Lista de argumentos"))
-        val treeListaArgumentos = TreeItem(listaObservable)
-        for (lista in listArgumento) {
-            treeListaArgumentos.children.add(lista.getTreeItem())
+        val listaObservable = SintaxisObservable(ListaSintactica("Lista de parametros"))
+        val treeListaParametros = TreeItem(listaObservable)
+        for (lista in listParametros) {
+            treeListaParametros.children.add(lista.getTreeItem())
         }
-        treeItem.children.add(treeListaArgumentos)
+        treeItem.children.add(treeListaParametros)
 
         return treeItem
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Lista de argumentos", 0)
-        agregarValor(listArgumento.toString(),0)
-
-        agregarAtributo("Expresion",0)
+        agregarAtributo("Declaración de arreglo",0)
         agregarValor(tipoDato.toString(),0)
-        agregarValor(expresion.toString(),0)
+        agregarValor(identificador.lexema, 0)
+
+        agregarAtributo("Lista de Parametros",0)
+        agregarValor(listParametros.toString(),0)
 
         return panel
     }
