@@ -217,13 +217,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             backtracking(posicionInicial)
         }
 
-        val metodo = esMetodo()
-        if (metodo != null) {
-            return metodo
-        } else {
-            backtracking(posicionInicial)
-        }
-
         val funcion = esFuncion()
         if (funcion != null) {
             return funcion
@@ -231,6 +224,12 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             backtracking(posicionInicial)
         }
 
+        val metodo = esMetodo()
+        if (metodo != null) {
+            return metodo
+        } else {
+            backtracking(posicionInicial)
+        }
 
         val variableGlobal = esVariableGlobal()
         if (variableGlobal != null) {
@@ -484,6 +483,12 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         val invocacionMetodo = esInvocacionMetodo()
         if (invocacionMetodo != null){
             return invocacionMetodo
+        }
+        backtracking(init)
+
+        val arreglo = esArreglo()
+        if (arreglo != null) {
+            return arreglo
         }
         backtracking(init)
         return null
