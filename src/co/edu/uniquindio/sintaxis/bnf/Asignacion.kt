@@ -8,7 +8,11 @@ import javafx.scene.layout.GridPane
 class Asignacion(private val identificador: Token, private val expresion: Expresion?,private val metodo:InvocacionMetodo?): Sentencia() {
     init {
         nombre = "Asignacion"
-        estructura = "${identificador.lexema} = ${expresion?.estructura}"
+        if (expresion != null){
+            estructura = "${identificador.lexema} = ${expresion?.estructura}"
+        }else{
+            "${identificador.lexema} = ${metodo?.estructura}"
+        }
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -30,9 +34,10 @@ class Asignacion(private val identificador: Token, private val expresion: Expres
         if (expresion != null){
             agregarAtributo("Expresion", 1)
             agregarValor(expresion?.nombre, 1)
-        }else{
+        }
+        if (metodo != null){
             agregarAtributo("Metodo", 2)
-            agregarValor(metodo.toString(), 2)
+            agregarValor(metodo.nombre, 2)
         }
         return panel
     }

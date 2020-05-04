@@ -9,7 +9,7 @@ import javafx.scene.layout.GridPane
 class InvocacionMetodo(private val identificador: Token, private val listaParametros: ArrayList<Parametro>) : Sentencia() {
     init {
         nombre = "Invocacion de Metodo"
-        estructura = "$identificador[ ... ]"
+        estructura = "${identificador.lexema}[ ... ]"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {

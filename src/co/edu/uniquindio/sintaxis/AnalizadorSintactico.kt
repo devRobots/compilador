@@ -356,11 +356,11 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <ListaParametros> ::= <Parametro> [ "," <ListaParametros>]
      */
     private fun esListaArgumentos(): ArrayList<Argumento> {
-        val lista = ArrayList<Argumento>()
+        val lista =  ArrayList<Argumento>()
+
         var argumento: Argumento? = esArgumento()
         while (argumento != null) {
             lista.add(argumento)
-
             argumento = if (tokenActual?.categoria == Categoria.SEPARADOR) {
                 siguienteToken()
                 esArgumento()
@@ -368,7 +368,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 null
             }
         }
-
         return lista
     }
 
@@ -385,7 +384,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 return Argumento(tipoDato, identificador)
             }
         }
-
         return null
     }
 
@@ -445,7 +443,11 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
     private fun esSentencia(): Sentencia? {
         val init = posicionActual
-
+        val retorno = esRetorno()
+        if (retorno != null) {
+            return retorno
+        }
+        backtracking(init)
         val declaracionVariable = esDeclaracionVariableLocal()
         if (declaracionVariable != null){
             return declaracionVariable
@@ -593,9 +595,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
     /**
      * Metodo Para Determinar si es una SentenciaRetorno
-     * <SentenciaRetorno> ::= devolver identificador “!”
-     * Como el identificador es una Expresion tambien es equivalente a
-     * <SentenciaRetorno> ::= devolver <Expresion> “!”
+     * <SentenciaRetorno> ::= devolver <Expresion>“!”
      */
     private fun esRetorno(): Retorno? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "devolver") {
@@ -618,7 +618,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
-     * Metodo Para Determinar si es una Variable Global
+     * Metodo Para Determinar si es una Variable Lobal
+     * <VariableLobal> ::= <TipoDato> identificador “=” <Expresion> “!” |
+     *  <TipoDato> identificador “=” <InvocacionMetodo>
      */
     private fun esDeclaracionVariableLocal(): DeclaracionVariableLocal? {
         val tipoDato = esTipoDato()
@@ -657,9 +659,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
     /**
      * Metodo Para Determinar si es una Variable Global
-     * TODO: Inserte BNF asignacion o declaracion de variable Global
+     * <VariableGlobal> ::= [<ModificadorAcceso>] <TipoDato> identificador “=” <Expresion> “!” |
+     * [<ModificadorAcceso>] <TipoDato> identificador “=” <InvocacionMetodo>
      */
-    //aqui
     private fun esVariableGlobal(): DeclaracionVariableGlobal? {
         var modificadorAcceso: Token? = null
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA ) {
@@ -734,6 +736,8 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
     /**
      * Metodo para Determinar si es una Expresion Aritmetica
+     * <ExpAritmetica> ::= “[“ <ExpAritmetica> “]” [ operadorAritmetico <ExpAritmetica>] |
+     * <ValorNumerico> [operadorAritmetico <ExpAritmetica>]
      */
     private fun esExpresionAritmetica(): ExpresionAritmetica? {
         if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
@@ -797,7 +801,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
     /**
      * Metodo para Determinar si es una Expresion Logica
-     * <ExpLogica> ::= “[“ <ExpLogica> “]” [ OpLogicoBinario <ExpLogica>] | ValorLogico |  Negacion<ExpLogica>
+     * <ExpLogica> ::= <ExpLogica> [ OpLogicoBinario <ExpLogica>] | ValorLogico |  Negacion<ExpLogica>
      */
     private fun esExpresionLogica(): ExpresionLogica? {
         if (tokenActual?.categoria == Categoria.OPERADOR_LOGICO && tokenActual?.lexema == "¬") {
@@ -887,6 +891,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
     /**
      * Metodo de la sentencia condicional
+     * <SentenciaCondicional> ::= <SentenciaSi> [<SentenciaSino>]
      */
     private fun esSentenciaCondicional(): SentenciaCondicional?{
         val sentenciasi = esSentenciaSi()
@@ -899,6 +904,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
     /**
      * Metodo de la Sentencia condicional si
+     * <SentenciaSi> ::= wi “[“ <ExpLogica> ”]” “¿” [<ListaSentencia>] “?”
      */
     private fun esSentenciaSi(): SentenciaSi?{
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema== "wi"){
@@ -934,7 +940,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
-
+    /**
+     * Metodo para Determinar si es una SentenciaSINO
+     * <SentenciaSino> ::= wo “¿” [<ListaSentencia>] “?” | wo <SentenciaSi> [<SentenciaSino>]
+     */
     private fun esSentenciaSino(): SentenciaSiNo?{
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "wo"){
             siguienteToken()
@@ -961,7 +970,8 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
-     * Metodo de la sentencia while
+     * Metodo para Determinar si es una sentencia while
+     * <SentenciaWhile> ::= durante “[“ <ExpLogica> ”]” “¿” [<ListaSentencia>] “?”
      */
     private fun esSenteciaWhile(): SentenciaWhile? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "durante") {
@@ -998,7 +1008,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
-     * Metodo de la sentencia FOR
+     * Metodo para Determinar si es una sentencia FOR
+     * <SentenciaFor> ::=  ciclo “[” <DeclaracionVariableLocal> “|” <ExpLogica> “|” <AsignacionCiclo> “]”
+     *  “¿” [<ListaSentencia>] “?”
      */
     private fun esSentenciaFor(): SentenciaFor? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "ciclo"){
@@ -1047,7 +1059,8 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
     /**
-     * Metodo para declarar un arreglo
+     * Metodo Determinar si es un Arreglo
+     * <Arreglo> ::= <tipoDato> “{“ “}” identificador “=”  {“ <listaArgumentos> “}” “!”
      */
     private fun esArreglo() : Arreglo?{
         val tipoDato = esTipoDato()
