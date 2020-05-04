@@ -619,7 +619,38 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo Para Determinar si es una Variable Global
      * TODO: Inserte BNF asignacion o declaracion de variable Global
      */
-    private fun esVariableGlobal(): Bloque? {
+    //aqui
+    private fun esDeclaracionVariableLocal(): DeclaracionVariableLocal? {
+        val tipoDato = esTipoDato()
+        if (tipoDato != null ){
+            if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
+                val identificador = tokenActual
+                siguienteToken()
+                if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "="){
+                    siguienteToken()
+                    val exp = esExpresion()
+                    if(exp != null){
+                        if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
+                            return DeclaracionVariableLocal(tipoDato,identificador!!,exp)
+                        }else{
+                            reportarError("se esperaba fin de sentencia")
+                        }
+                    }
+                }else{
+                    reportarError("se esperaba operador de asignacion")
+                }
+            }else{
+                reportarError("se esperaba identificador")
+            }
+        }
+        return null
+    }
+    /**
+     * Metodo Para Determinar si es una Variable Global
+     * TODO: Inserte BNF asignacion o declaracion de variable Global
+     */
+    //aqui
+    private fun esVariableGlobal(): DeclaracionVariableGlobal? {
         var modificadorAcceso: Token? = null
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA) {
             if (tokenActual?.lexema == "estrato1" || tokenActual?.lexema == "estrato6") {
@@ -627,27 +658,26 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 siguienteToken()
             }
         }
-        //Asignacion aqui
         val tipoDato = esTipoDato()
         if (tipoDato != null ){
-            val pos = posicionActual
-            val asignacion = esAsignacion()
-            if (asignacion != null){
-                if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
-                    val fin = tokenActual
-                    siguienteToken()
-                    return DeclaracionVariableLocal(modificadorAcceso,asignacion,null,fin)
-                }
-            }
-            backtracking(pos)
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
                 val identificador = tokenActual
                 siguienteToken()
-                if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
-                    val fin = tokenActual
+                if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "="){
                     siguienteToken()
-                    return DeclaracionVariableLocal(modificadorAcceso,null,identificador,fin)
+                    val exp = esExpresion()
+                    if(exp != null){
+                        if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
+                            return DeclaracionVariableGlobal(modificadorAcceso,tipoDato,identificador!!,exp)
+                        }else{
+                            reportarError("se esperaba fin de sentencia")
+                        }
+                    }
+                }else{
+                    reportarError("se esperaba operador de asignacion")
                 }
+            }else{
+                reportarError("se esperaba identificador")
             }
         }
         return null
@@ -962,7 +992,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
                 siguienteToken()
-                val decVariableLocal = esDeclaracionVariableLocal
+                val decVariableLocal = esDeclaracionVariableLocal()
                 if (tokenActual?.categoria == Categoria.DOS_PUNTOS){
                     siguienteToken()
                     val expLogica = esExpresionLogica()

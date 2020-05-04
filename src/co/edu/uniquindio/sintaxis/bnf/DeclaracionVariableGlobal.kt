@@ -7,9 +7,9 @@ import co.edu.uniquindio.sintaxis.Sintaxis
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class DeclaracionVariableLocal(private val tipoDato: TipoDato, private val identificador: Token,private val expresion:Expresion) : Sintaxis() {
+class DeclaracionVariableGlobal(private val modificador:Token?, private val tipoDato:TipoDato,  val identificador:Token,private val expresion:Expresion) : Sintaxis() {
     init {
-        this.nombre = "Variable local"
+        this.nombre = "Variable Glocal"
     }
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
@@ -29,4 +29,5 @@ class DeclaracionVariableLocal(private val tipoDato: TipoDato, private val ident
 
         return panel
     }
+
 }

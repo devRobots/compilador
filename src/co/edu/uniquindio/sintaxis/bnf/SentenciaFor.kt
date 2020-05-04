@@ -6,7 +6,7 @@ import co.edu.uniquindio.sintaxis.Sintaxis
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class SentenciaFor(private val decVariableLocal:DeclaracionVariableLocal, private val expLogica: ExpresionLogica, private val asignacionCiclo: SentenciaIncrementoDecremento, private val bloqueInstrucciones: ArrayList<Sentencia>?) :Sintaxis() {
+class SentenciaFor(private val decVariableLocal:DeclaracionVariableLocal?, private val expLogica: ExpresionLogica, private val asignacionCiclo: SentenciaIncrementoDecremento, private val bloqueInstrucciones: ArrayList<Sentencia>?) :Sintaxis() {
     init {
         nombre = "Sentencia de ciclo For"
         estructura = "ciclo [... | ... | ... ] ¿ ... ?"
@@ -16,7 +16,7 @@ class SentenciaFor(private val decVariableLocal:DeclaracionVariableLocal, privat
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        treeItem.children.add(decVariableLocal.getTreeItem())
+        treeItem.children.add(decVariableLocal?.getTreeItem())
         treeItem.children.add(expLogica.getTreeItem())
         treeItem.children.add(asignacionCiclo.getTreeItem())
 
