@@ -23,6 +23,8 @@ class ExpresionCadena(private val concatenar: Token?, private val valor: Expresi
     override fun getPropertiesPanel(): GridPane {
         agregarAtributo("cadena", 0)
         agregarValor(estructura, 0)
+        agregarAtributo("valor", 1)
+        agregarValor(valor.toString(), 1)
         return panel
     }
 }

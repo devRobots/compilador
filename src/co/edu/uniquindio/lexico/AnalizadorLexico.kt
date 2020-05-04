@@ -303,7 +303,6 @@ class AnalizadorLexico(private val codigoFuente: String) {
                         }
 
                         listaTokens.add(Token(palabra, Categoria.REAL, fila, columna))
-                        siguienteCaracter()
                     }
                 }
             }

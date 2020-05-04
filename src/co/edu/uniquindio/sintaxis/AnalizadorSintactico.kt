@@ -471,17 +471,16 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             return incremento
         }
         backtracking(init)
-        val asignacion = esAsignacion()
-        if (asignacion != null){
-            return asignacion
-        }
-        backtracking(init)
         val invocacionMetodo = esInvocacionMetodo()
         if (invocacionMetodo != null){
             return invocacionMetodo
         }
         backtracking(init)
-
+        val asignacion = esAsignacion()
+        if (asignacion != null){
+            return asignacion
+        }
+        backtracking(init)
         val arreglo = esArreglo()
         if (arreglo != null) {
             return arreglo
@@ -500,12 +499,15 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION) {
                 siguienteToken()
-
+                val metodo = esInvocacionMetodo()
+                if (metodo != null){
+                    return Asignacion(identificador!!, null, metodo)
+                }
                 val expresion = esExpresion()
                 if (expresion != null) {
                     if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                         siguienteToken()
-                        return Asignacion(identificador!!, expresion)
+                        return Asignacion(identificador!!, expresion,metodo)
                     } else {
                         reportarError("Se esperaba un fin de sentencia")
                     }
@@ -550,6 +552,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             val identificador = tokenActual
             siguienteToken()
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO){
+                siguienteToken()
                 val listaParametros = esListaParametros()
                 if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO){
                     siguienteToken()
@@ -557,6 +560,8 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                         siguienteToken()
                         return InvocacionMetodo(identificador!!, listaParametros)
                     }
+                }else{
+                    reportarError("Se esperaba un paratesis Derecho")
                 }
             }
         }
@@ -623,17 +628,26 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 siguienteToken()
                 if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "="){
                     siguienteToken()
+                    val metodo = esInvocacionMetodo()
+                    if (metodo != null){
+                        return DeclaracionVariableLocal(tipoDato,identificador!!,null,metodo)
+                    }
                     val exp = esExpresion()
-                    if(exp != null){
+                    if (exp != null){
                         if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
                             siguienteToken()
-                            return DeclaracionVariableLocal(tipoDato,identificador!!,exp)
+                            return DeclaracionVariableLocal(tipoDato,identificador!!,exp,null)
                         }else{
                             reportarError("se esperaba fin de sentencia")
                         }
+                    }else{
+                        reportarError("se esperaba asignacion de valor")
                     }
+                }else if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
+                    siguienteToken()
+                    return DeclaracionVariableLocal(tipoDato,identificador!!,null,null)
                 }else{
-                    reportarError("se esperaba operador de asignacion")
+                    reportarError("se esperaba fin de sentencia")
                 }
             }else{
                 reportarError("se esperaba identificador")
@@ -661,17 +675,26 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 siguienteToken()
                 if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "="){
                     siguienteToken()
+                    val metodo = esInvocacionMetodo()
+                    if (metodo != null){
+                        return DeclaracionVariableGlobal(modificadorAcceso,tipoDato,identificador!!,null,metodo)
+                    }
                     val exp = esExpresion()
                     if(exp != null){
                         if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
                             siguienteToken()
-                            return DeclaracionVariableGlobal(modificadorAcceso,tipoDato,identificador!!,exp)
+                            return DeclaracionVariableGlobal(modificadorAcceso,tipoDato,identificador!!,exp,metodo)
                         }else{
                             reportarError("se esperaba fin de sentencia")
                         }
                     }
                 }else{
-                    reportarError("se esperaba operador de asignacion")
+                    if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
+                        siguienteToken()
+                        return DeclaracionVariableGlobal(modificadorAcceso,tipoDato,identificador!!,null,null)
+                    }else{
+                        reportarError("se esperaba fin de sentencia")
+                    }
                 }
             }else{
                 reportarError("se esperaba identificador")
