@@ -30,10 +30,10 @@ class SentenciaWhile(private val expLogica : ExpresionLogica, private val listaS
 
     override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Expresion Logica", 0)
-        agregarValor(expLogica.toString(), 0)
+        agregarValor(expLogica.nombre, 0)
 
         agregarAtributo("Bloques de Sentencia", 1)
-        agregarValor(listaSentencia.toString(), 1)
+        agregarValor("Lista de Sentencias", 1)
 
         return panel
     }

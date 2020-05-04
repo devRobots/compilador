@@ -614,9 +614,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
     /**
      * Metodo Para Determinar si es una Variable Global
-     * TODO: Inserte BNF asignacion o declaracion de variable Global
      */
-    //aqui
     private fun esDeclaracionVariableLocal(): DeclaracionVariableLocal? {
         val tipoDato = esTipoDato()
         if (tipoDato != null ){
@@ -892,6 +890,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                             siguienteToken()
                             val listaSentencia = esListaSentencia()
                             if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                                siguienteToken()
                                 return SentenciaSi(expLogica, listaSentencia)
                             } else {
                                 reportarError("Se esperaba una llave derecha")
@@ -925,6 +924,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                     siguienteToken()
                     val listaSentencia = esListaSentencia()
                     if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                        siguienteToken()
                         return SentenciaSiNo(listaSentencia, null, null)
                     }else{
                         reportarError("Se esperaba una llave derecha")
@@ -953,6 +953,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                             siguienteToken()
                             val listaSentencia = esListaSentencia()
                             if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                                siguienteToken()
                                 return SentenciaWhile(expLogico, listaSentencia)
                             }else{
                                 reportarError("Se esperaba una llave derecha")
@@ -982,11 +983,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
                 siguienteToken()
                 val decVariableLocal = esDeclaracionVariableLocal()
-                if (tokenActual?.categoria == Categoria.DOS_PUNTOS){
-                    siguienteToken()
+                if (decVariableLocal != null) {
                     val expLogica = esExpresionLogica()
                     if (expLogica != null){
-                        if (tokenActual?.categoria == Categoria.DOS_PUNTOS) {
+                        if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                             siguienteToken()
                             val asigCiclo = esSentenciaIncrementoDecremento()
                             if (asigCiclo != null){
@@ -996,6 +996,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                                         siguienteToken()
                                         val listaSentencia = esListaSentencia()
                                         if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                                            siguienteToken()
                                             return SentenciaFor(decVariableLocal, expLogica, asigCiclo, listaSentencia)
                                         }else{
                                             reportarError("Se esperaba una llave derecha")
@@ -1003,20 +1004,18 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                                     }else{
                                         reportarError("Se esperaba una llave izquierda")
                                     }
-                                 }else{
+                                }else{
                                     reportarError("Se esperaba un parentesis derecho")
                                 }
                             }else{
                                 reportarError("Se esperaba una asignacion de ciclo")
                             }
                         }else{
-                            reportarError("Se esperaba una separación de dos puntos")
+                            reportarError("Se esperaba un fin de sentencia")
                         }
                     }else{
                         reportarError("Se esperaba una expresion logica")
                     }
-                }else{
-                    reportarError("Se esperaba una separación de dos puntos")
                 }
             }else{
                 reportarError("Se esperaba un parentesis izquierdo")
