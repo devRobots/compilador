@@ -466,11 +466,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             return sentenciaFor
         }
         backtracking(init)
-        val sentenciaRetorno= esRetorno()
-        if (sentenciaRetorno != null){
-            return sentenciaRetorno
-        }
-        backtracking(init)
         val incremento = esSentenciaIncrementoDecremento()
         if (incremento != null){
             return incremento
