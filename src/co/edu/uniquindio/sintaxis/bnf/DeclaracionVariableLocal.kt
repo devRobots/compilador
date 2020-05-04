@@ -16,8 +16,12 @@ class DeclaracionVariableLocal(private val tipoDato: TipoDato, private val ident
         val treeItem = TreeItem(observable)
 
         treeItem.children.add(tipoDato.getTreeItem())
-        treeItem.children.add(metodo?.getTreeItem())
-        treeItem.children.add(expresion?.getTreeItem())
+        if (metodo != null){
+            treeItem.children.add(metodo.getTreeItem())
+        }
+        if (expresion != null){
+            treeItem.children.add(expresion.getTreeItem())
+        }
         return treeItem
     }
 
@@ -31,7 +35,8 @@ class DeclaracionVariableLocal(private val tipoDato: TipoDato, private val ident
         if (expresion != null){
             agregarAtributo("valor", 2)
             agregarValor(expresion.toString(), 2)
-        }else{
+        }
+        if(metodo!= null){
             agregarAtributo("valor", 2)
             agregarValor(metodo.toString(), 2)
         }

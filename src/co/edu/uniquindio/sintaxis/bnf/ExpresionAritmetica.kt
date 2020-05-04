@@ -42,18 +42,23 @@ class ExpresionAritmetica(private val izquierda: ExpresionAritmetica?, private v
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Valor", 0)
-        agregarValor(valor?.nombre, 0)
 
-        agregarAtributo("Izquierda", 1)
-        agregarValor(izquierda?.estructura, 1)
-
-        agregarAtributo("Derecha", 2)
-        agregarValor(derecho?.estructura, 2)
-
-        agregarAtributo("Operador", 3)
-        agregarValor(operador?.lexema, 3)
-
+        if (valor != null) {
+            agregarAtributo("Valor", 0)
+            agregarValor(valor?.nombre, 0)
+        }
+        if (izquierda != null) {
+            agregarAtributo("Izquierda", 1)
+            agregarValor(izquierda?.estructura, 1)
+        }
+        if (operador != null) {
+            agregarAtributo("Operador", 2)
+            agregarValor(operador?.lexema, 2)
+        }
+        if (derecho != null) {
+            agregarAtributo("Derecha", 3)
+            agregarValor(derecho?.estructura, 3)
+        }
         return panel
     }
 }

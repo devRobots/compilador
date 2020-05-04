@@ -17,8 +17,12 @@ class DeclaracionVariableGlobal(private val modificador:Token?, private val tipo
         val treeItem = TreeItem(observable)
 
         treeItem.children.add(tipoDato.getTreeItem())
-        treeItem.children.add(metodo?.getTreeItem())
-        treeItem.children.add(expresion?.getTreeItem())
+        if (metodo != null){
+            treeItem.children.add(metodo.getTreeItem())
+        }
+        if (expresion != null){
+            treeItem.children.add(expresion.getTreeItem())
+        }
         return treeItem
     }
 

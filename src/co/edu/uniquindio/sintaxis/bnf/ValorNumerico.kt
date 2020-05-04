@@ -11,9 +11,10 @@ class ValorNumerico(private val signo: Token?, private val identificador: Token)
     init {
         nombre = "Valor Numerico"
         if (signo != null) {
-            estructura += signo.lexema
+            estructura = signo.lexema
+        }else{
+            estructura = identificador.lexema
         }
-        estructura += identificador.lexema
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -22,9 +23,10 @@ class ValorNumerico(private val signo: Token?, private val identificador: Token)
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Signo", 0)
-        agregarValor(signo?.lexema, 0)
-
+        if (signo != null){
+            agregarAtributo("Signo", 0)
+            agregarValor(signo?.lexema, 0)
+        }
         agregarAtributo("Valor", 1)
         agregarValor(identificador.lexema, 1)
 

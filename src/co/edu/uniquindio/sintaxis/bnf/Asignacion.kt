@@ -15,9 +15,12 @@ class Asignacion(private val identificador: Token, private val expresion: Expres
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        treeItem.children.add(metodo?.getTreeItem())
-        treeItem.children.add(expresion?.getTreeItem())
-
+        if (metodo != null){
+            treeItem.children.add(metodo.getTreeItem())
+        }
+        if (expresion != null){
+            treeItem.children.add(expresion.getTreeItem())
+        }
         return treeItem
     }
 

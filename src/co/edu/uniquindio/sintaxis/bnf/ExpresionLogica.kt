@@ -16,22 +16,32 @@ class ExpresionLogica(private val logico: ExpresionLogica?, private val izquierd
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        treeItem.children.add(logico?.getTreeItem())
-        treeItem.children.add(izquierda?.getTreeItem())
-        treeItem.children.add(derecha?.getTreeItem())
+        if (logico != null){
+            treeItem.children.add(logico.getTreeItem())
+        }
+        if (izquierda != null){
+            treeItem.children.add(izquierda.getTreeItem())
+        }
+        if (derecha != null){
+            treeItem.children.add(derecha.getTreeItem())
+        }
 
         return treeItem
     }
     //TODO: es asi??
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("valorLogico", 0)
-        agregarValor(izquierda.toString(), 0)
-
-        agregarAtributo("op", 1)
-        agregarValor(operador.toString(), 1)
-
-        agregarAtributo("ValorLogico", 2)
-        agregarValor(derecha.toString(), 2)
+        if (operador != null){
+            agregarAtributo("op", 0)
+            agregarValor(operador.toString(), 0)
+        }
+        if (izquierda != null){
+            agregarAtributo("valorLogico", 1)
+            agregarValor(izquierda.toString(), 1)
+        }
+        if (derecha != null){
+            agregarAtributo("ValorLogico", 2)
+            agregarValor(derecha.toString(), 2)
+        }
         return panel
     }
 }

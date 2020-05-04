@@ -16,9 +16,12 @@ class SentenciaSiNo(private val bloqueInstrucciones : ArrayList<Sentencia>,priva
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        treeItem.children.add(sentenciaSi?.getTreeItem())
-        treeItem.children.add(sentenciaSiNo?.getTreeItem())
-
+        if (sentenciaSi != null){
+            treeItem.children.add(sentenciaSi?.getTreeItem())
+        }
+        if (sentenciaSiNo != null){
+            treeItem.children.add(sentenciaSiNo?.getTreeItem())
+        }
         val listaObservable = SintaxisObservable(ListaSintactica("Bloques de Intrucciones"))
         val treeBloqueInstrucciones = TreeItem(listaObservable)
         for (bloque in bloqueInstrucciones) {
@@ -30,12 +33,14 @@ class SentenciaSiNo(private val bloqueInstrucciones : ArrayList<Sentencia>,priva
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Condición si", 0)
-        agregarValor(sentenciaSi.toString(), 0)
-
-        agregarAtributo("Sentencia Sino", 1)
-        agregarValor(sentenciaSiNo.toString(), 1)
-
+        if (sentenciaSi != null){
+            agregarAtributo("Condición si", 0)
+            agregarValor(sentenciaSi.toString(), 0)
+        }
+        if (sentenciaSiNo != null){
+            agregarAtributo("Sentencia Sino", 1)
+            agregarValor(sentenciaSiNo.toString(), 1)
+        }
         agregarAtributo("Instrucciones",2)
         agregarValor(bloqueInstrucciones.toString(),2)
 

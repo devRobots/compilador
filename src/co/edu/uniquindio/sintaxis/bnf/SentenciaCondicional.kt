@@ -13,19 +13,24 @@ open class SentenciaCondicional(private val sentenciaSi : SentenciaSi, private v
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        treeItem.children.add(sentenciaSi.getTreeItem())
-        treeItem.children.add(sentenciaSino?.getTreeItem())
-
+        if(sentenciaSi != null){
+            treeItem.children.add(sentenciaSi.getTreeItem())
+        }
+        if(sentenciaSino != null){
+            treeItem.children.add(sentenciaSino.getTreeItem())
+        }
         return treeItem
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("sentencia Si", 0)
-        agregarValor(sentenciaSi.toString(), 0)
-
-        agregarAtributo("Sentencia sino",1)
-        agregarValor(sentenciaSino?.toString(),1)
-
+        if(sentenciaSi != null){
+            agregarAtributo("sentencia Si", 0)
+            agregarValor(sentenciaSi.toString(), 0)
+        }
+        if(sentenciaSino != null){
+            agregarAtributo("Sentencia sino",1)
+            agregarValor(sentenciaSino?.toString(),1)
+        }
         return panel
     }
 

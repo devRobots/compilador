@@ -834,13 +834,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 siguienteToken()
                 val expresion = esExpresion()
                 if (expresion != null) {
-                    return ExpresionCadena(cadena, expresion)
+                    return ExpresionCadena(cadena!!, expresion)
                 } else {
                     reportarError(" la cadena no esta concatenada con nada")
                 }
             }
             else {
-                return ExpresionCadena(cadena, null)
+                return ExpresionCadena(cadena!!, null)
             }
         }
         return null

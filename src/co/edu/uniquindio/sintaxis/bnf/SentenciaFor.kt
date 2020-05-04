@@ -16,7 +16,10 @@ class SentenciaFor(private val decVariableLocal:DeclaracionVariableLocal?, priva
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        treeItem.children.add(decVariableLocal?.getTreeItem())
+        if (decVariableLocal != null){
+            treeItem.children.add(decVariableLocal.getTreeItem())
+        }
+
         treeItem.children.add(expLogica.getTreeItem())
         treeItem.children.add(asignacionCiclo.getTreeItem())
 

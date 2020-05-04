@@ -9,7 +9,11 @@ class ValorLogico(private val identificador: Token?, private val expresionRelaci
 
     init {
         nombre = "Valor Logico"
-        estructura = " ${expresionRelacional}$identificador"
+        if (expresionRelacional != null){
+            estructura = " ${expresionRelacional}$identificador"
+        }else{
+            estructura = " $${identificador?.lexema}"
+        }
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
