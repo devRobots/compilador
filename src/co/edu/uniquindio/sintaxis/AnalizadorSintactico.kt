@@ -209,8 +209,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
     private fun esBloque(): Bloque? {
         val posicionInicial = posicionActual
-        //TODO: Todos deben ser listas no solo una clase
-        TODO()
+        //Todos deben ser listas no solo una clase
         val clase = esClase()
         if (clase != null) {
             return clase
@@ -359,8 +358,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
     private fun esListaArgumentos(): ArrayList<Argumento> {
         val lista = ArrayList<Argumento>()
-       // TODO(esto es en verdad un parametro)
-        TODO()
         var argumento: Argumento? = esArgumento()
         while (argumento != null) {
             lista.add(argumento)
@@ -381,8 +378,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <Parametro> ::= <TipoDato> identificador
      */
     private fun esArgumento(): Argumento? {
-        //TODO en verdad estod es un parametro
-        TODO()
         val tipoDato = esTipoDato()
         if (tipoDato != null) {
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
@@ -401,7 +396,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
     private fun esListaParametros() : ArrayList<Parametro> {
         val lista = ArrayList<Parametro>()
-        TODO()
         var parametro = esParametro()
         while (parametro != null) {
             lista.add(parametro)
@@ -422,11 +416,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
     private fun esParametro(): Parametro? {
         val expresion = esExpresion()
-
         if (expresion != null) {
             return Parametro(expresion)
         }
-
         return null
     }
 
@@ -510,7 +502,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
                 val expresion = esExpresion()
                 if (expresion != null) {
-                    return Asignacion(identificador!!, expresion!!)
+                    return Asignacion(identificador!!, expresion)
                 } else {
                     reportarError("Se esperaba una expresion")
                 }
@@ -595,7 +587,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <SentenciaRetorno> ::= devolver <Expresion> “!”
      */
     private fun esRetorno(): Retorno? {
-        TODO()
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "devolver") {
             siguienteToken()
             val expresion = esExpresion()
@@ -1031,15 +1022,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         }
         return null
     }
-
-    /**
-     * Metodo para Determinar si es una Lista De Variables
-     */
-
-    /**
-     * Metodo para Determinar si es una Variable
-     */
-
     /**
      * Metodo para declarar un arreglo
      */
@@ -1082,15 +1064,4 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         }
         return null
     }
-
-    /**
-     * Metodo para Determinar si es una Impresion
-     * Impresion(Expresion)
-     */
-
-    /**
-     * Metodo para Determinar si es una Lectura
-     * lectura(nombreVariable:Token)
-     */
-
 }
