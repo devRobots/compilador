@@ -189,7 +189,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
     /**
      * Metodo para Determinar si es una Lista de Bloques
-     * <ListaSentenciaBloque> ::= <SentenciaBloque> [<ListaBloque>]
+     * <ListaBloque> ::= <Bloque> [<ListaBloque>]
      */
     private fun esListaBloque(): ArrayList<Bloque> {
         val lista = ArrayList<Bloque>()
@@ -206,11 +206,11 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     /**
      * Metodo para Determinar si es un bloque
      * <Bloque>::= <ListaClases> | <ListaFunciones> | <ListaVariablesGlobales>
-     *     <DeclaracionVariableGlobal>
      */
     private fun esBloque(): Bloque? {
         val posicionInicial = posicionActual
-
+        //TODO: Todos deben ser listas no solo una clase
+        TODO()
         val clase = esClase()
         if (clase != null) {
             return clase
@@ -245,8 +245,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
     /**
      * Metodo Para Determinar si es un Metodo
-     * <Metodo>::= [<ModificarAcceso>] identificador “[“ [<ListaParametros>] ”]” <BloqueSentencia>
-     * <BloqueSentencia> es equivalente a “¿” [<ListaSentencia>] “?”
+     * <Metodo>::= [<ModificarAcceso>] identificador “[“ [<ListaParametros>] ”]” “¿” [<ListaSentencia>] “?”
      */
     private fun esMetodo(): Metodo? {
         var modificadorAcceso: Token? = null
@@ -257,7 +256,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 siguienteToken()
             }
         }
-
         if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
             val identificador = tokenActual!!
             siguienteToken()
@@ -297,9 +295,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
     /**
      * Metodo Para Determinar si es una Funcion
-     * <Funcion> ::= [<ModificarAcceso>] <TipoRetorno> Identificador “[“ [<ListaParametros>] ”]” <BloqueSentencia>
-     * <BloqueSentencia> es equivalente a “¿” [<ListaSentencia>] “?”
-     *  <Funcion> ::= [<ModificarAcceso>] <TipoRetorno> Identificador “[“ [<ListaParametros>] ”]” “¿” [<ListaSentencia>] “?”
+     * <Funcion> ::= [<ModificarAcceso>] <TipoRetorno> Identificador “[“ [<ListaParametros>] ”]” “¿” [<ListaSentencia>] “?”
      */
     private fun esFuncion(): Funcion? {
         var modificadorAcceso: Token? = null
@@ -358,11 +354,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
-     * Metodo para Determinar si es una Lista de Argumentos
+     * Metodo para Determinar si es una Lista de Parametros
+     * <ListaParametros> ::= <Parametro> [ "," <ListaParametros>]
      */
     private fun esListaArgumentos(): ArrayList<Argumento> {
         val lista = ArrayList<Argumento>()
-
+       // TODO(esto es en verdad un parametro)
+        TODO()
         var argumento: Argumento? = esArgumento()
         while (argumento != null) {
             lista.add(argumento)
@@ -379,10 +377,12 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
-     * Metodo para Determinar si es un Argumento
-     * <Argumento> ::= <TipoDato><Identificador>
+     * Metodo para Determinar si es un Parametro
+     * <Parametro> ::= <TipoDato> identificador
      */
     private fun esArgumento(): Argumento? {
+        //TODO en verdad estod es un parametro
+        TODO()
         val tipoDato = esTipoDato()
         if (tipoDato != null) {
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
@@ -395,9 +395,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Metodo para Determinar si es una Lista de Argumentos
+     * <ListaArgumentos> ::= <Argumento> [ "," <ListaArgumentos> ]
+     */
     private fun esListaParametros() : ArrayList<Parametro> {
         val lista = ArrayList<Parametro>()
-
+        TODO()
         var parametro = esParametro()
         while (parametro != null) {
             lista.add(parametro)
@@ -412,6 +416,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return lista
     }
 
+    /**
+     * Metodo para Determinar si es un Argumento
+     * <Argumento> ::= <Expresion>
+     */
     private fun esParametro(): Parametro? {
         val expresion = esExpresion()
 
@@ -489,6 +497,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         return null
     }
 
+    /**
+     * Metodo para Determinar si es una Asignacion
+     * <Asignacion> ::= identificador operadorAsignación <Expresión> ["!"]
+     */
     private fun esAsignacion() : Asignacion? {
         if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
             val identificador = tokenActual
@@ -511,8 +523,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
-     * Metodo para Determinar si es una Sentencia de Incremento
+     * Metodo para Determinar si es una Sentencia de Incremento o Decremento
      * <Incremento> ::= identificador operadorIncremento
+     * <Decremento> ::= identificador operadorDecremento
      */
     private fun esSentenciaIncrementoDecremento(): SentenciaIncrementoDecremento?{
         if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
@@ -532,7 +545,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
     /**
      * Metodo para Determinar si es una Impresion
-     * <Imprimir> ::= @Syso ”[“ [<ExpCadena>]  “]” “!”
+     * <InvocacionMetodo> ::=  identificador "[" [<ListaArgumentos>] "]" "!”
      */
     private fun esInvocacionMetodo(): InvocacionMetodo? {
         if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
@@ -582,6 +595,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <SentenciaRetorno> ::= devolver <Expresion> “!”
      */
     private fun esRetorno(): Retorno? {
+        TODO()
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "devolver") {
             siguienteToken()
             val expresion = esExpresion()
@@ -606,7 +620,36 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * TODO: Inserte BNF asignacion o declaracion de variable Global
      */
     private fun esVariableGlobal(): Bloque? {
-        TODO("Falta")
+        var modificadorAcceso: Token? = null
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA) {
+            if (tokenActual?.lexema == "estrato1" || tokenActual?.lexema == "estrato6") {
+                modificadorAcceso = tokenActual
+                siguienteToken()
+            }
+        }
+        //Asignacion aqui
+        val tipoDato = esTipoDato()
+        if (tipoDato != null ){
+            val pos = posicionActual
+            val asignacion = esAsignacion()
+            if (asignacion != null){
+                if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
+                    val fin = tokenActual
+                    siguienteToken()
+                    return DeclaracionVariableLocal(modificadorAcceso,asignacion,null,fin)
+                }
+            }
+            backtracking(pos)
+            if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
+                val identificador = tokenActual
+                siguienteToken()
+                if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
+                    val fin = tokenActual
+                    siguienteToken()
+                    return DeclaracionVariableLocal(modificadorAcceso,null,identificador,fin)
+                }
+            }
+        }
         return null
     }
 
@@ -964,14 +1007,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
-     * Metodo para Determinar si es una Lista de Parametros
-     */
-
-    /**
-     * Metodo para Determinar si es un Parametro
-     */
-
-    /**
      * Metodo para Determinar si es una Lista De Variables
      */
 
@@ -980,21 +1015,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
 
     /**
-     * Metodo para Determinar si es una Asignacion
-     */
-
-    /**
      * Metodo para Determinar si es un Arreglo
-     */
-
-    /**
-     * Metodo para Determinar si es una Impresion
-     * Impresion(Expresion)
-     */
-
-    /**
-     * Metodo para Determinar si es una Lectura
-     * lectura(nombreVariable:Token)
      */
 
 }
