@@ -441,10 +441,16 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo Para Determinar si es una Sentencia
      * <Sentencia> ::=<SentenciaCondicional> | <SentenciaWhile> | <SentenciaFor> | <SentenciaSwitch> |
      * <SentenciaRetorno> | <Incremento> | <Decremento> | <DeclaracionVariableLocal> | <Asignacion> |
-     * <InvocacionMetodo> | <Imprimir> | <Leer>
+     * <InvocacionMetodo>
      */
     private fun esSentencia(): Sentencia? {
         val init = posicionActual
+
+        val declaracionVariable = esDeclaracionVariableLocal()
+        if (declaracionVariable != null){
+            return declaracionVariable
+        }
+        backtracking(init)
         val sentenciaSi = esSentenciaCondicional()
         if (sentenciaSi!= null){
             return sentenciaSi
@@ -468,11 +474,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         val incremento = esSentenciaIncrementoDecremento()
         if (incremento != null){
             return incremento
-        }
-        backtracking(init)
-        val declaracionVariable = esDeclaracionVariableLocal()
-        if (declaracionVariable != null){
-            return declaracionVariable
         }
         backtracking(init)
         val asignacion = esAsignacion()
@@ -632,6 +633,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                     val exp = esExpresion()
                     if(exp != null){
                         if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
+                            siguienteToken()
                             return DeclaracionVariableLocal(tipoDato,identificador!!,exp)
                         }else{
                             reportarError("se esperaba fin de sentencia")
@@ -653,7 +655,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     //aqui
     private fun esVariableGlobal(): DeclaracionVariableGlobal? {
         var modificadorAcceso: Token? = null
-        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA) {
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA ) {
             if (tokenActual?.lexema == "estrato1" || tokenActual?.lexema == "estrato6") {
                 modificadorAcceso = tokenActual
                 siguienteToken()
