@@ -1018,4 +1018,44 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo para Determinar si es un Arreglo
      */
 
+    /**
+     * Metodo para declarar un arreglo
+     */
+    private fun esArreglo() : Arreglo?{
+        if (tokenActual?.categoria == Categoria.CORCHETE_IZQUIERDO){
+            val listaArguemento = esListaArgumentos()
+            siguienteToken()
+            if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO){
+                return Arreglo(listaArguemento, null, null )
+            }else{
+                reportarError("Se esperaba un corchete derecho")
+            }
+        }
+        else if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO){
+            val tipoDato = esTipoDato()
+            val expresion = esExpresion()
+            siguienteToken()
+            if (expresion != null && tipoDato != null){
+                if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO){
+                    return Arreglo(ArrayList<Argumento>(),tipoDato,expresion)
+                }else{
+                    reportarError("Se esperaba un parentesis derecho")
+                }
+            }else{
+                reportarError("Se esperaba una expresion y el tipo de dato")
+            }
+        }
+        return null
+    }
+
+    /**
+     * Metodo para Determinar si es una Impresion
+     * Impresion(Expresion)
+     */
+
+    /**
+     * Metodo para Determinar si es una Lectura
+     * lectura(nombreVariable:Token)
+     */
+
 }
