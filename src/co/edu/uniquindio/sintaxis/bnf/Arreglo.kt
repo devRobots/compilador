@@ -10,7 +10,7 @@ import javafx.scene.layout.GridPane
 class Arreglo (private val tipoDato : TipoDato, private val identificador : Token, private val listParametros: ArrayList<Parametro>): Sentencia() {
     init {
         nombre = "Declarar arreglo"
-        estructura = "...{} @... = { ... }"
+        estructura = "${tipoDato}{} ${identificador} = {List}"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -31,11 +31,10 @@ class Arreglo (private val tipoDato : TipoDato, private val identificador : Toke
 
     override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Declaración de arreglo",0)
-        agregarValor(tipoDato.toString(),0)
-        agregarValor(identificador.lexema, 0)
+        agregarValor(estructura,0)
 
-        agregarAtributo("Lista de Parametros",0)
-        agregarValor(listParametros.toString(),0)
+        agregarAtributo("Lista de Parametros",1)
+        agregarValor(listParametros.toString(),1)
 
         return panel
     }

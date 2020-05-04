@@ -9,7 +9,7 @@ import javafx.scene.layout.GridPane
 class SentenciaFor(private val decVariableLocal:DeclaracionVariableLocal?, private val expLogica: ExpresionLogica, private val asignacionCiclo: SentenciaIncrementoDecremento, private val bloqueInstrucciones: ArrayList<Sentencia>?) :Sentencia() {
     init {
         nombre = "Sentencia de ciclo For"
-        estructura = "ciclo [... | ... | ... ] ¿ ... ?"
+        estructura = "ciclo [ .. | ... | ... ] ¿ ... ?"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -34,13 +34,17 @@ class SentenciaFor(private val decVariableLocal:DeclaracionVariableLocal?, priva
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Sentencia de ciclo for",0)
+        agregarAtributo("Declaracion For",0)
         agregarValor(decVariableLocal.toString(),0)
-        agregarValor(expLogica.toString(),0)
-        agregarValor(asignacionCiclo.toString(),0)
 
-        agregarAtributo("lista de sentencia",1)
-        agregarValor(bloqueInstrucciones?.toString(),1)
+        agregarAtributo("Expresion Logica",1)
+        agregarValor(expLogica.toString(),1)
+
+        agregarAtributo("asignacion",2)
+        agregarValor(asignacionCiclo.toString(),2)
+
+        agregarAtributo("lista de sentencia",3)
+        agregarValor(bloqueInstrucciones?.toString(),3)
 
         return panel
     }
