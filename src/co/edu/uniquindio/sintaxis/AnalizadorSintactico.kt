@@ -398,8 +398,8 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         var parametro = esParametro()
         while (parametro != null) {
             lista.add(parametro)
-            siguienteToken()
             parametro = if (tokenActual?.categoria == Categoria.SEPARADOR) {
+                siguienteToken()
                 esParametro()
             } else {
                 null
@@ -669,6 +669,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                     val exp = esExpresion()
                     if(exp != null){
                         if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
+                            siguienteToken()
                             return DeclaracionVariableGlobal(modificadorAcceso,tipoDato,identificador!!,exp)
                         }else{
                             reportarError("se esperaba fin de sentencia")
@@ -808,7 +809,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <Exp Cadena> ::=  cadenaDeCaracteres [ "+" <Expresion> ]
      */
     private fun esExpresionCadena(): ExpresionCadena? {
-        if (tokenActual?.categoria != Categoria.CADENA_CARACTERES) {
+        if (tokenActual?.categoria == Categoria.CADENA_CARACTERES) {
             val cadena = tokenActual
             siguienteToken()
             if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO && tokenActual?.lexema == "+") {
@@ -1042,9 +1043,12 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                         if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "="){
                             siguienteToken()
                             if (tokenActual?.categoria == Categoria.CORCHETE_IZQUIERDO){
+                                siguienteToken()
                                 val listaParametros = esListaParametros()
                                 if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO){
+                                    siguienteToken()
                                     if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
+                                        siguienteToken()
                                         return Arreglo(tipoDato,identificador,listaParametros)
                                     } else {
                                         reportarError("Se esperaba un fin de sentencia")
