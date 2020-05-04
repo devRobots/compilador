@@ -7,7 +7,7 @@ import co.edu.uniquindio.sintaxis.Sintaxis
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class DeclaracionVariableLocal(private val tipoDato: TipoDato, private val identificador: Token,private val expresion:Expresion) : Sintaxis() {
+class DeclaracionVariableLocal(private val tipoDato: TipoDato, private val identificador: Token,private val expresion:Expresion) : Sentencia() {
     init {
         this.nombre = "Variable local"
     }

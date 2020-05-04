@@ -7,7 +7,7 @@ import co.edu.uniquindio.sintaxis.Sintaxis
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class DeclaracionVariableGlobal(private val modificador:Token?, private val tipoDato:TipoDato,  val identificador:Token,private val expresion:Expresion) : Sintaxis() {
+class DeclaracionVariableGlobal(private val modificador:Token?, private val tipoDato:TipoDato,  val identificador:Token,private val expresion:Expresion) : Bloque() {
     init {
         this.nombre = "Variable Glocal"
     }
