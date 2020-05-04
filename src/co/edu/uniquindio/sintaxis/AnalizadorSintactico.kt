@@ -398,8 +398,8 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         var parametro = esParametro()
         while (parametro != null) {
             lista.add(parametro)
+            siguienteToken()
             parametro = if (tokenActual?.categoria == Categoria.SEPARADOR) {
-                siguienteToken()
                 esParametro()
             } else {
                 null
@@ -507,7 +507,12 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
                 val expresion = esExpresion()
                 if (expresion != null) {
-                    return Asignacion(identificador!!, expresion)
+                    if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
+                        siguienteToken()
+                        return Asignacion(identificador!!, expresion)
+                    } else {
+                        reportarError("Se esperaba un fin de sentencia")
+                    }
                 } else {
                     reportarError("Se esperaba una expresion")
                 }
@@ -733,7 +738,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         } else {
             val valor = esValorNumerico()
             if (valor != null) {
-                siguienteToken()
                 if (tokenActual?.categoria == Categoria.OPERADOR_ARITMETICO) {
                     val op = tokenActual
                     siguienteToken()
@@ -757,12 +761,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     private fun esExpresionRelacional(): ExpresionRelacional? {
         val izq = esExpresionAritmetica()
         if (izq != null) {
-            siguienteToken()
             if (tokenActual?.categoria == Categoria.OPERADOR_RELACIONAL) {
                 siguienteToken()
                 val der = esExpresionAritmetica()
                 if (der != null) {
-                    siguienteToken()
                     return ExpresionRelacional(izq, der)
                 } else {
                     reportarError("La operacion relacional no esta Correcta")
@@ -786,12 +788,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         }
         val valor = esValorLogico()
         if (valor != null) {
-            siguienteToken()
             if (tokenActual?.categoria == Categoria.OPERADOR_LOGICO) {
                 val op = tokenActual
                 siguienteToken()
                 val der = esExpresionLogica()
-                siguienteToken()
                 if (der != null) {
                     return ExpresionLogica(der, valor, op, null)
                 } else {
@@ -839,7 +839,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         }
         val exp = esExpresionRelacional()
         if (exp != null) {
-            siguienteToken()
             return ValorLogico(null, exp)
         }
         return null
@@ -1033,7 +1032,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     private fun esArreglo() : Arreglo?{
         val tipoDato = esTipoDato()
         if (tipoDato != null){
-            siguienteToken()
             if (tokenActual?.categoria == Categoria.CORCHETE_IZQUIERDO){
                 siguienteToken()
                 if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO){
@@ -1045,9 +1043,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                             siguienteToken()
                             if (tokenActual?.categoria == Categoria.CORCHETE_IZQUIERDO){
                                 val listaParametros = esListaParametros()
-                                siguienteToken()
                                 if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO){
-                                    return Arreglo(tipoDato,identificador,listaParametros)
+                                    if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
+                                        return Arreglo(tipoDato,identificador,listaParametros)
+                                    } else {
+                                        reportarError("Se esperaba un fin de sentencia")
+                                    }
+
                                 }else{
                                     reportarError("Se esperaba un corchete derecho")
                                 }
