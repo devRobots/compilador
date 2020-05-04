@@ -9,14 +9,12 @@ class ExpresionCadena(private val concatenar: Token?, private val valor: Expresi
 
     init {
         nombre = "Expresion Cadena"
-        estructura = " $concatenar [+ Expresiones]"
+        estructura = " $concatenar [+ $valor]"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
-
-
         treeItem.children.add(valor?.getTreeItem())
 
         return treeItem
