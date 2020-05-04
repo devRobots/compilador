@@ -30,8 +30,8 @@ class SentenciaSi(private val expLogica: ExpresionLogica, private val bloqueInst
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("sentencia", 0)
-        agregarValor(expLogica.toString(), 0)
+        agregarAtributo("expresion Logica", 0)
+        agregarValor(estructura, 0)
 
         agregarAtributo("Instrucciones", 1)
         agregarValor(bloqueInstrucciones.toString(), 1)
