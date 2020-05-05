@@ -8,7 +8,7 @@ import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 import java.util.ArrayList
 
-class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoDato, private val identificador: Token, private val listaArgumentos: ArrayList<Argumento>, private val listaSentencias: ArrayList<Sentencia>, private val retorno: Retorno) : MetodoFuncion(modificadorAcceso, identificador, listaArgumentos, listaSentencias) {
+class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoDato, private val identificador: Token, private val listaArgumentos: ArrayList<Argumento>, private val listaSentencias: ArrayList<Sentencia>, private val retorno: Sentencia) : MetodoFuncion(modificadorAcceso, identificador, listaArgumentos, listaSentencias) {
     init {
         nombre = "Funcion"
         estructura = "$modificadorAcceso ${tipoDato.estructura} $identificador [ ... ] ¿ ... ?"

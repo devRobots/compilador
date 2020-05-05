@@ -331,8 +331,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
                             val listaSentencias = esListaSentencia()
 
-                            val retorno = esRetorno()
-
+                            val retorno = listaSentencias.get(listaSentencias.lastIndex)
                             if (retorno != null) {
                                 if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                                     siguienteToken()
