@@ -5,11 +5,18 @@ import co.edu.uniquindio.lexico.Token
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class ExpresionLogica(private val logico: ExpresionLogica?, private val izquierda: ValorLogico?, private val operador: Token?, private val derecha: ValorLogico?) : Expresion() {
+class ExpresionLogica(private val logico: ExpresionLogica?, private val izquierda: ValorLogico?, private val operador: Token?) : Expresion() {
 
     init {
-        nombre = "Expresion Cadena"
-        estructura = " $izquierda $operador $logico $derecha"
+        nombre = "Expresion Logica"
+        if(operador != null){
+            if(operador?.lexema == "¬"){
+                estructura = "$operador [ $izquierda ]"
+            }else{
+                estructura = "$izquierda $operador $logico"
+            }
+        }
+        estructura = " $izquierda"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -21,9 +28,6 @@ class ExpresionLogica(private val logico: ExpresionLogica?, private val izquierd
         }
         if (izquierda != null){
             treeItem.children.add(izquierda.getTreeItem())
-        }
-        if (derecha != null){
-            treeItem.children.add(derecha.getTreeItem())
         }
 
         return treeItem
@@ -37,10 +41,6 @@ class ExpresionLogica(private val logico: ExpresionLogica?, private val izquierd
         if (izquierda != null){
             agregarAtributo("valorLogico", 1)
             agregarValor(izquierda.toString(), 1)
-        }
-        if (derecha != null){
-            agregarAtributo("ValorLogico", 2)
-            agregarValor(derecha.toString(), 2)
         }
         return panel
     }

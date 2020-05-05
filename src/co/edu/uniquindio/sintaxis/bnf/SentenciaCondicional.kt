@@ -7,7 +7,10 @@ import javafx.scene.layout.GridPane
 open class SentenciaCondicional(private val sentenciaSi : SentenciaSi, private val sentenciaSino : SentenciaSiNo?) : Sentencia(){
     init {
         nombre = "sentencia condicional"
-        estructura = " wi[ ... ] ¿ ... ? wo ¿ ... ?"
+        if (sentenciaSino != null){
+            estructura = " wi[Expresion Logica] ¿ ... ? wo ¿ ... ?"
+        }
+        estructura = " $sentenciaSi"
     }
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)

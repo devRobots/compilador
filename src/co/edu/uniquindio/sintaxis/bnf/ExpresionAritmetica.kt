@@ -28,14 +28,14 @@ class ExpresionAritmetica(private val izquierda: ExpresionAritmetica?, private v
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
+        if (valor != null) {
+            treeItem.children.add(valor.getTreeItem())
+        }
         if (izquierda != null) {
             treeItem.children.add(izquierda?.getTreeItem())
         }
         if (derecho != null) {
             treeItem.children.add(derecho?.getTreeItem())
-        }
-        if (valor != null) {
-            treeItem.children.add(valor.getTreeItem())
         }
 
         return treeItem

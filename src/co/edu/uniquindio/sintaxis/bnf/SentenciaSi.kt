@@ -10,7 +10,7 @@ import javafx.scene.layout.GridPane
 class SentenciaSi(private val expLogica: ExpresionLogica, private val bloqueInstrucciones: ArrayList<Sentencia>):Sintaxis() {
     init {
         this.nombre = "Sentencia Si"
-        this.estructura = "wi [${expLogica}] ¿ ... ?"
+        this.estructura = "wi [ Expresion Logica ] ¿ ... ?"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -19,7 +19,7 @@ class SentenciaSi(private val expLogica: ExpresionLogica, private val bloqueInst
 
         treeItem.children.add(expLogica.getTreeItem())
 
-        val listaObservable = SintaxisObservable(ListaSintactica("Bloques de Intrucciones"))
+        val listaObservable = SintaxisObservable(ListaSintactica("Lista de Sentencias"))
         val treeBloqueInstrucciones = TreeItem(listaObservable)
         for (bloque in bloqueInstrucciones) {
             treeBloqueInstrucciones.children.add(bloque.getTreeItem())

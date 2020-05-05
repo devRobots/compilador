@@ -11,7 +11,7 @@ class ValorNumerico(private val signo: Token?, private val identificador: Token)
     init {
         nombre = "Valor Numerico"
         if (signo != null) {
-            estructura = signo.lexema
+            estructura = "${signo.lexema} ${identificador.lexema}"
         }else{
             estructura = identificador.lexema
         }

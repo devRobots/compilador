@@ -5,29 +5,39 @@ import co.edu.uniquindio.lexico.Token
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class ExpresionRelacional(private val izquierda: ExpresionAritmetica?, private val derecho: ExpresionAritmetica?) : Expresion() {
+class ExpresionRelacional(private val izquierda: ExpresionAritmetica?, private val operacion:Token , private val derecho: ExpresionAritmetica?) : Expresion() {
 
     init {
         nombre = "Expresion Relacional"
-        estructura = " @a << [*10 / #2] "
+        estructura = " $izquierda ${operacion.lexema} $derecho"
     }
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        treeItem.children.add(izquierda?.getTreeItem())
-
-        treeItem.children.add(derecho?.getTreeItem())
+        if (izquierda != null){
+            treeItem.children.add(izquierda?.getTreeItem())
+        }
+        if (derecho != null){
+            treeItem.children.add(derecho?.getTreeItem())
+        }
 
         return treeItem
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Izquierda", 0)
-        agregarValor(izquierda.toString(), 0)
-
-        agregarAtributo("Derecha", 1)
-        agregarValor(derecho.toString(), 1)
+        if (izquierda != null){
+            agregarAtributo("Izquierda", 0)
+            agregarValor(izquierda.toString(), 0)
+        }
+        if (izquierda != null){
+            agregarAtributo("operador", 1)
+            agregarValor(operacion.lexema, 1)
+        }
+        if (derecho != null){
+            agregarAtributo("Derecha", 2)
+            agregarValor(derecho.toString(), 2)
+        }
         return panel
     }
 }

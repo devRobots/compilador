@@ -10,7 +10,7 @@ class ValorLogico(private val identificador: Token?, private val expresionRelaci
     init {
         nombre = "Valor Logico"
         if (expresionRelacional != null){
-            estructura = " ${expresionRelacional}$identificador"
+            estructura = " ${expresionRelacional}"
         }else{
             estructura = " $${identificador?.lexema}"
         }
