@@ -22,16 +22,17 @@ class SentenciaSiNo(private val bloqueInstrucciones : ArrayList<Sentencia>,priva
 
         if (sentenciaSi != null){
             treeItem.children.add(sentenciaSi?.getTreeItem())
+        }else{
+            val listaObservable = SintaxisObservable(ListaSintactica("Lista de Sentencias"))
+            val treeBloqueInstrucciones = TreeItem(listaObservable)
+            for (bloque in bloqueInstrucciones) {
+                treeBloqueInstrucciones.children.add(bloque.getTreeItem())
+            }
+            treeItem.children.add(treeBloqueInstrucciones)
         }
         if (sentenciaSiNo != null){
             treeItem.children.add(sentenciaSiNo?.getTreeItem())
         }
-        val listaObservable = SintaxisObservable(ListaSintactica("Lista de Sentencias"))
-        val treeBloqueInstrucciones = TreeItem(listaObservable)
-        for (bloque in bloqueInstrucciones) {
-            treeBloqueInstrucciones.children.add(bloque.getTreeItem())
-        }
-        treeItem.children.add(treeBloqueInstrucciones)
 
         return treeItem
     }
@@ -40,13 +41,14 @@ class SentenciaSiNo(private val bloqueInstrucciones : ArrayList<Sentencia>,priva
         if (sentenciaSi != null){
             agregarAtributo("Condición si", 0)
             agregarValor(sentenciaSi.toString(), 0)
+        }else{
+            agregarAtributo("Instrucciones",0)
+            agregarValor(bloqueInstrucciones.toString(),0)
         }
         if (sentenciaSiNo != null){
             agregarAtributo("Sentencia Sino", 1)
             agregarValor(sentenciaSiNo.toString(), 1)
         }
-        agregarAtributo("Instrucciones",2)
-        agregarValor(bloqueInstrucciones.toString(),2)
 
         return panel
     }

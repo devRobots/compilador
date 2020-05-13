@@ -119,7 +119,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             lista.add(importacion)
             importacion = esImportacion()
         }
-
         return lista
     }
 
@@ -864,10 +863,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      *  <ValorLogico> ::= .true | .false | <ExpRelacional> | identificador
      */
     private fun esValorLogico(): ValorLogico? {
+        val init = posicionActual
         val exp = esExpresionRelacional()
         if (exp != null) {
             return ValorLogico(null, exp)
-        }else if (tokenActual?.categoria == Categoria.BOOLEANO || tokenActual?.categoria == Categoria.IDENTIFICADOR) {
+        }
+        backtracking(init)
+        if (tokenActual?.categoria == Categoria.BOOLEANO || tokenActual?.categoria == Categoria.IDENTIFICADOR) {
             val valor = tokenActual
             siguienteToken()
             return ValorLogico(valor, null)
