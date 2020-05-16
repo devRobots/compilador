@@ -1,13 +1,14 @@
-package co.edu.uniquindio.sintaxis.bnf
+package co.edu.uniquindio.sintaxis.bnf.bloque
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
-import co.edu.uniquindio.sintaxis.ListaSintactica
-import co.edu.uniquindio.sintaxis.Sintaxis
+import co.edu.uniquindio.sintaxis.bnf.otro.TipoDato
+import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
+import co.edu.uniquindio.sintaxis.bnf.sentencia.InvocacionMetodo
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class DeclaracionVariableGlobal(private val modificador:Token?, private val tipoDato:TipoDato,  val identificador:Token,private val expresion:Expresion?,private val metodo:InvocacionMetodo?) : Bloque() {
+class DeclaracionVariableGlobal(private val modificador:Token?, private val tipoDato: TipoDato, val identificador:Token, private val expresion: Expresion?, private val metodo: InvocacionMetodo?) : Bloque() {
     init {
         this.nombre = "Variable Glocal"
         this.estructura = "${modificador?.lexema} ${identificador.lexema}"

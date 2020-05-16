@@ -1,7 +1,9 @@
-package co.edu.uniquindio.sintaxis.bnf
+package co.edu.uniquindio.sintaxis.bnf.otro
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
+import co.edu.uniquindio.sintaxis.bnf.expresion.ExpresionRelacional
+import co.edu.uniquindio.sintaxis.bnf.otro.Valor
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
@@ -9,10 +11,10 @@ class ValorLogico(private val identificador: Token?, private val expresionRelaci
 
     init {
         nombre = "Valor Logico"
-        if (expresionRelacional != null){
-            estructura = " ${expresionRelacional}"
+        estructura = if (expresionRelacional != null){
+            " $expresionRelacional"
         }else{
-            estructura = " ${identificador?.lexema}"
+            " ${identificador?.lexema}"
         }
     }
 

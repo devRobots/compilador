@@ -6,6 +6,10 @@ import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.lexico.Categoria
 
 import co.edu.uniquindio.sintaxis.bnf.*
+import co.edu.uniquindio.sintaxis.bnf.bloque.*
+import co.edu.uniquindio.sintaxis.bnf.expresion.*
+import co.edu.uniquindio.sintaxis.bnf.otro.*
+import co.edu.uniquindio.sintaxis.bnf.sentencia.*
 
 /**
  * @author Samara Rincon
@@ -50,9 +54,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Configura la posicion actual
      * Verifica que no se desborde
      */
-    private fun backtracking(posicion: Int) {
+    private fun backtracking(posicion: Int, errores : Int) {
         posicionActual = posicion - 1
         siguienteToken()
+
+        while(listaErrores.size > errores) {
+            listaErrores.removeAt(listaErrores.size - 1)
+        }
     }
 
     /**
@@ -213,33 +221,34 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     private fun esBloque(): Bloque? {
         esComentario()
         val posicionInicial = posicionActual
-        //Todos deben ser listas no solo una clase
+        val cantErrores = listaErrores.size
+
         val clase = esClase()
         if (clase != null) {
             return clase
         } else {
-            backtracking(posicionInicial)
+            backtracking(posicionInicial, cantErrores)
         }
 
         val funcion = esFuncion()
         if (funcion != null) {
             return funcion
         } else {
-            backtracking(posicionInicial)
+            backtracking(posicionInicial, cantErrores)
         }
 
         val metodo = esMetodo()
         if (metodo != null) {
             return metodo
         } else {
-            backtracking(posicionInicial)
+            backtracking(posicionInicial, cantErrores)
         }
 
         val variableGlobal = esVariableGlobal()
         if (variableGlobal != null) {
             return variableGlobal
         } else {
-            backtracking(posicionInicial)
+            backtracking(posicionInicial, cantErrores)
         }
 
         return null
@@ -330,7 +339,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
                             val listaSentencias = esListaSentencia()
 
-                            val retorno = listaSentencias.get(listaSentencias.lastIndex)
+                            val retorno = listaSentencias[listaSentencias.lastIndex]
                             if (retorno.nombre == "Retorno") {
                                 if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                                     siguienteToken()
@@ -449,51 +458,53 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     private fun esSentencia(): Sentencia? {
         esComentario()
         val init = posicionActual
+        val cantErrores = listaErrores.size
+
         val retorno = esRetorno()
         if (retorno != null) {
             return retorno
         }
-        backtracking(init)
+        backtracking(init, cantErrores)
         val declaracionVariable = esDeclaracionVariableLocal()
         if (declaracionVariable != null){
             return declaracionVariable
         }
-        backtracking(init)
+        backtracking(init, cantErrores)
         val sentenciaSi = esSentenciaCondicional()
         if (sentenciaSi!= null){
             return sentenciaSi
         }
-        backtracking(init)
+        backtracking(init, cantErrores)
         val sentenciaWhile= esSenteciaWhile()
         if (sentenciaWhile != null){
             return sentenciaWhile
         }
-        backtracking(init)
+        backtracking(init, cantErrores)
         val sentenciaFor= esSentenciaFor()
         if (sentenciaFor != null){
             return sentenciaFor
         }
-        backtracking(init)
+        backtracking(init, cantErrores)
         val incremento = esSentenciaIncrementoDecremento()
         if (incremento != null){
             return incremento
         }
-        backtracking(init)
+        backtracking(init, cantErrores)
         val invocacionMetodo = esInvocacionMetodo()
         if (invocacionMetodo != null){
             return invocacionMetodo
         }
-        backtracking(init)
+        backtracking(init, cantErrores)
         val asignacion = esAsignacion()
         if (asignacion != null){
             return asignacion
         }
-        backtracking(init)
+        backtracking(init, cantErrores)
         val arreglo = esArreglo()
         if (arreglo != null) {
             return arreglo
         }
-        backtracking(init)
+        backtracking(init, cantErrores)
         return null
     }
 
@@ -508,16 +519,20 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION) {
                 siguienteToken()
                 val init = posicionActual
+                val cantErrores = listaErrores.size
+
                 val metodo = esInvocacionMetodo()
-                if (metodo != null){
+                if (metodo != null) {
                     return Asignacion(identificador!!, null, metodo)
+                } else {
+                    backtracking(init, cantErrores)
                 }
-                backtracking(init)
+
                 val expresion = esExpresion()
                 if (expresion != null) {
                     if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                         siguienteToken()
-                        return Asignacion(identificador!!, expresion,metodo)
+                        return Asignacion(identificador!!, expresion, metodo)
                     } else {
                         reportarError("Se esperaba un fin de sentencia")
                     }
@@ -633,20 +648,23 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         if (tipoDato != null ){
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
                 val identificador = tokenActual
+                val cantErrores = listaErrores.size
+
                 siguienteToken()
                 if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "="){
                     siguienteToken()
                     val init = posicionActual
                     val metodo = esInvocacionMetodo()
                     if (metodo != null){
-                        return DeclaracionVariableLocal(tipoDato,identificador!!,null,metodo)
+                        return DeclaracionVariableLocal(tipoDato, identificador!!, null, metodo)
+                    } else {
+                        backtracking(init, cantErrores)
                     }
-                    backtracking(init)
                     val exp = esExpresion()
                     if (exp != null){
                         if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
                             siguienteToken()
-                            return DeclaracionVariableLocal(tipoDato,identificador!!,exp,null)
+                            return DeclaracionVariableLocal(tipoDato, identificador!!, exp, null)
                         }else{
                             reportarError("se esperaba fin de sentencia")
                         }
@@ -655,7 +673,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                     }
                 }else if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
                     siguienteToken()
-                    return DeclaracionVariableLocal(tipoDato,identificador!!,null,null)
+                    return DeclaracionVariableLocal(tipoDato, identificador!!, null, null)
                 }else{
                     reportarError("se esperaba fin de sentencia")
                 }
@@ -684,16 +702,19 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "="){
                     siguienteToken()
                     val init = posicionActual
+                    val cantErrores = listaErrores.size
+
                     val metodo = esInvocacionMetodo()
                     if (metodo != null){
-                        return DeclaracionVariableGlobal(modificadorAcceso,tipoDato,identificador!!,null,metodo)
+                        return DeclaracionVariableGlobal(modificadorAcceso, tipoDato, identificador!!, null, metodo)
+                    } else {
+                        backtracking(init, cantErrores)
                     }
-                    backtracking(init)
                     val exp = esExpresion()
                     if(exp != null){
                         if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
                             siguienteToken()
-                            return DeclaracionVariableGlobal(modificadorAcceso,tipoDato,identificador!!,exp,metodo)
+                            return DeclaracionVariableGlobal(modificadorAcceso, tipoDato, identificador!!, exp, metodo)
                         }else{
                             reportarError("se esperaba fin de sentencia")
                         }
@@ -701,7 +722,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 }else{
                     if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
                         siguienteToken()
-                        return DeclaracionVariableGlobal(modificadorAcceso,tipoDato,identificador!!,null,null)
+                        return DeclaracionVariableGlobal(modificadorAcceso, tipoDato, identificador!!, null, null)
                     }else{
                         reportarError("se esperaba fin de sentencia")
                     }
@@ -719,26 +740,36 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
     private fun esExpresion(): Expresion? {
         val init = posicionActual
+        val cantErrores = listaErrores.size
+
         val expLogica = esExpresionLogica()
         if (expLogica != null) {
             return expLogica
+        } else {
+            backtracking(init, cantErrores)
         }
-        backtracking(init)
+
         val expRelacional = esExpresionRelacional()
         if (expRelacional != null) {
             return expRelacional
+        } else {
+            backtracking(init, cantErrores)
         }
-        backtracking(init)
+
         val expAritmetica = esExpresionAritmetica()
         if (expAritmetica != null) {
             return expAritmetica
+        } else {
+            backtracking(init, cantErrores)
         }
-        backtracking(init)
+
         val expCadena = esExpresionCadena()
         if (expCadena != null) {
             return expCadena
+        } else {
+            backtracking(init, cantErrores)
         }
-        backtracking(init)
+
         return null
     }
 
@@ -797,7 +828,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 siguienteToken()
                 val der = esExpresionAritmetica()
                 if (der != null) {
-                    return ExpresionRelacional(izq,operador!!, der)
+                    return ExpresionRelacional(izq, operador!!, der)
                 } else {
                     reportarError("La operacion relacional no esta Correcta")
                 }
@@ -864,11 +895,14 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
     private fun esValorLogico(): ValorLogico? {
         val init = posicionActual
+        val cantErrores = listaErrores.size
+
         val exp = esExpresionRelacional()
         if (exp != null) {
             return ValorLogico(null, exp)
+        } else {
+            backtracking(init, cantErrores)
         }
-        backtracking(init)
         if (tokenActual?.categoria == Categoria.BOOLEANO || tokenActual?.categoria == Categoria.IDENTIFICADOR) {
             val valor = tokenActual
             siguienteToken()
@@ -960,7 +994,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             val sentenciaSi = esSentenciaSi()
             if (sentenciaSi != null) {
                 val sentenciaSino = esSentenciaSino()
-                return SentenciaSiNo(ArrayList(), sentenciaSi,sentenciaSino)
+                return SentenciaSiNo(ArrayList(), sentenciaSi, sentenciaSino)
             }else{
                 if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO){
                     siguienteToken()
@@ -1100,7 +1134,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                                     siguienteToken()
                                     if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                                         siguienteToken()
-                                        return Arreglo(tipoDato,identificador,listaParametros)
+                                        return Arreglo(tipoDato, identificador, listaParametros)
                                     } else {
                                         reportarError("Se esperaba un fin de sentencia")
                                     }

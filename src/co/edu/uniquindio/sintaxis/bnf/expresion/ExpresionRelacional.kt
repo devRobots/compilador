@@ -1,11 +1,13 @@
-package co.edu.uniquindio.sintaxis.bnf
+package co.edu.uniquindio.sintaxis.bnf.expresion
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
+import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
+import co.edu.uniquindio.sintaxis.bnf.expresion.ExpresionAritmetica
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class ExpresionRelacional(private val izquierda: ExpresionAritmetica?, private val operacion:Token , private val derecho: ExpresionAritmetica?) : Expresion() {
+class ExpresionRelacional(private val izquierda: ExpresionAritmetica?, private val operacion:Token, private val derecho: ExpresionAritmetica?) : Expresion() {
 
     init {
         nombre = "Expresion Relacional"

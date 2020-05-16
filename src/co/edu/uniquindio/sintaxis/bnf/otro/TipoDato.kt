@@ -1,4 +1,4 @@
-package co.edu.uniquindio.sintaxis.bnf
+package co.edu.uniquindio.sintaxis.bnf.otro
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token

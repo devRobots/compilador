@@ -1,4 +1,4 @@
-package co.edu.uniquindio.sintaxis.bnf
+package co.edu.uniquindio.sintaxis.bnf.sentencia
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.sintaxis.ListaSintactica
@@ -6,7 +6,7 @@ import co.edu.uniquindio.sintaxis.Sintaxis
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class SentenciaSiNo(private val bloqueInstrucciones : ArrayList<Sentencia>,private val sentenciaSi : SentenciaSi?, private val sentenciaSiNo: SentenciaSiNo?) : Sintaxis() {
+class SentenciaSiNo(private val bloqueInstrucciones : ArrayList<Sentencia>, private val sentenciaSi : SentenciaSi?, private val sentenciaSiNo: SentenciaSiNo?) : Sintaxis() {
     init {
         nombre = "Sentencia Si-No"
         if (sentenciaSi != null){

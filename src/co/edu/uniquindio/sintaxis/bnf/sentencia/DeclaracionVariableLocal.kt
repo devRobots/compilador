@@ -1,13 +1,13 @@
-package co.edu.uniquindio.sintaxis.bnf
+package co.edu.uniquindio.sintaxis.bnf.sentencia
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
-import co.edu.uniquindio.sintaxis.ListaSintactica
-import co.edu.uniquindio.sintaxis.Sintaxis
+import co.edu.uniquindio.sintaxis.bnf.otro.TipoDato
+import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class DeclaracionVariableLocal(private val tipoDato: TipoDato, private val identificador: Token,private val expresion:Expresion?,private val metodo:InvocacionMetodo?) : Sentencia() {
+class DeclaracionVariableLocal(private val tipoDato: TipoDato, private val identificador: Token, private val expresion: Expresion?, private val metodo: InvocacionMetodo?) : Sentencia() {
     init {
         this.nombre = "Variable local"
     }

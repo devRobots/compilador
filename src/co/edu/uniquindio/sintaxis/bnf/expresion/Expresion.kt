@@ -1,4 +1,4 @@
-package co.edu.uniquindio.sintaxis.bnf
+package co.edu.uniquindio.sintaxis.bnf.expresion
 
 import co.edu.uniquindio.sintaxis.Sintaxis
 

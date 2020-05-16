@@ -1,7 +1,8 @@
-package co.edu.uniquindio.sintaxis.bnf
+package co.edu.uniquindio.sintaxis.bnf.expresion
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
+import co.edu.uniquindio.sintaxis.bnf.otro.ValorLogico
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 

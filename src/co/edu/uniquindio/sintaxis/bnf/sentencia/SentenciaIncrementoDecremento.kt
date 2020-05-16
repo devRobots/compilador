@@ -1,7 +1,9 @@
-package co.edu.uniquindio.sintaxis.bnf
+package co.edu.uniquindio.sintaxis.bnf.sentencia
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
+import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
+
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
@@ -25,5 +27,4 @@ class SentenciaIncrementoDecremento(private val identificador: Token, private va
 
         return panel
     }
-
 }

@@ -1,11 +1,14 @@
-package co.edu.uniquindio.sintaxis.bnf
+package co.edu.uniquindio.sintaxis.bnf.sentencia
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
+import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
+import co.edu.uniquindio.sintaxis.bnf.sentencia.InvocacionMetodo
+import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class Asignacion(private val identificador: Token, private val expresion: Expresion?,private val metodo:InvocacionMetodo?): Sentencia() {
+class Asignacion(private val identificador: Token, private val expresion: Expresion?, private val metodo: InvocacionMetodo?): Sentencia() {
     init {
         nombre = "Asignacion"
         if (expresion != null){

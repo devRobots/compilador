@@ -1,8 +1,10 @@
-package co.edu.uniquindio.sintaxis.bnf
+package co.edu.uniquindio.sintaxis.bnf.sentencia
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.Sintaxis
+import co.edu.uniquindio.sintaxis.bnf.expresion.ExpresionLogica
+import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane

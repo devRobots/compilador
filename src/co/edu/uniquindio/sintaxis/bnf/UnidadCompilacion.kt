@@ -3,6 +3,7 @@ package co.edu.uniquindio.sintaxis.bnf
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.Sintaxis
+import co.edu.uniquindio.sintaxis.bnf.bloque.Clase
 
 
 import javafx.scene.control.TreeItem
