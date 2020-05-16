@@ -1,9 +1,10 @@
 package co.edu.uniquindio.sintaxis
 
 import co.edu.uniquindio.app.SintaxisObservable
-import javafx.geometry.Insets
-import javafx.scene.control.Label
 
+import javafx.geometry.Insets
+
+import javafx.scene.control.Label
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
@@ -11,6 +12,7 @@ import javafx.scene.layout.Priority
 abstract class Sintaxis() {
     lateinit var nombre : String
     var estructura : String? = null
+
     protected val panel = GridPane()
 
     init {

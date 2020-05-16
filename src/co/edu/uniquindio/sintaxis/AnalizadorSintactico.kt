@@ -24,13 +24,17 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     /**
      * Arbol sintactico y lista de errores por el analizador sintactico
      */
-    val listaErrores = ArrayList<ErrorSintactico>()
+    private var listaErrores = ArrayList<ErrorSintactico>()
 
     /**
      * Elementos necesarios del analizador lexico
      */
-    private var posicionActual = 0
+    private var posicionActual: Int = 0
     private var tokenActual: Token? = tokens[0]
+
+    private var tokenGuardado: Token? = null
+    private var posicionGuardada: Int = -1
+    private var erroresGuardados =  ArrayList<ErrorSintactico>()
 
     /**
      * Metodo que avanza al siguiente token
@@ -48,19 +52,19 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         }
     }
 
+    private fun guardarEstado() {
+        tokenGuardado = tokenActual
+        posicionGuardada = posicionActual
+        erroresGuardados = listaErrores
+    }
+
     /**
      * Metodo que devuelve el token hasta una posicion deseada
-     *
-     * Configura la posicion actual
-     * Verifica que no se desborde
      */
-    private fun backtracking(posicion: Int, errores : Int) {
-        posicionActual = posicion - 1
-        siguienteToken()
-
-        while(listaErrores.size > errores) {
-            listaErrores.removeAt(listaErrores.size - 1)
-        }
+    private fun backtracking() {
+        tokenGuardado = tokenActual
+        posicionActual = posicionGuardada
+        listaErrores = erroresGuardados
     }
 
     /**
@@ -220,35 +224,34 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
     private fun esBloque(): Bloque? {
         esComentario()
-        val posicionInicial = posicionActual
-        val cantErrores = listaErrores.size
+        guardarEstado()
 
         val clase = esClase()
         if (clase != null) {
             return clase
         } else {
-            backtracking(posicionInicial, cantErrores)
+            backtracking()
         }
 
         val funcion = esFuncion()
         if (funcion != null) {
             return funcion
         } else {
-            backtracking(posicionInicial, cantErrores)
+            backtracking()
         }
 
         val metodo = esMetodo()
         if (metodo != null) {
             return metodo
         } else {
-            backtracking(posicionInicial, cantErrores)
+            backtracking()
         }
 
         val variableGlobal = esVariableGlobal()
         if (variableGlobal != null) {
             return variableGlobal
         } else {
-            backtracking(posicionInicial, cantErrores)
+            backtracking()
         }
 
         return null
@@ -457,54 +460,70 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
     private fun esSentencia(): Sentencia? {
         esComentario()
-        val init = posicionActual
-        val cantErrores = listaErrores.size
+        guardarEstado()
 
         val retorno = esRetorno()
         if (retorno != null) {
             return retorno
+        } else {
+            backtracking()
         }
-        backtracking(init, cantErrores)
+
         val declaracionVariable = esDeclaracionVariableLocal()
         if (declaracionVariable != null){
             return declaracionVariable
+        } else {
+            backtracking()
         }
-        backtracking(init, cantErrores)
+
         val sentenciaSi = esSentenciaCondicional()
         if (sentenciaSi!= null){
             return sentenciaSi
+        } else {
+            backtracking()
         }
-        backtracking(init, cantErrores)
+
         val sentenciaWhile= esSenteciaWhile()
         if (sentenciaWhile != null){
             return sentenciaWhile
+        } else {
+            backtracking()
         }
-        backtracking(init, cantErrores)
+
         val sentenciaFor= esSentenciaFor()
         if (sentenciaFor != null){
             return sentenciaFor
+        } else {
+            backtracking()
         }
-        backtracking(init, cantErrores)
+
         val incremento = esSentenciaIncrementoDecremento()
         if (incremento != null){
             return incremento
+        } else {
+            backtracking()
         }
-        backtracking(init, cantErrores)
+
         val invocacionMetodo = esInvocacionMetodo()
         if (invocacionMetodo != null){
             return invocacionMetodo
+        } else {
+            backtracking()
         }
-        backtracking(init, cantErrores)
+
         val asignacion = esAsignacion()
         if (asignacion != null){
             return asignacion
+        } else {
+            backtracking()
         }
-        backtracking(init, cantErrores)
+
         val arreglo = esArreglo()
         if (arreglo != null) {
             return arreglo
+        } else {
+            backtracking()
         }
-        backtracking(init, cantErrores)
         return null
     }
 
@@ -518,14 +537,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION) {
                 siguienteToken()
-                val init = posicionActual
-                val cantErrores = listaErrores.size
+                guardarEstado()
 
                 val metodo = esInvocacionMetodo()
                 if (metodo != null) {
                     return Asignacion(identificador!!, null, metodo)
                 } else {
-                    backtracking(init, cantErrores)
+                    backtracking()
                 }
 
                 val expresion = esExpresion()
@@ -648,18 +666,19 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         if (tipoDato != null ){
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
                 val identificador = tokenActual
-                val cantErrores = listaErrores.size
 
                 siguienteToken()
                 if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "="){
                     siguienteToken()
-                    val init = posicionActual
+                    guardarEstado()
+
                     val metodo = esInvocacionMetodo()
                     if (metodo != null){
                         return DeclaracionVariableLocal(tipoDato, identificador!!, null, metodo)
                     } else {
-                        backtracking(init, cantErrores)
+                        backtracking()
                     }
+
                     val exp = esExpresion()
                     if (exp != null){
                         if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
@@ -701,14 +720,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 siguienteToken()
                 if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "="){
                     siguienteToken()
-                    val init = posicionActual
-                    val cantErrores = listaErrores.size
+                    guardarEstado()
 
                     val metodo = esInvocacionMetodo()
                     if (metodo != null){
                         return DeclaracionVariableGlobal(modificadorAcceso, tipoDato, identificador!!, null, metodo)
                     } else {
-                        backtracking(init, cantErrores)
+                        backtracking()
                     }
                     val exp = esExpresion()
                     if(exp != null){
@@ -739,35 +757,34 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <Expresion> ::= <ExpAritmetica> | <ExpRelacional> | <ExpLogica> | <ExpoCadena>
      */
     private fun esExpresion(): Expresion? {
-        val init = posicionActual
-        val cantErrores = listaErrores.size
+        guardarEstado()
 
         val expLogica = esExpresionLogica()
         if (expLogica != null) {
             return expLogica
         } else {
-            backtracking(init, cantErrores)
+            backtracking()
         }
 
         val expRelacional = esExpresionRelacional()
         if (expRelacional != null) {
             return expRelacional
         } else {
-            backtracking(init, cantErrores)
+            backtracking()
         }
 
         val expAritmetica = esExpresionAritmetica()
         if (expAritmetica != null) {
             return expAritmetica
         } else {
-            backtracking(init, cantErrores)
+            backtracking()
         }
 
         val expCadena = esExpresionCadena()
         if (expCadena != null) {
             return expCadena
         } else {
-            backtracking(init, cantErrores)
+            backtracking()
         }
 
         return null
@@ -894,14 +911,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      *  <ValorLogico> ::= .true | .false | <ExpRelacional> | identificador
      */
     private fun esValorLogico(): ValorLogico? {
-        val init = posicionActual
-        val cantErrores = listaErrores.size
+        guardarEstado()
 
         val exp = esExpresionRelacional()
         if (exp != null) {
             return ValorLogico(null, exp)
         } else {
-            backtracking(init, cantErrores)
+            backtracking()
         }
         if (tokenActual?.categoria == Categoria.BOOLEANO || tokenActual?.categoria == Categoria.IDENTIFICADOR) {
             val valor = tokenActual
