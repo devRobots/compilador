@@ -24,7 +24,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     /**
      * Arbol sintactico y lista de errores por el analizador sintactico
      */
-    private var listaErrores = ArrayList<ErrorSintactico>()
+    var listaErrores = ArrayList<ErrorSintactico>()
 
     /**
      * Elementos necesarios del analizador lexico
@@ -919,6 +919,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         } else {
             backtracking()
         }
+
         if (tokenActual?.categoria == Categoria.BOOLEANO || tokenActual?.categoria == Categoria.IDENTIFICADOR) {
             val valor = tokenActual
             siguienteToken()
