@@ -55,16 +55,16 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     private fun guardarEstado() {
         tokenGuardado = tokenActual
         posicionGuardada = posicionActual
-        erroresGuardados = listaErrores
+        erroresGuardados = listaErrores.clone() as ArrayList<ErrorSintactico>
     }
 
     /**
      * Metodo que devuelve el token hasta una posicion deseada
      */
     private fun backtracking() {
-        tokenGuardado = tokenActual
+        tokenActual = tokenGuardado
         posicionActual = posicionGuardada
-        listaErrores = erroresGuardados
+        listaErrores = erroresGuardados.clone() as ArrayList<ErrorSintactico>
     }
 
     /**
@@ -836,12 +836,11 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo para Determinar si es una Expresion Relacional
      * <ExpRelacional> ::= <ExpAritmetica> OpRelacional <ExpAritmetica>
      */
-
     private fun esExpresionRelacional(): ExpresionRelacional? {
         val izq = esExpresionAritmetica()
         if (izq != null) {
             if (tokenActual?.categoria == Categoria.OPERADOR_RELACIONAL) {
-                val operador = tokenActual //aqui
+                val operador = tokenActual
                 siguienteToken()
                 val der = esExpresionAritmetica()
                 if (der != null) {
