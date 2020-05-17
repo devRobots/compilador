@@ -41,10 +41,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     private var posicionActual: Int = 0
     private var tokenActual: Token? = tokens[0]
 
-    private var posicionGuardada : Int = -1
-    private var tokenGuardado : Token? = null
-    private var erroresGuardados: ArrayList<ErrorSintactico>  = ArrayList()
-
     /**
      * Metodo que avanza al siguiente token
      *
@@ -61,19 +57,18 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         }
     }
 
-    private fun guardarEstado() {
-        tokenGuardado = tokenActual
-        posicionGuardada = posicionActual
-        erroresGuardados = listaErrores.clone() as ArrayList<ErrorSintactico>
-    }
-
     /**
      * Metodo que devuelve el token hasta una posicion deseada
      */
-    private fun backtracking() {
-        tokenActual = tokenGuardado
-        posicionActual = posicionGuardada
-        listaErrores = erroresGuardados.clone() as ArrayList<ErrorSintactico>
+    private fun backtracking(posicion: Int, cantidadErrores: Int) {
+        posicionActual = posicion - 1
+        siguienteToken()
+
+        for (i in 0..cantidadErrores) {
+            if (listaErrores.size > 0) {
+                listaErrores.removeAt(listaErrores.lastIndex)
+            }
+        }
     }
 
     /**
@@ -228,34 +223,35 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <Bloque>::= <ListaClases> | <ListaFunciones> | <ListaVariablesGlobales>
      */
     private fun esBloque(): Bloque? {
-        guardarEstado()
+        val posicionInicial = posicionActual
+        val cantidadErrores = listaErrores.size
 
         val clase = esClase()
         if (clase != null) {
             return clase
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         val funcion = esFuncion()
         if (funcion != null) {
             return funcion
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         val metodo = esMetodo()
         if (metodo != null) {
             return metodo
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         val variableGlobal = esVariableGlobal()
         if (variableGlobal != null) {
             return variableGlobal
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         return null
@@ -375,7 +371,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <ListaParametros> ::= <Parametro> [ "," <ListaParametros>]
      */
     private fun esListaArgumentos(): ArrayList<Argumento> {
-        val lista =  ArrayList<Argumento>()
+        val lista = ArrayList<Argumento>()
 
         var argumento: Argumento? = esArgumento()
         while (argumento != null) {
@@ -410,7 +406,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo para Determinar si es una Lista de Argumentos
      * <ListaArgumentos> ::= <Argumento> [ "," <ListaArgumentos> ]
      */
-    private fun esListaParametros() : ArrayList<Parametro> {
+    private fun esListaParametros(): ArrayList<Parametro> {
         val lista = ArrayList<Parametro>()
         var parametro = esParametro()
         while (parametro != null) {
@@ -461,69 +457,70 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <InvocacionMetodo>
      */
     private fun esSentencia(): Sentencia? {
-        guardarEstado()
+        val posicionInicial = posicionActual
+        val cantidadErrores = listaErrores.size
 
         val retorno = esRetorno()
         if (retorno != null) {
             return retorno
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         val declaracionVariable = esDeclaracionVariableLocal()
-        if (declaracionVariable != null){
+        if (declaracionVariable != null) {
             return declaracionVariable
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         val sentenciaSi = esSentenciaCondicional()
-        if (sentenciaSi!= null){
+        if (sentenciaSi != null) {
             return sentenciaSi
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
-        val sentenciaWhile= esSenteciaWhile()
-        if (sentenciaWhile != null){
+        val sentenciaWhile = esSenteciaWhile()
+        if (sentenciaWhile != null) {
             return sentenciaWhile
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
-        val sentenciaFor= esSentenciaFor()
-        if (sentenciaFor != null){
+        val sentenciaFor = esSentenciaFor()
+        if (sentenciaFor != null) {
             return sentenciaFor
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         val incremento = esSentenciaIncrementoDecremento()
-        if (incremento != null){
+        if (incremento != null) {
             return incremento
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         val invocacionMetodo = esInvocacionMetodo()
-        if (invocacionMetodo != null){
+        if (invocacionMetodo != null) {
             return invocacionMetodo
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         val asignacion = esAsignacion()
-        if (asignacion != null){
+        if (asignacion != null) {
             return asignacion
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         val arreglo = esArreglo()
         if (arreglo != null) {
             return arreglo
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
         return null
     }
@@ -532,19 +529,20 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo para Determinar si es una Asignacion
      * <Asignacion> ::= identificador operadorAsignación <Expresión> ["!"]
      */
-    private fun esAsignacion() : Asignacion? {
+    private fun esAsignacion(): Asignacion? {
         if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
             val identificador = tokenActual
             siguienteToken()
             if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION) {
                 siguienteToken()
-                guardarEstado()
+                val posicionInicial = posicionActual
+                val cantidadErrores = listaErrores.size
 
                 val metodo = esInvocacionMetodo()
                 if (metodo != null) {
                     return Asignacion(identificador!!, null, metodo)
                 } else {
-                    backtracking()
+                    backtracking(posicionInicial, cantidadErrores)
                 }
 
                 val expresion = esExpresion()
@@ -571,11 +569,11 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <Incremento> ::= identificador operadorIncremento
      * <Decremento> ::= identificador operadorDecremento
      */
-    private fun esSentenciaIncrementoDecremento(): SentenciaIncrementoDecremento?{
-        if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
+    private fun esSentenciaIncrementoDecremento(): SentenciaIncrementoDecremento? {
+        if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
             val identificador = tokenActual
             siguienteToken()
-            if (tokenActual?.categoria == Categoria.OPERADOR_INCREMENTO){
+            if (tokenActual?.categoria == Categoria.OPERADOR_INCREMENTO) {
                 val incremento = tokenActual
                 siguienteToken()
                 return SentenciaIncrementoDecremento(identificador!!, incremento!!)
@@ -587,24 +585,25 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         }
         return null
     }
+
     /**
      * Metodo para Determinar si es una Impresion
      * <InvocacionMetodo> ::=  identificador "[" [<ListaArgumentos>] "]" "!”
      */
     private fun esInvocacionMetodo(): InvocacionMetodo? {
-        if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
+        if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
             val identificador = tokenActual
             siguienteToken()
-            if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO){
+            if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
                 siguienteToken()
                 val listaParametros = esListaParametros()
-                if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO){
+                if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
                     siguienteToken()
-                    if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
+                    if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                         siguienteToken()
                         return InvocacionMetodo(identificador!!, listaParametros)
                     }
-                }else{
+                } else {
                     reportarError("Se esperaba un paratesis Derecho")
                 }
             }
@@ -664,43 +663,45 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
     private fun esDeclaracionVariableLocal(): DeclaracionVariableLocal? {
         val tipoDato = esTipoDato()
-        if (tipoDato != null ){
-            if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
+        if (tipoDato != null) {
+            if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
                 val identificador = tokenActual
 
                 siguienteToken()
-                if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "="){
+                if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "=") {
                     siguienteToken()
-                    guardarEstado()
+                    val posicionInicial = posicionActual
+                    val cantidadErrores = listaErrores.size
 
                     val metodo = esInvocacionMetodo()
-                    if (metodo != null){
+                    if (metodo != null) {
                         return DeclaracionVariableLocal(tipoDato, identificador!!, null, metodo)
                     } else {
-                        backtracking()
+                        backtracking(posicionInicial, cantidadErrores)
                     }
 
                     val exp = esExpresion()
-                    if (exp != null){
-                        if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
+                    if (exp != null) {
+                        if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                             siguienteToken()
                             return DeclaracionVariableLocal(tipoDato, identificador!!, exp, null)
-                        }else{
+                        } else {
                             reportarError("se esperaba fin de sentencia")
                         }
-                    }else{
+                    } else {
                         reportarError("se esperaba asignacion de valor")
                     }
-                }else if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
+                } else if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                     siguienteToken()
                     return DeclaracionVariableLocal(tipoDato, identificador!!, null, null)
-                }else{
+                } else {
                     reportarError("se esperaba fin de sentencia")
                 }
             }
         }
         return null
     }
+
     /**
      * Metodo Para Determinar si es una Variable Global
      * <VariableGlobal> ::= [<ModificadorAcceso>] <TipoDato> identificador “=” <Expresion> “!” |
@@ -708,45 +709,46 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
     private fun esVariableGlobal(): DeclaracionVariableGlobal? {
         var modificadorAcceso: Token? = null
-        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA ) {
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA) {
             if (tokenActual?.lexema == "estrato1" || tokenActual?.lexema == "estrato6") {
                 modificadorAcceso = tokenActual
                 siguienteToken()
             }
         }
         val tipoDato = esTipoDato()
-        if (tipoDato != null ){
-            if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
+        if (tipoDato != null) {
+            if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
                 val identificador = tokenActual
                 siguienteToken()
-                if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "="){
+                if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "=") {
                     siguienteToken()
-                    guardarEstado()
+                    val posicionInicial = posicionActual
+                    val cantidadErrores = listaErrores.size
 
                     val metodo = esInvocacionMetodo()
-                    if (metodo != null){
+                    if (metodo != null) {
                         return DeclaracionVariableGlobal(modificadorAcceso, tipoDato, identificador!!, null, metodo)
                     } else {
-                        backtracking()
+                        backtracking(posicionInicial, cantidadErrores)
                     }
                     val exp = esExpresion()
-                    if(exp != null){
-                        if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
+                    if (exp != null) {
+                        if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                             siguienteToken()
                             return DeclaracionVariableGlobal(modificadorAcceso, tipoDato, identificador!!, exp, metodo)
-                        }else{
+                        } else {
                             reportarError("se esperaba fin de sentencia")
                         }
                     }
-                }else{
-                    if (tokenActual?.categoria == Categoria.FIN_SENTENCIA){
+                } else {
+                    if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                         siguienteToken()
                         return DeclaracionVariableGlobal(modificadorAcceso, tipoDato, identificador!!, null, null)
-                    }else{
+                    } else {
                         reportarError("se esperaba fin de sentencia")
                     }
                 }
-            }else{
+            } else {
                 reportarError("se esperaba identificador")
             }
         }
@@ -758,34 +760,35 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <Expresion> ::= <ExpAritmetica> | <ExpRelacional> | <ExpLogica> | <ExpoCadena>
      */
     private fun esExpresion(): Expresion? {
-        guardarEstado()
+        val posicionInicial = posicionActual
+        val cantidadErrores = listaErrores.size
 
         val expLogica = esExpresionLogica()
         if (expLogica != null) {
             return expLogica
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         val expRelacional = esExpresionRelacional()
         if (expRelacional != null) {
             return expRelacional
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         val expAritmetica = esExpresionAritmetica()
         if (expAritmetica != null) {
             return expAritmetica
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         val expCadena = esExpresionCadena()
         if (expCadena != null) {
             return expCadena
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         return null
@@ -898,8 +901,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 } else {
                     reportarError(" la cadena no esta concatenada con nada")
                 }
-            }
-            else {
+            } else {
                 return ExpresionCadena(cadena!!, null)
             }
         }
@@ -911,13 +913,14 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      *  <ValorLogico> ::= .true | .false | <ExpRelacional> | identificador
      */
     private fun esValorLogico(): ValorLogico? {
-        guardarEstado()
+        val posicionInicial = posicionActual
+        val cantidadErrores = listaErrores.size
 
         val exp = esExpresionRelacional()
         if (exp != null) {
             return ValorLogico(null, exp)
         } else {
-            backtracking()
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         if (tokenActual?.categoria == Categoria.BOOLEANO || tokenActual?.categoria == Categoria.IDENTIFICADOR) {
@@ -954,9 +957,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo de la sentencia condicional
      * <SentenciaCondicional> ::= <SentenciaSi> [<SentenciaSino>]
      */
-    private fun esSentenciaCondicional(): SentenciaCondicional?{
+    private fun esSentenciaCondicional(): SentenciaCondicional? {
         val sentenciasi = esSentenciaSi()
-        if (sentenciasi != null){
+        if (sentenciasi != null) {
             val sentenciaSino = esSentenciaSino()
             return SentenciaCondicional(sentenciasi, sentenciaSino)
         }
@@ -967,10 +970,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo de la Sentencia condicional si
      * <SentenciaSi> ::= wi “[“ <ExpLogica> ”]” “¿” [<ListaSentencia>] “?”
      */
-    private fun esSentenciaSi(): SentenciaSi?{
-        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema== "wi"){
+    private fun esSentenciaSi(): SentenciaSi? {
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "wi") {
             siguienteToken()
-            if (tokenActual?.categoria== Categoria.PARENTESIS_IZQUIERDO){
+            if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
                 siguienteToken()
                 val expLogica = esExpresionLogica()
                 if (expLogica != null) {
@@ -1005,24 +1008,24 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo para Determinar si es una SentenciaSINO
      * <SentenciaSino> ::= wo “¿” [<ListaSentencia>] “?” | wo <SentenciaSi> [<SentenciaSino>]
      */
-    private fun esSentenciaSino(): SentenciaSiNo?{
-        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "wo"){
+    private fun esSentenciaSino(): SentenciaSiNo? {
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "wo") {
             siguienteToken()
             val sentenciaSi = esSentenciaSi()
             if (sentenciaSi != null) {
                 val sentenciaSino = esSentenciaSino()
                 return SentenciaSiNo(ArrayList(), sentenciaSi, sentenciaSino)
-            }else{
-                if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO){
+            } else {
+                if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
                     siguienteToken()
                     val listaSentencia = esListaSentencia()
                     if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                         siguienteToken()
                         return SentenciaSiNo(listaSentencia, null, null)
-                    }else{
+                    } else {
                         reportarError("Se esperaba una llave derecha")
                     }
-                }else{
+                } else {
                     reportarError("Se esperaba una llave iquierdo")
                 }
             }
@@ -1049,19 +1052,19 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                             if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                                 siguienteToken()
                                 return SentenciaWhile(expLogico, listaSentencia)
-                            }else{
+                            } else {
                                 reportarError("Se esperaba una llave derecha")
                             }
-                        }else{
+                        } else {
                             reportarError("Se esperaba una llave izquierda")
                         }
-                    }else{
+                    } else {
                         reportarError("Se esperaba un parentesis derecho")
                     }
-                }else{
+                } else {
                     reportarError("Se esperaba una expresión lógica")
                 }
-            }else{
+            } else {
                 reportarError("Se esperaba un parentesis izquierdo")
             }
         }
@@ -1074,22 +1077,22 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      *  “¿” [<ListaSentencia>] “?”
      */
     private fun esSentenciaFor(): SentenciaFor? {
-        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "ciclo"){
+        if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "ciclo") {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
                 siguienteToken()
                 val decVariableLocal = esDeclaracionVariableLocal()
                 if (decVariableLocal != null) {
-                    if (tokenActual?.categoria == Categoria.DOS_PUNTOS){
+                    if (tokenActual?.categoria == Categoria.DOS_PUNTOS) {
                         siguienteToken()
                         val expLogica = esExpresionLogica()
-                        if (expLogica != null){
+                        if (expLogica != null) {
                             if (tokenActual?.categoria == Categoria.DOS_PUNTOS) {
                                 siguienteToken()
                                 val asigCiclo = esSentenciaIncrementoDecremento()
-                                if (asigCiclo != null){
-                                    if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO){
-                                        if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO){
+                                if (asigCiclo != null) {
+                                    if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
+                                        if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
                                             siguienteToken()
                                             if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
                                                 siguienteToken()
@@ -1097,57 +1100,58 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                                                 if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                                                     siguienteToken()
                                                     return SentenciaFor(decVariableLocal, expLogica, asigCiclo, listaSentencia)
-                                                }else{
+                                                } else {
                                                     reportarError("Se esperaba una llave derecha")
                                                 }
-                                            }else{
+                                            } else {
                                                 reportarError("Se esperaba una llave izquierda")
                                             }
-                                        }else{
+                                        } else {
                                             reportarError("Se esperaba un parentesis derecho")
                                         }
-                                    }else{
+                                    } else {
                                         reportarError("se esperaba parentesis Derecho")
                                     }
-                                }else{
+                                } else {
                                     reportarError("Se esperaba una asignacion de ciclo")
                                 }
-                            }else{
+                            } else {
                                 reportarError("Se esperaba un fin de sentencia")
                             }
-                        }else{
+                        } else {
                             reportarError("Se esperaba una expresion logica")
                         }
-                    }else{
+                    } else {
                         reportarError("se esperaba un separador dos puntos | ")
                     }
                 }
-            }else{
+            } else {
                 reportarError("Se esperaba un parentesis izquierdo")
             }
         }
         return null
     }
+
     /**
      * Metodo Determinar si es un Arreglo
      * <Arreglo> ::= <tipoDato> “{“ “}” identificador “=”  {“ <listaArgumentos> “}” “!”
      */
-    private fun esArreglo() : Arreglo?{
+    private fun esArreglo(): Arreglo? {
         val tipoDato = esTipoDato()
-        if (tipoDato != null){
-            if (tokenActual?.categoria == Categoria.CORCHETE_IZQUIERDO){
+        if (tipoDato != null) {
+            if (tokenActual?.categoria == Categoria.CORCHETE_IZQUIERDO) {
                 siguienteToken()
-                if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO){
+                if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO) {
                     siguienteToken()
-                    if (tokenActual?.categoria == Categoria.IDENTIFICADOR){
+                    if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
                         val identificador = tokenActual!!
                         siguienteToken()
-                        if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "="){
+                        if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "=") {
                             siguienteToken()
-                            if (tokenActual?.categoria == Categoria.CORCHETE_IZQUIERDO){
+                            if (tokenActual?.categoria == Categoria.CORCHETE_IZQUIERDO) {
                                 siguienteToken()
                                 val listaParametros = esListaParametros()
-                                if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO){
+                                if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO) {
                                     siguienteToken()
                                     if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                                         siguienteToken()
@@ -1156,22 +1160,22 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                                         reportarError("Se esperaba un fin de sentencia")
                                     }
 
-                                }else{
+                                } else {
                                     reportarError("Se esperaba un corchete derecho")
                                 }
-                            }else{
+                            } else {
                                 reportarError("Se esperaba un corchete izquierdo")
                             }
-                        }else{
+                        } else {
                             reportarError("Se esperaba el operador de asignación")
                         }
-                    }else{
+                    } else {
                         reportarError("Se esperaba un identificador")
                     }
-                }else{
+                } else {
                     reportarError("Se esperaba un corchete derecho")
                 }
-            }else{
+            } else {
                 reportarError("Se esperaba un corchete izquierdo")
             }
         }

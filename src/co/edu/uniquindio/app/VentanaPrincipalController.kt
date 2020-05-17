@@ -134,6 +134,10 @@ class VentanaPrincipalController {
 
         // Salida final
         resolucionErrores(listaErroresLexicos, listaErroresSintacticos)
+
+        if (mensaje.text.isBlank()) {
+            mensaje.text = "Se completo el analisis sintactico"
+        }
     }
 
     /**
