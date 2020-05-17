@@ -23,8 +23,9 @@ import co.edu.uniquindio.sintaxis.bnf.control.*
  */
 class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     init {
-        val copia: ArrayList<Token> = tokens.clone() as ArrayList<Token>
-        for (token in copia) {
+        val copia: ArrayList<*> = tokens.clone() as ArrayList<*>
+        for (any in copia) {
+            val token: Token = any as Token
             if (token.categoria == COMENTARIO_LINEA || token.categoria == COMENTARIO_BLOQUE) {
                 tokens.remove(token)
             }
@@ -93,7 +94,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         val fil = fila ?: -1
         val col = columna ?: -1
 
-        val error = ErrorSintactico(token, fil, col)
 
         var centinela = true
 
@@ -104,6 +104,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             }
         }
 
+        val error = ErrorSintactico(token, fil, col)
         if (centinela) listaErrores.add(error)
     }
 

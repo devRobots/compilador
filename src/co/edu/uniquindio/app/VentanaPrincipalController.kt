@@ -15,7 +15,8 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
 import javafx.util.Callback
-import java.util.*
+
+import kotlin.collections.ArrayList
 
 
 /**
@@ -52,7 +53,9 @@ class VentanaPrincipalController {
      * Elementos de Rutina de errores
      */
     @FXML lateinit var mensaje: Label
+    @FXML lateinit var panelErroresLexicos: TitledPane
     @FXML lateinit var erroresLexicos: ListView<String>
+    @FXML lateinit var panelErroresSintacticos: TitledPane
     @FXML lateinit var erroresSintacticos: ListView<String>
 
     /**
@@ -109,34 +112,35 @@ class VentanaPrincipalController {
      */
     @FXML
     fun analizar() {
+        limpiarSalidas()
         val codigoFuente = texto.text
 
-        // Analizador Lexico
-        val analizadorLexico = AnalizadorLexico(codigoFuente)
-        analizadorLexico.analizar()
+        if (codigoFuente.isNotEmpty()) {
+            val analizadorLexico = AnalizadorLexico(codigoFuente)
+            analizadorLexico.analizar()
 
-        val tokens = analizadorLexico.listaTokens
-        val listaErroresLexicos = analizadorLexico.listaErrores
+            val tokens = analizadorLexico.listaTokens
+            val listaErroresLexicos = analizadorLexico.listaErrores
 
-        mostrarTokens(tokens)
-        mostrarErroresLexicos(listaErroresLexicos)
+            mostrarTokens(tokens)
+            mostrarErroresLexicos(listaErroresLexicos)
 
-        // Analizador Sintactico
-        val analizadorSintactico = AnalizadorSintactico(tokens)
+            if (listaErroresLexicos.isEmpty()) {
+                val analizadorSintactico = AnalizadorSintactico(tokens)
 
-        val unidadCompilacion: UnidadCompilacion? = analizadorSintactico.esUnidadDeCompilacion()
-        val listaErroresSintacticos = analizadorSintactico.listaErrores
+                val unidadCompilacion: UnidadCompilacion? = analizadorSintactico.esUnidadDeCompilacion()
+                val listaErroresSintacticos = analizadorSintactico.listaErrores
 
-        if (unidadCompilacion != null) {
-            contruirTreeView(unidadCompilacion)
-        }
-        mostrarErroresSintacticos(listaErroresSintacticos)
+                if (unidadCompilacion != null) {
+                    contruirTreeView(unidadCompilacion)
+                }
+                mostrarErroresSintacticos(listaErroresSintacticos)
 
-        // Salida final
-        resolucionErrores(listaErroresLexicos, listaErroresSintacticos)
-
-        if (mensaje.text.isBlank()) {
-            mensaje.text = "Se completo el analisis sintactico"
+                if (mensaje.text.isBlank()) {
+                    mensaje.text = "Se completo el analisis sintactico"
+                    mensaje.style = "-fx-text-fill: darkgreen;"
+                }
+            }
         }
     }
 
@@ -146,7 +150,29 @@ class VentanaPrincipalController {
     @FXML
     fun limpiar() {
         texto.clear()
+        limpiarSalidas()
+    }
+
+    private fun limpiarSalidas() {
         mensaje.text = ""
+
+        salidaLexico.items.clear()
+        salidaLexico.refresh()
+
+        erroresLexicos.items.clear()
+        erroresLexicos.refresh()
+
+        arbolSintactico.root = null
+        arbolSintactico.refresh()
+
+        erroresSintacticos.items.clear()
+        erroresSintacticos.refresh()
+
+        panelErroresLexicos.style = "-fx-text-fill: black;"
+        panelErroresSintacticos.style = "-fx-text-fill: black;"
+
+        panelErroresLexicos.text = "No se encontraron errores lexicos"
+        panelErroresSintacticos.text = "No se encontraron errores sintacticos"
     }
 
     /**
@@ -180,7 +206,9 @@ class VentanaPrincipalController {
      * mostrarlos en un ListView
      */
     private fun mostrarErroresLexicos(listaErrores: ArrayList<ErrorLexico>) {
-        val erroresObservables = extraerErroresObservables(listaErrores as ArrayList<Any>)
+        val errores: ArrayList<*> = listaErrores
+        val erroresObservables = extraerErroresObservables(errores)
+        mostrarMensajeErrores(errores, panelErroresLexicos, "lexico")
         erroresLexicos.items = erroresObservables
         erroresLexicos.refresh()
     }
@@ -190,7 +218,9 @@ class VentanaPrincipalController {
      * mostrarlos en un ListView
      */
     private fun mostrarErroresSintacticos(listaErrores: ArrayList<ErrorSintactico>) {
-        val erroresObservables = extraerErroresObservables(listaErrores as ArrayList<Any>)
+        val errores: ArrayList<*> = listaErrores
+        val erroresObservables = extraerErroresObservables(errores)
+        mostrarMensajeErrores(errores, panelErroresSintacticos, "sintactico")
         erroresSintacticos.items = erroresObservables
         erroresSintacticos.refresh()
     }
@@ -199,7 +229,7 @@ class VentanaPrincipalController {
      * Extrae el mensaje de cada error para ponerlos en una lista de
      * errores observables
      */
-    private fun extraerErroresObservables(listaErrores: ArrayList<Any>): ObservableList<String> {
+    private fun extraerErroresObservables(listaErrores: ArrayList<*>): ObservableList<String> {
         val erroresObservables: ObservableList<String> = FXCollections.observableArrayList()
         for (error in listaErrores) {
             erroresObservables.add(error.toString())
@@ -209,24 +239,21 @@ class VentanaPrincipalController {
     }
 
     /**
-     * Interpreta el flujo de errore
+     * Interpreta el flujo de errores
      */
-    private fun resolucionErrores(erroresLexicos: ArrayList<ErrorLexico>, erroresSintacticos: ArrayList<ErrorSintactico>) {
-        mensaje.text = ""
+    private fun mostrarMensajeErrores(errores: ArrayList<*>, panel: TitledPane, tipo: String) {
+        if(errores.isNotEmpty()) {
+            panel.style = "-fx-text-fill: red;"
+            mensaje.style = "-fx-text-fill: red;"
 
-        if(erroresLexicos.isNotEmpty()) {
-            if (erroresLexicos.size == 1) {
-                mensaje.text += "Se encontro 1 error lexico"
+            if (errores.size == 1) {
+                val texto = "Se encontro 1 error $tipo"
+                mensaje.text = texto
+                panel.text = texto
             } else {
-                mensaje.text += "Se encontraron ${erroresLexicos.size} errores lexicos"
-            }
-            mensaje.text += "\n"
-        }
-        if (erroresSintacticos.isNotEmpty()) {
-            if (erroresSintacticos.size == 1) {
-                mensaje.text += "Se encontro 1 error sintactico"
-            } else {
-                mensaje.text += "Se encontraron ${erroresSintacticos.size} errores sintacticos"
+                val texto = "Se encontraron ${errores.size} errores ${tipo}s"
+                mensaje.text = texto
+                panel.text = texto
             }
         }
     }
