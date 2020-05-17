@@ -9,8 +9,4 @@ package co.edu.uniquindio.sintaxis
  *
  * Error Sintactico
  */
-class ErrorSintactico(private var mensaje: String) {
-    override fun toString(): String {
-        return "Error Sintactico: $mensaje"
-    }
-}
+class ErrorSintactico(token: String, var fila: Int, var columna: Int): Error("Se esperaba $token en $fila:$columna")

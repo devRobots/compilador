@@ -83,14 +83,14 @@ class VentanaPrincipalController {
 
                 val title = GridPane()
 
-                var texto = Label("Objeto:")
+                val texto = Label("Objeto:")
                 texto.style = "-fx-font-weight: bold"
                 texto.padding = Insets(10.0)
 
                 GridPane.setHgrow(texto, Priority.ALWAYS)
                 title.add(texto, 0, 0)
 
-                var objeto = Label(observable.value.value.toString())
+                val objeto = Label(observable.value.value.toString())
                 objeto.style = "-fx-font-weight: bold"
                 objeto.padding = Insets(10.0)
 

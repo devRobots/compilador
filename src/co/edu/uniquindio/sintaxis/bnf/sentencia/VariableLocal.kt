@@ -5,12 +5,11 @@ import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
-import co.edu.uniquindio.sintaxis.bnf.otro.TipoDato
 import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class VariableLocal(private val tipoDato: TipoDato, private val identificador: Token, private val expresion: Expresion?, private val metodo: InvocacionMetodo?) : Sentencia() {
+class VariableLocal(private val tipo: Token, private val identificador: Token, private val expresion: Expresion?, private val metodo: InvocacionMetodo?) : Sentencia() {
     init {
         this.nombre = "Variable local"
     }
@@ -18,7 +17,6 @@ class VariableLocal(private val tipoDato: TipoDato, private val identificador: T
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        treeItem.children.add(tipoDato.getTreeItem())
         if (metodo != null){
             treeItem.children.add(metodo.getTreeItem())
         }
@@ -30,7 +28,7 @@ class VariableLocal(private val tipoDato: TipoDato, private val identificador: T
 
     override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Tipo Dato", 0)
-        agregarValor(tipoDato.toString(), 0)
+        agregarValor(tipo.lexema, 0)
 
         agregarAtributo("identificador", 1)
         agregarValor(identificador.lexema, 1)
@@ -48,7 +46,7 @@ class VariableLocal(private val tipoDato: TipoDato, private val identificador: T
     }
 
     override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        tablaSimbolos.agregarVariable(identificador.lexema, tipoDato.tipo.lexema, ambito, identificador.fila, identificador.columna)
+        tablaSimbolos.agregarVariable(identificador.lexema, tipo.lexema, ambito, identificador.fila, identificador.columna)
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {

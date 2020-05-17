@@ -11,7 +11,7 @@ import co.edu.uniquindio.sintaxis.Sintaxis
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class UnidadCompilacion(var paquete: Paquete?, var listaImportaciones: ArrayList<Importacion>, var clase: Clase) : Sintaxis() {
+class UnidadCompilacion(var paquete: Paquete?, var listaImportaciones: ArrayList<Importacion>, var clase: Clase?) : Sintaxis() {
     init {
         this.nombre = "Unidad de Compilacion"
     }
@@ -51,10 +51,10 @@ class UnidadCompilacion(var paquete: Paquete?, var listaImportaciones: ArrayList
         for (importacion in listaImportaciones) {
             importacion.llenarTablaSimbolos(tablaSimbolos)
         }
-        clase.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(nombre))
+        clase?.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(nombre))
     }
 
     fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>) {
-        clase.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(nombre))
+        clase?.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(nombre))
     }
 }

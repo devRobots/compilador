@@ -8,17 +8,16 @@ import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.bnf.otro.Parametro
 import co.edu.uniquindio.sintaxis.bnf.otro.Retorno
-import co.edu.uniquindio.sintaxis.bnf.otro.TipoDato
 import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 import kotlin.collections.ArrayList
 
-class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoDato, private val identificador: Token, private val listaParametros: ArrayList<Parametro>, private val listaSentencias: ArrayList<Sentencia>, private val retorno: Retorno) : Bloque() {
+class Funcion(private val modificadorAcceso: Token?, private val tipo: Token, private val identificador: Token, private val listaParametros: ArrayList<Parametro>, private val listaSentencias: ArrayList<Sentencia>, private val retorno: Retorno) : Bloque() {
     init {
         nombre = "Funcion"
-        estructura = "$modificadorAcceso ${tipoDato.estructura} $identificador [ ... ] ¿ ... ?"
+        estructura = "$modificadorAcceso ${tipo.lexema} $identificador [ ... ] ¿ ... ?"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -49,7 +48,7 @@ class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoD
         agregarValor(modificadorAcceso?.lexema, 0)
 
         agregarAtributo("Tipo de Dato de Retorno", 1)
-        agregarValor(tipoDato.nombre, 1)
+        agregarValor(tipo.lexema, 1)
 
         agregarAtributo("Identificador", 2)
         agregarValor(identificador.lexema, 2)
@@ -70,11 +69,11 @@ class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoD
         val tiposParametros = ArrayList<String>()
 
         for (argumento in listaParametros) {
-            tiposParametros.add(argumento.tipo.tipo.lexema)
+            tiposParametros.add(argumento.tipo.lexema)
             argumento.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador.lexema))
         }
 
-        tablaSimbolos.agregarFuncion(identificador.lexema, tipoDato.tipo.lexema, tiposParametros, ambito)
+        tablaSimbolos.agregarFuncion(identificador.lexema, tipo.lexema, tiposParametros, ambito)
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {

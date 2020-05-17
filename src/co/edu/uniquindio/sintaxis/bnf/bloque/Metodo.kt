@@ -59,7 +59,7 @@ class Metodo(private val modificadorAcceso: Token?, private val identificador: T
         val tiposParametros = ArrayList<String>()
 
         for (argumento in listaParametros) {
-            tiposParametros.add(argumento.tipo.tipo.lexema)
+            tiposParametros.add(argumento.tipo.lexema)
             argumento.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador.lexema))
         }
 
