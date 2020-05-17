@@ -59,6 +59,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
     /**
      * Metodo que devuelve el token hasta una posicion deseada
+     *
+     * @param posicion Posicion a la que se va a devolver el token actual
+     * @param cantidadErrores La cantidad de errores a la que se va a devolver la lista de errores
      */
     private fun backtracking(posicion: Int, cantidadErrores: Int) {
         posicionActual = posicion - 1
@@ -74,10 +77,38 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     /**
      * Metodo que reporta un error y lo agrega
      * a la lista de errores
+     *
+     * @param mensaje El mensaje del error que se va agregar a la lista de errores
      */
     private fun reportarError(mensaje: String) {
         val error = ErrorSintactico("$mensaje en ${tokenActual?.fila}:${tokenActual?.columna}")
         listaErrores.add(error)
+    }
+
+    /**
+     *  Metodo para avanzar hasta el proximo token seguro
+     *
+     *  @param seleccion El token seguro al que desea avanzar (Indice de la lista)
+     */
+    private fun buscarTokenSeguro(seleccion: Int) {
+        val tokensSeguros = ArrayList<Token>()
+        tokensSeguros.add(Token("", Categoria.CORCHETE_DERECHO, 0, 0))
+        tokensSeguros.add(Token("", Categoria.PARENTESIS_DERECHO, 0, 0))
+        tokensSeguros.add(Token("", Categoria.FIN_SENTENCIA, 0, 0))
+        tokensSeguros.add(Token("", Categoria.LLAVE_DERECHA, 0, 0))
+
+        var centinela = true
+
+        while (centinela) {
+            siguienteToken()
+            for (i in seleccion..tokensSeguros.size) {
+                if (tokenActual?.categoria == tokensSeguros[i].categoria) {
+                    centinela = false
+                    break
+                }
+            }
+        }
+        siguienteToken()
     }
 
     /**
@@ -105,8 +136,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     private fun esPaquete(): Paquete? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "caja") {
             siguienteToken()
+            var paquete: Token? = null
+
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
-                val paquete = tokenActual!!
+                paquete = tokenActual!!
                 siguienteToken()
                 if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                     siguienteToken()
@@ -116,7 +149,17 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 return Paquete(paquete)
             } else {
                 reportarError("Se esperaba un identificador")
+                buscarTokenSeguro(2)
             }
+
+            if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
+                siguienteToken()
+                return Paquete(paquete)
+            } else {
+                reportarError("Se esperaba un terminal")
+            }
+
+
         }
 
         return null
