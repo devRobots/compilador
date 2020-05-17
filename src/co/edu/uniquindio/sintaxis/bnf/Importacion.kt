@@ -7,10 +7,10 @@ import co.edu.uniquindio.sintaxis.Sintaxis
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class Importacion(private val importacion: Token) : Sintaxis() {
+class Importacion(private val importacion: Token?) : Sintaxis() {
     init {
         this.nombre = "Importacion"
-        this.estructura = "meter ${importacion.lexema}!"
+        this.estructura = "meter ${importacion?.lexema}!"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -20,7 +20,7 @@ class Importacion(private val importacion: Token) : Sintaxis() {
 
     override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Nombre de la importacion", 0)
-        agregarValor(importacion.lexema, 0)
+        agregarValor(importacion?.lexema, 0)
 
         return panel
     }
