@@ -21,10 +21,19 @@ import co.edu.uniquindio.sintaxis.bnf.sentencia.*
  * Analizador Sintactico
  */
 class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
+    init {
+        val copia: ArrayList<Token> = tokens.clone() as ArrayList<Token>
+        for (token in copia) {
+            if (token.categoria == Categoria.COMENTARIO_LINEA || token.categoria == Categoria.COMENTARIO_BLOQUE) {
+                tokens.remove(token)
+            }
+        }
+    }
+
     /**
      * Arbol sintactico y lista de errores por el analizador sintactico
      */
-    var listaErrores = ArrayList<ErrorSintactico>()
+    var listaErrores: ArrayList<ErrorSintactico> = ArrayList()
 
     /**
      * Elementos necesarios del analizador lexico
@@ -32,9 +41,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     private var posicionActual: Int = 0
     private var tokenActual: Token? = tokens[0]
 
-    private var tokenGuardado: Token? = null
-    private var posicionGuardada: Int = -1
-    private var erroresGuardados =  ArrayList<ErrorSintactico>()
+    private var posicionGuardada : Int = -1
+    private var tokenGuardado : Token? = null
+    private var erroresGuardados: ArrayList<ErrorSintactico>  = ArrayList()
 
     /**
      * Metodo que avanza al siguiente token
@@ -86,7 +95,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         val paquete: Paquete? = esPaquete()
         val listaImportaciones: ArrayList<Importacion> = esListaImportaciones()
         val clase = esClase()
-        esComentario()
+
         return if (clase != null) {
             UnidadCompilacion(paquete, listaImportaciones, clase)
         } else {
@@ -99,7 +108,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <DeclaracionPaquete> ::= caja identificador “!”
      */
     private fun esPaquete(): Paquete? {
-        esComentario()
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "caja") {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
@@ -139,7 +147,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <Importacion> ::= meter identificador “!”
      */
     private fun esImportacion(): Importacion? {
-        esComentario()
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "meter") {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
@@ -163,7 +170,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <DeclaracionClase> ::=  [ <ModificadorAcceso> ] cosa identificador “¿” [<ListaBloque>] “?”
      */
     private fun esClase(): Clase? {
-        esComentario()
         var modificadorAcceso: Token? = null
 
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA) {
@@ -206,7 +212,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <ListaBloque> ::= <Bloque> [<ListaBloque>]
      */
     private fun esListaBloque(): ArrayList<Bloque> {
-        esComentario()
         val lista = ArrayList<Bloque>()
 
         var bloque: Bloque? = esBloque()
@@ -223,7 +228,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <Bloque>::= <ListaClases> | <ListaFunciones> | <ListaVariablesGlobales>
      */
     private fun esBloque(): Bloque? {
-        esComentario()
         guardarEstado()
 
         val clase = esClase()
@@ -262,7 +266,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <Metodo>::= [<ModificarAcceso>] identificador “[“ [<ListaParametros>] ”]” “¿” [<ListaSentencia>] “?”
      */
     private fun esMetodo(): Metodo? {
-        esComentario()
         var modificadorAcceso: Token? = null
 
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA) {
@@ -313,7 +316,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <Funcion> ::= [<ModificarAcceso>] <TipoRetorno> Identificador “[“ [<ListaParametros>] ”]” “¿” [<ListaSentencia>] “?”
      */
     private fun esFuncion(): Funcion? {
-        esComentario()
         var modificadorAcceso: Token? = null
 
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA) {
@@ -459,7 +461,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <InvocacionMetodo>
      */
     private fun esSentencia(): Sentencia? {
-        esComentario()
         guardarEstado()
 
         val retorno = esRetorno()
@@ -1175,15 +1176,5 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             }
         }
         return null
-    }
-
-    /**
-     * Descartar Comentario
-     */
-    private fun esComentario(){
-        if (tokenActual?.categoria == Categoria.COMENTARIO_LINEA || tokenActual?.categoria == Categoria.COMENTARIO_BLOQUE){
-            siguienteToken()
-            esComentario()
-        }
     }
 }
