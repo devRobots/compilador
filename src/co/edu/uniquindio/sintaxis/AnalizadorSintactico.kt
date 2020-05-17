@@ -110,10 +110,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 siguienteToken()
                 if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                     siguienteToken()
-                    return Paquete(paquete)
                 } else {
                     reportarError("Se esperaba un terminal")
                 }
+                return Paquete(paquete)
             } else {
                 reportarError("Se esperaba un identificador")
             }
@@ -149,10 +149,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 siguienteToken()
                 if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                     siguienteToken()
-                    return Importacion(importacion)
                 } else {
                     reportarError("Se esperaba un terminal")
                 }
+                return Importacion(importacion)
             } else {
                 reportarError("Se esperaba un identificador")
             }
@@ -182,23 +182,21 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
                 if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
                     siguienteToken()
-
-                    val listaBloque = esListaBloque()
-
-                    if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
-                        siguienteToken()
-                        return Clase(modificadorAcceso, identificador, listaBloque)
-                    } else {
-                        reportarError("Se esperaba una llave izquierda")
-                    }
                 } else {
                     reportarError("Se esperaba una llave izquierda")
                 }
+                val listaBloque = esListaBloque()
+
+                if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                    siguienteToken()
+                } else {
+                    reportarError("Se esperaba una llave izquierda")
+                }
+                return Clase(modificadorAcceso, identificador, listaBloque)
             } else {
                 reportarError("Se esperaba un identificador")
             }
         }
-
         return null
     }
 
@@ -276,32 +274,29 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
                 siguienteToken()
-
-                val listaArgumentos = esListaArgumentos()
-
-                if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
-                    siguienteToken()
-
-                    if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
-                        siguienteToken()
-
-                        val listaSentencias = esListaSentencia()
-
-                        if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
-                            siguienteToken()
-                            return Metodo(modificadorAcceso, identificador, listaArgumentos, listaSentencias)
-                        } else {
-                            reportarError("Se esperaba una llave derecha")
-                        }
-                    } else {
-                        reportarError("Se esperaba una llave izquierda")
-                    }
-                } else {
-                    reportarError("Se esperaba un parentesis derecho")
-                }
             } else {
                 reportarError("Se esperaba un parentesis izquierdo")
             }
+            val listaArgumentos = esListaArgumentos()
+
+            if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
+                siguienteToken()
+            } else {
+                reportarError("Se esperaba un parentesis derecho")
+            }
+            if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
+                siguienteToken()
+            } else {
+                reportarError("Se esperaba una llave izquierda")
+            }
+            val listaSentencias = esListaSentencia()
+
+            if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                siguienteToken()
+            } else {
+                reportarError("Se esperaba una llave derecha")
+            }
+            return Metodo(modificadorAcceso, identificador, listaArgumentos, listaSentencias)
         }
 
         return null
@@ -326,37 +321,35 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
                 val identificador = tokenActual!!
                 siguienteToken()
-
                 if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
                     siguienteToken()
+                } else {
+                    reportarError("Se esperaba una llave izquierda")
+                }
+                val listaArgumentos = esListaArgumentos()
 
-                    val listaArgumentos = esListaArgumentos()
-
-                    if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
-                        siguienteToken()
-
-                        if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
-                            siguienteToken()
-
-                            val listaSentencias = esListaSentencia()
-
-                            val retorno = listaSentencias[listaSentencias.lastIndex]
-                            if (retorno.nombre == "Retorno") {
-                                if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
-                                    siguienteToken()
-                                    return Funcion(modificadorAcceso, tipoDato, identificador, listaArgumentos, listaSentencias, retorno)
-                                } else {
-                                    reportarError("Se esperaba una llave derecha")
-                                }
-                            } else {
-                                reportarError("Se esperaba una sentencia de retorno")
-                            }
-                        } else {
-                            reportarError("Se esperaba una llave izquierda")
-                        }
-                    }
+                if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
+                    siguienteToken()
+                } else {
+                    reportarError("Se esperaba una llave derecho")
+                }
+                if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
+                    siguienteToken()
                 } else {
                     reportarError("Se esperaba un parentesis izquierdo")
+                }
+                val listaSentencias = esListaSentencia()
+
+                val retorno = listaSentencias[listaSentencias.lastIndex]
+                if (retorno.nombre == "Retorno") {
+                    if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                        siguienteToken()
+                    } else {
+                        reportarError("Se esperaba una llave derecha")
+                    }
+                    return Funcion(modificadorAcceso, tipoDato, identificador, listaArgumentos, listaSentencias, retorno)
+                } else {
+                    reportarError("Se esperaba una sentencia de retorno")
                 }
             } else {
                 reportarError("Se esperaba un identificador")
@@ -596,16 +589,18 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
                 siguienteToken()
-                val listaParametros = esListaParametros()
-                if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
-                    siguienteToken()
-                    if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
-                        siguienteToken()
-                        return InvocacionMetodo(identificador!!, listaParametros)
-                    }
-                } else {
-                    reportarError("Se esperaba un paratesis Derecho")
-                }
+            } else {
+                reportarError("Se esperaba un paratesis Izquierdo")
+            }
+            val listaParametros = esListaParametros()
+            if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
+                siguienteToken()
+            } else {
+                reportarError("Se esperaba un paratesis Derecho")
+            }
+            if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
+                siguienteToken()
+                return InvocacionMetodo(identificador!!, listaParametros)
             }
         }
         return null
@@ -975,30 +970,30 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
                 siguienteToken()
-                val expLogica = esExpresionLogica()
-                if (expLogica != null) {
-                    if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
-                        siguienteToken()
-                        if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
-                            siguienteToken()
-                            val listaSentencia = esListaSentencia()
-                            if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
-                                siguienteToken()
-                                return SentenciaSi(expLogica, listaSentencia)
-                            } else {
-                                reportarError("Se esperaba una llave derecha")
-                            }
-                        } else {
-                            reportarError("Se esperaba una llave izquierdo")
-                        }
-                    } else {
-                        reportarError("Se esperaba un parentesis derecho")
-                    }
-                } else {
-                    reportarError("Se esperaba una expresion logica")
-                }
             } else {
                 reportarError("Se esperaba un parentesis izquierdo")
+            }
+            val expLogica = esExpresionLogica()
+            if (expLogica != null) {
+                if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
+                    siguienteToken()
+                } else {
+                    reportarError("Se esperaba un parentesis derecho")
+                }
+                if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
+                    siguienteToken()
+                } else {
+                    reportarError("Se esperaba una llave izquierdo")
+                }
+                val listaSentencia = esListaSentencia()
+                if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                    siguienteToken()
+                    return SentenciaSi(expLogica, listaSentencia)
+                } else {
+                    reportarError("Se esperaba una llave derecha")
+                }
+            } else {
+                reportarError("Se esperaba una expresion logica")
             }
         }
         return null
@@ -1018,15 +1013,15 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             } else {
                 if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
                     siguienteToken()
-                    val listaSentencia = esListaSentencia()
-                    if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
-                        siguienteToken()
-                        return SentenciaSiNo(listaSentencia, null, null)
-                    } else {
-                        reportarError("Se esperaba una llave derecha")
-                    }
                 } else {
                     reportarError("Se esperaba una llave iquierdo")
+                }
+                val listaSentencia = esListaSentencia()
+                if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                    siguienteToken()
+                    return SentenciaSiNo(listaSentencia, null, null)
+                } else {
+                    reportarError("Se esperaba una llave derecha")
                 }
             }
         }
@@ -1042,30 +1037,30 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
                 siguienteToken()
-                val expLogico = esExpresionLogica()
-                if (expLogico != null) {
-                    if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
-                        siguienteToken()
-                        if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
-                            siguienteToken()
-                            val listaSentencia = esListaSentencia()
-                            if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
-                                siguienteToken()
-                                return SentenciaWhile(expLogico, listaSentencia)
-                            } else {
-                                reportarError("Se esperaba una llave derecha")
-                            }
-                        } else {
-                            reportarError("Se esperaba una llave izquierda")
-                        }
-                    } else {
-                        reportarError("Se esperaba un parentesis derecho")
-                    }
-                } else {
-                    reportarError("Se esperaba una expresión lógica")
-                }
             } else {
                 reportarError("Se esperaba un parentesis izquierdo")
+            }
+            val expLogico = esExpresionLogica()
+            if (expLogico != null) {
+                if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
+                    siguienteToken()
+                } else {
+                    reportarError("Se esperaba un parentesis derecho")
+                }
+                if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
+                    siguienteToken()
+                } else {
+                    reportarError("Se esperaba una llave izquierda")
+                }
+                val listaSentencia = esListaSentencia()
+                if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                    siguienteToken()
+                    return SentenciaWhile(expLogico, listaSentencia)
+                } else {
+                    reportarError("Se esperaba una llave derecha")
+                }
+            } else {
+                reportarError("Se esperaba una expresión lógica")
             }
         }
         return null
@@ -1081,53 +1076,53 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
                 siguienteToken()
-                val decVariableLocal = esDeclaracionVariableLocal()
-                if (decVariableLocal != null) {
-                    if (tokenActual?.categoria == Categoria.DOS_PUNTOS) {
-                        siguienteToken()
-                        val expLogica = esExpresionLogica()
-                        if (expLogica != null) {
-                            if (tokenActual?.categoria == Categoria.DOS_PUNTOS) {
-                                siguienteToken()
-                                val asigCiclo = esSentenciaIncrementoDecremento()
-                                if (asigCiclo != null) {
-                                    if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
-                                        if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
-                                            siguienteToken()
-                                            if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
-                                                siguienteToken()
-                                                val listaSentencia = esListaSentencia()
-                                                if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
-                                                    siguienteToken()
-                                                    return SentenciaFor(decVariableLocal, expLogica, asigCiclo, listaSentencia)
-                                                } else {
-                                                    reportarError("Se esperaba una llave derecha")
-                                                }
-                                            } else {
-                                                reportarError("Se esperaba una llave izquierda")
-                                            }
-                                        } else {
-                                            reportarError("Se esperaba un parentesis derecho")
-                                        }
-                                    } else {
-                                        reportarError("se esperaba parentesis Derecho")
-                                    }
-                                } else {
-                                    reportarError("Se esperaba una asignacion de ciclo")
-                                }
-                            } else {
-                                reportarError("Se esperaba un fin de sentencia")
-                            }
-                        } else {
-                            reportarError("Se esperaba una expresion logica")
-                        }
-                    } else {
-                        reportarError("se esperaba un separador dos puntos | ")
-                    }
-                }
             } else {
                 reportarError("Se esperaba un parentesis izquierdo")
             }
+            val decVariableLocal = esDeclaracionVariableLocal()
+            if (decVariableLocal != null) {
+                if (tokenActual?.categoria == Categoria.DOS_PUNTOS) {
+                    siguienteToken()
+                } else {
+                    reportarError("se esperaba un separador dos puntos | ")
+                }
+                val expLogica = esExpresionLogica()
+                if (expLogica != null) {
+                    if (tokenActual?.categoria == Categoria.DOS_PUNTOS) {
+                        siguienteToken()
+                    } else {
+                        reportarError("Se esperaba un fin de sentencia")
+                    }
+                    val asigCiclo = esSentenciaIncrementoDecremento()
+                    if (asigCiclo != null) {
+                        if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
+                            siguienteToken()
+                        } else {
+                            reportarError("Se esperaba un parentesis derecho")
+                        }
+                        if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
+                            siguienteToken()
+                        } else {
+                            reportarError("Se esperaba una llave izquierda")
+                        }
+                        val listaSentencia = esListaSentencia()
+                        if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                            siguienteToken()
+                        } else {
+                            reportarError("Se esperaba una llave derecha")
+                        }
+                        return SentenciaFor(decVariableLocal, expLogica, asigCiclo, listaSentencia)
+
+                    } else {
+                        reportarError("Se esperaba una asignacion de ciclo")
+                    }
+
+                } else {
+                    reportarError("Se esperaba una expresion logica")
+                }
+
+            }
+
         }
         return null
     }
@@ -1143,38 +1138,39 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 siguienteToken()
                 if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO) {
                     siguienteToken()
-                    if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
-                        val identificador = tokenActual!!
-                        siguienteToken()
-                        if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "=") {
-                            siguienteToken()
-                            if (tokenActual?.categoria == Categoria.CORCHETE_IZQUIERDO) {
-                                siguienteToken()
-                                val listaParametros = esListaParametros()
-                                if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO) {
-                                    siguienteToken()
-                                    if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
-                                        siguienteToken()
-                                        return Arreglo(tipoDato, identificador, listaParametros)
-                                    } else {
-                                        reportarError("Se esperaba un fin de sentencia")
-                                    }
-
-                                } else {
-                                    reportarError("Se esperaba un corchete derecho")
-                                }
-                            } else {
-                                reportarError("Se esperaba un corchete izquierdo")
-                            }
-                        } else {
-                            reportarError("Se esperaba el operador de asignación")
-                        }
-                    } else {
-                        reportarError("Se esperaba un identificador")
-                    }
                 } else {
                     reportarError("Se esperaba un corchete derecho")
                 }
+                if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
+                    val identificador = tokenActual!!
+                    siguienteToken()
+                    if (tokenActual?.categoria == Categoria.OPERADOR_ASIGNACION && tokenActual?.lexema == "=") {
+                        siguienteToken()
+                        if (tokenActual?.categoria == Categoria.CORCHETE_IZQUIERDO) {
+                            siguienteToken()
+                            val listaParametros = esListaParametros()
+                            if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO) {
+                                siguienteToken()
+                            } else {
+                                reportarError("Se esperaba un corchete derecho")
+                            }
+                            if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
+                                siguienteToken()
+                            } else {
+                                reportarError("Se esperaba un fin de sentencia")
+                            }
+                            return Arreglo(tipoDato, identificador, listaParametros)
+
+                        } else {
+                            reportarError("Se esperaba un corchete izquierdo")
+                        }
+                    } else {
+                        reportarError("Se esperaba el operador de asignación")
+                    }
+                } else {
+                    reportarError("Se esperaba un identificador")
+                }
+
             } else {
                 reportarError("Se esperaba un corchete izquierdo")
             }
