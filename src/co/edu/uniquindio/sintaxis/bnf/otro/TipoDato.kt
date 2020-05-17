@@ -7,7 +7,7 @@ import co.edu.uniquindio.sintaxis.Sintaxis
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class TipoDato(private val tipo: Token) : Sintaxis() {
+class TipoDato(val tipo: Token) : Sintaxis() {
     init {
         this.nombre = "Tipo de Dato"
         this.estructura = "${tipo.lexema}"

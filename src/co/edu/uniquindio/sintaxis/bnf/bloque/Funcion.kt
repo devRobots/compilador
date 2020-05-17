@@ -2,16 +2,20 @@ package co.edu.uniquindio.sintaxis.bnf.bloque
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.ListaSintactica
-import co.edu.uniquindio.sintaxis.bnf.otro.Argumento
+import co.edu.uniquindio.sintaxis.bnf.otro.Parametro
+import co.edu.uniquindio.sintaxis.bnf.otro.Retorno
 import co.edu.uniquindio.sintaxis.bnf.otro.TipoDato
 import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
-import java.util.ArrayList
+import kotlin.collections.ArrayList
 
-class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoDato, private val identificador: Token, private val listaArgumentos: ArrayList<Argumento>, private val listaSentencias: ArrayList<Sentencia>, private val retorno: Sentencia) : MetodoFuncion(modificadorAcceso, identificador, listaArgumentos, listaSentencias) {
+class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoDato, private val identificador: Token, private val listaParametros: ArrayList<Parametro>, private val listaSentencias: ArrayList<Sentencia>, private val retorno: Retorno) : Bloque() {
     init {
         nombre = "Funcion"
         estructura = "$modificadorAcceso ${tipoDato.estructura} $identificador [ ... ] ¿ ... ?"
@@ -23,8 +27,8 @@ class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoD
 
         val listaParametrosObservable = SintaxisObservable(ListaSintactica("Parametros"))
         val treeParametros = TreeItem(listaParametrosObservable)
-        for (argumento in listaArgumentos) {
-            treeParametros.children.add(argumento.getTreeItem())
+        for (parametro in listaParametros) {
+            treeParametros.children.add(parametro.getTreeItem())
         }
         treeItem.children.add(treeParametros)
 
@@ -51,7 +55,7 @@ class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoD
         agregarValor(identificador.lexema, 2)
 
         agregarAtributo("Argumentos", 3)
-        agregarValor(listaArgumentos.toString(), 3)
+        agregarValor(listaParametros.toString(), 3)
 
         agregarAtributo("Bloques de Sentencia", 4)
         agregarValor(listaSentencias.toString(), 4)
@@ -62,4 +66,18 @@ class Funcion(private val modificadorAcceso: Token?, private val tipoDato: TipoD
         return panel
     }
 
+    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        val tiposParametros = ArrayList<String>()
+
+        for (argumento in listaParametros) {
+            tiposParametros.add(argumento.tipo.tipo.lexema)
+            argumento.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador.lexema))
+        }
+
+        tablaSimbolos.agregarFuncion(identificador.lexema, tipoDato.tipo.lexema, tiposParametros, ambito)
+    }
+
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+
+    }
 }

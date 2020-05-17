@@ -2,6 +2,9 @@ package co.edu.uniquindio.sintaxis.bnf.sentencia
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
 import co.edu.uniquindio.sintaxis.bnf.sentencia.InvocacionMetodo
 import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
@@ -43,5 +46,13 @@ class Asignacion(private val identificador: Token, private val expresion: Expres
             agregarValor(metodo.nombre, 2)
         }
         return panel
+    }
+
+    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+
+    }
+
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        TODO("Not yet implemented")
     }
 }

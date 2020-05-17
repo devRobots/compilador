@@ -1,9 +1,11 @@
 package co.edu.uniquindio.sintaxis.bnf
 
 import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.Sintaxis
-import co.edu.uniquindio.sintaxis.bnf.bloque.Clase
 
 
 import javafx.scene.control.TreeItem
@@ -43,5 +45,16 @@ class UnidadCompilacion(var paquete: Paquete?, var listaImportaciones: ArrayList
         agregarValor(clase.toString(), 2)
 
         return panel
+    }
+
+    fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>) {
+        for (importacion in listaImportaciones) {
+            importacion.llenarTablaSimbolos(tablaSimbolos)
+        }
+        clase.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(nombre))
+    }
+
+    fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>) {
+        clase.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(nombre))
     }
 }

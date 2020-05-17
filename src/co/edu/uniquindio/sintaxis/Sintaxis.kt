@@ -1,6 +1,8 @@
 package co.edu.uniquindio.sintaxis
 
 import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 
 import javafx.geometry.Insets
 
@@ -9,7 +11,7 @@ import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
 
-abstract class Sintaxis() {
+abstract class Sintaxis {
     lateinit var nombre : String
     var estructura : String? = null
 

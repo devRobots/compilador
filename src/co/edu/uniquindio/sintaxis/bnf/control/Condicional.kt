@@ -1,38 +1,38 @@
-package co.edu.uniquindio.sintaxis.bnf.sentencia
+package co.edu.uniquindio.sintaxis.bnf.control
 
 import co.edu.uniquindio.app.SintaxisObservable
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-open class SentenciaCondicional(private val sentenciaSi : SentenciaSi, private val sentenciaSino : SentenciaSiNo?) : Sentencia(){
+class Condicional(private val estructuraSi : EstructuraSi, private val estructuraSino : EstructuraSiNo?) : EstructuraControl(){
     init {
         nombre = "sentencia condicional"
-        if (sentenciaSino != null){
+        if (estructuraSino != null){
             estructura = " wi[Expresion Logica] ¿ ... ? wo ¿ ... ?"
         }
-        estructura = " $sentenciaSi"
+        estructura = " $estructuraSi"
     }
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        if(sentenciaSi != null){
-            treeItem.children.add(sentenciaSi.getTreeItem())
+        if(estructuraSi != null){
+            treeItem.children.add(estructuraSi.getTreeItem())
         }
-        if(sentenciaSino != null){
-            treeItem.children.add(sentenciaSino.getTreeItem())
+        if(estructuraSino != null){
+            treeItem.children.add(estructuraSino.getTreeItem())
         }
         return treeItem
     }
 
     override fun getPropertiesPanel(): GridPane {
-        if(sentenciaSi != null){
+        if(estructuraSi != null){
             agregarAtributo("sentencia Si", 0)
-            agregarValor(sentenciaSi.toString(), 0)
+            agregarValor(estructuraSi.toString(), 0)
         }
-        if(sentenciaSino != null){
+        if(estructuraSino != null){
             agregarAtributo("Sentencia sino",1)
-            agregarValor(sentenciaSino?.toString(),1)
+            agregarValor(estructuraSino?.toString(),1)
         }
         return panel
     }

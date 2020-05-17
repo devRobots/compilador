@@ -1,12 +1,12 @@
-package co.edu.uniquindio.sintaxis.bnf.sentencia
+package co.edu.uniquindio.sintaxis.bnf.otro
 
 import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.sintaxis.Sintaxis
 import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
-import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class Retorno(private val expresion: Expresion) : Sentencia() {
+class Retorno(private val expresion: Expresion) : Sintaxis() {
     init {
         nombre = "Retorno"
         estructura = "devolver ${expresion.estructura} !"

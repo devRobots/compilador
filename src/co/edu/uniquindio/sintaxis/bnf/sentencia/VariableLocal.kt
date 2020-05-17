@@ -2,12 +2,15 @@ package co.edu.uniquindio.sintaxis.bnf.sentencia
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.bnf.otro.TipoDato
 import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class DeclaracionVariableLocal(private val tipoDato: TipoDato, private val identificador: Token, private val expresion: Expresion?, private val metodo: InvocacionMetodo?) : Sentencia() {
+class VariableLocal(private val tipoDato: TipoDato, private val identificador: Token, private val expresion: Expresion?, private val metodo: InvocacionMetodo?) : Sentencia() {
     init {
         this.nombre = "Variable local"
     }
@@ -42,5 +45,13 @@ class DeclaracionVariableLocal(private val tipoDato: TipoDato, private val ident
         }
 
         return panel
+    }
+
+    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        tablaSimbolos.agregarVariable(identificador.lexema, tipoDato.tipo.lexema, ambito, identificador.fila, identificador.columna)
+    }
+
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+
     }
 }

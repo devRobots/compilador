@@ -10,6 +10,7 @@ import co.edu.uniquindio.sintaxis.bnf.bloque.*
 import co.edu.uniquindio.sintaxis.bnf.expresion.*
 import co.edu.uniquindio.sintaxis.bnf.otro.*
 import co.edu.uniquindio.sintaxis.bnf.sentencia.*
+import co.edu.uniquindio.sintaxis.bnf.control.*
 
 /**
  * @author Samara Rincon
@@ -172,9 +173,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <Importacion> ::= meter identificador “!”
      */
     private fun esImportacion(): Importacion? {
-        var importacion: Token? = null
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "meter") {
             siguienteToken()
+            var importacion: Token? = null
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
                 importacion = tokenActual!!
                 siguienteToken()
@@ -255,13 +256,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     private fun esBloque(): Bloque? {
         val posicionInicial = posicionActual
         val cantidadErrores = listaErrores.size
-
-        val clase = esClase()
-        if (clase != null) {
-            return clase
-        } else {
-            backtracking(posicionInicial, cantidadErrores)
-        }
 
         val funcion = esFuncion()
         if (funcion != null) {
@@ -372,8 +366,8 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 }
                 val listaSentencias = esListaSentencia()
 
-                val retorno = listaSentencias[listaSentencias.lastIndex]
-                if (retorno.nombre == "Retorno") {
+                val retorno = esRetorno()
+                if (retorno != null) {
                     if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                         siguienteToken()
                     } else {
@@ -395,13 +389,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo para Determinar si es una Lista de Parametros
      * <ListaParametros> ::= <Parametro> [ "," <ListaParametros>]
      */
-    private fun esListaArgumentos(): ArrayList<Argumento> {
-        val lista = ArrayList<Argumento>()
+    private fun esListaArgumentos(): ArrayList<Parametro> {
+        val lista = ArrayList<Parametro>()
 
-        var argumento: Argumento? = esArgumento()
-        while (argumento != null) {
-            lista.add(argumento)
-            argumento = if (tokenActual?.categoria == Categoria.SEPARADOR) {
+        var parametro: Parametro? = esArgumento()
+        while (parametro != null) {
+            lista.add(parametro)
+            parametro = if (tokenActual?.categoria == Categoria.SEPARADOR) {
                 siguienteToken()
                 esArgumento()
             } else {
@@ -415,13 +409,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo para Determinar si es un Parametro
      * <Parametro> ::= <TipoDato> identificador
      */
-    private fun esArgumento(): Argumento? {
+    private fun esArgumento(): Parametro? {
         val tipoDato = esTipoDato()
         if (tipoDato != null) {
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
                 val identificador = tokenActual!!
                 siguienteToken()
-                return Argumento(tipoDato, identificador)
+                return Parametro(tipoDato, identificador)
             }
         }
         return null
@@ -431,8 +425,8 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo para Determinar si es una Lista de Argumentos
      * <ListaArgumentos> ::= <Argumento> [ "," <ListaArgumentos> ]
      */
-    private fun esListaParametros(): ArrayList<Parametro> {
-        val lista = ArrayList<Parametro>()
+    private fun esListaParametros(): ArrayList<Argumento> {
+        val lista = ArrayList<Argumento>()
         var parametro = esParametro()
         while (parametro != null) {
             lista.add(parametro)
@@ -451,10 +445,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo para Determinar si es un Argumento
      * <Argumento> ::= <Expresion>
      */
-    private fun esParametro(): Parametro? {
+    private fun esParametro(): Argumento? {
         val expresion = esExpresion()
         if (expresion != null) {
-            return Parametro(expresion)
+            return Argumento(expresion)
         }
         return null
     }
@@ -485,42 +479,14 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         val posicionInicial = posicionActual
         val cantidadErrores = listaErrores.size
 
-        val retorno = esRetorno()
-        if (retorno != null) {
-            return retorno
-        } else {
-            backtracking(posicionInicial, cantidadErrores)
-        }
-
-        val declaracionVariable = esDeclaracionVariableLocal()
+        val declaracionVariable = esVariableLocal()
         if (declaracionVariable != null) {
             return declaracionVariable
         } else {
             backtracking(posicionInicial, cantidadErrores)
         }
 
-        val sentenciaSi = esSentenciaCondicional()
-        if (sentenciaSi != null) {
-            return sentenciaSi
-        } else {
-            backtracking(posicionInicial, cantidadErrores)
-        }
-
-        val sentenciaWhile = esSenteciaWhile()
-        if (sentenciaWhile != null) {
-            return sentenciaWhile
-        } else {
-            backtracking(posicionInicial, cantidadErrores)
-        }
-
-        val sentenciaFor = esSentenciaFor()
-        if (sentenciaFor != null) {
-            return sentenciaFor
-        } else {
-            backtracking(posicionInicial, cantidadErrores)
-        }
-
-        val incremento = esSentenciaIncrementoDecremento()
+        val incremento = esIncrementoDecremento()
         if (incremento != null) {
             return incremento
         } else {
@@ -547,6 +513,45 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         } else {
             backtracking(posicionInicial, cantidadErrores)
         }
+
+        val estructuraControl = esEstructuraControl()
+        if (estructuraControl != null) {
+            return estructuraControl
+        } else {
+            backtracking(posicionInicial, cantidadErrores)
+        }
+
+        return null
+    }
+
+    /**
+     * Metodo para determinar si es una estructura de control
+     */
+    private fun esEstructuraControl(): EstructuraControl? {
+        val posicionInicial = posicionActual
+        val cantidadErrores = listaErrores.size
+
+        val sentenciaSi = esSentenciaCondicional()
+        if (sentenciaSi != null) {
+            return sentenciaSi
+        } else {
+            backtracking(posicionInicial, cantidadErrores)
+        }
+
+        val sentenciaWhile = esSenteciaWhile()
+        if (sentenciaWhile != null) {
+            return sentenciaWhile
+        } else {
+            backtracking(posicionInicial, cantidadErrores)
+        }
+
+        val sentenciaFor = esSentenciaFor()
+        if (sentenciaFor != null) {
+            return sentenciaFor
+        } else {
+            backtracking(posicionInicial, cantidadErrores)
+        }
+
         return null
     }
 
@@ -595,18 +600,18 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <Incremento> ::= identificador operadorIncremento
      * <Decremento> ::= identificador operadorDecremento
      */
-    private fun esSentenciaIncrementoDecremento(): SentenciaIncrementoDecremento? {
+    private fun esIncrementoDecremento(): IncrementoDecremento? {
         if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
             val identificador = tokenActual
             siguienteToken()
             if (tokenActual?.categoria == Categoria.OPERADOR_INCREMENTO) {
                 val incremento = tokenActual
                 siguienteToken()
-                return SentenciaIncrementoDecremento(identificador!!, incremento!!)
+                return IncrementoDecremento(identificador!!, incremento!!)
             } else if (tokenActual?.categoria == Categoria.OPERADOR_INCREMENTO) {
                 val decremento = tokenActual
                 siguienteToken()
-                return SentenciaIncrementoDecremento(identificador!!, decremento!!)
+                return IncrementoDecremento(identificador!!, decremento!!)
             }
         }
         return null
@@ -690,7 +695,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <VariableLobal> ::= <TipoDato> identificador “=” <Expresion> “!” |
      *  <TipoDato> identificador “=” <InvocacionMetodo>
      */
-    private fun esDeclaracionVariableLocal(): DeclaracionVariableLocal? {
+    private fun esVariableLocal(): VariableLocal? {
         val tipoDato = esTipoDato()
         if (tipoDato != null) {
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
@@ -704,7 +709,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
                     val metodo = esInvocacionMetodo()
                     if (metodo != null) {
-                        return DeclaracionVariableLocal(tipoDato, identificador!!, null, metodo)
+                        return VariableLocal(tipoDato, identificador!!, null, metodo)
                     } else {
                         backtracking(posicionInicial, cantidadErrores)
                     }
@@ -716,7 +721,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                         } else {
                             reportarError("se esperaba fin de sentencia")
                         }
-                        return DeclaracionVariableLocal(tipoDato, identificador!!, exp, null)
+                        return VariableLocal(tipoDato, identificador!!, exp, null)
                     } else {
                         reportarError("se esperaba asignacion de valor")
                     }
@@ -725,7 +730,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 } else {
                     reportarError("se esperaba fin de sentencia")
                 }
-                return DeclaracionVariableLocal(tipoDato, identificador!!, null, null)
+                return VariableLocal(tipoDato, identificador!!, null, null)
             }
         }
         return null
@@ -736,7 +741,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <VariableGlobal> ::= [<ModificadorAcceso>] <TipoDato> identificador “=” <Expresion> “!” |
      * [<ModificadorAcceso>] <TipoDato> identificador “=” <InvocacionMetodo>
      */
-    private fun esVariableGlobal(): DeclaracionVariableGlobal? {
+    private fun esVariableGlobal(): VariableGlobal? {
         var modificadorAcceso: Token? = null
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA) {
             if (tokenActual?.lexema == "estrato1" || tokenActual?.lexema == "estrato6") {
@@ -756,7 +761,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
                     val metodo = esInvocacionMetodo()
                     if (metodo != null) {
-                        return DeclaracionVariableGlobal(modificadorAcceso, tipoDato, identificador!!, null, metodo)
+                        return VariableGlobal(modificadorAcceso, tipoDato, identificador!!, null, metodo)
                     } else {
                         backtracking(posicionInicial, cantidadErrores)
                     }
@@ -767,7 +772,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                         } else {
                             reportarError("se esperaba fin de sentencia")
                         }
-                        return DeclaracionVariableGlobal(modificadorAcceso, tipoDato, identificador!!, exp, metodo)
+                        return VariableGlobal(modificadorAcceso, tipoDato, identificador!!, exp, metodo)
                     }
                 } else {
                     if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
@@ -775,7 +780,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                     } else {
                         reportarError("se esperaba fin de sentencia")
                     }
-                    return DeclaracionVariableGlobal(modificadorAcceso, tipoDato, identificador!!, null, null)
+                    return VariableGlobal(modificadorAcceso, tipoDato, identificador!!, null, null)
                 }
             } else {
                 reportarError("se esperaba identificador")
@@ -986,11 +991,11 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo de la sentencia condicional
      * <SentenciaCondicional> ::= <SentenciaSi> [<SentenciaSino>]
      */
-    private fun esSentenciaCondicional(): SentenciaCondicional? {
+    private fun esSentenciaCondicional(): Condicional? {
         val sentenciasi = esSentenciaSi()
         if (sentenciasi != null) {
             val sentenciaSino = esSentenciaSino()
-            return SentenciaCondicional(sentenciasi, sentenciaSino)
+            return Condicional(sentenciasi, sentenciaSino)
         }
         return null
     }
@@ -999,7 +1004,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo de la Sentencia condicional si
      * <SentenciaSi> ::= wi “[“ <ExpLogica> ”]” “¿” [<ListaSentencia>] “?”
      */
-    private fun esSentenciaSi(): SentenciaSi? {
+    private fun esSentenciaSi(): EstructuraSi? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "wi") {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
@@ -1025,7 +1030,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 } else {
                     reportarError("Se esperaba una llave derecha")
                 }
-                return SentenciaSi(expLogica, listaSentencia)
+                return EstructuraSi(expLogica, listaSentencia)
             } else {
                 reportarError("Se esperaba una expresion logica")
             }
@@ -1037,13 +1042,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo para Determinar si es una SentenciaSINO
      * <SentenciaSino> ::= wo “¿” [<ListaSentencia>] “?” | wo <SentenciaSi> [<SentenciaSino>]
      */
-    private fun esSentenciaSino(): SentenciaSiNo? {
+    private fun esSentenciaSino(): EstructuraSiNo? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "wo") {
             siguienteToken()
             val sentenciaSi = esSentenciaSi()
             if (sentenciaSi != null) {
                 val sentenciaSino = esSentenciaSino()
-                return SentenciaSiNo(ArrayList(), sentenciaSi, sentenciaSino)
+                return EstructuraSiNo(ArrayList(), sentenciaSi, sentenciaSino)
             } else {
                 if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
                     siguienteToken()
@@ -1056,7 +1061,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 } else {
                     reportarError("Se esperaba una llave derecha")
                 }
-                return SentenciaSiNo(listaSentencia, null, null)
+                return EstructuraSiNo(listaSentencia, null, null)
             }
         }
         return null
@@ -1066,7 +1071,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Metodo para Determinar si es una sentencia while
      * <SentenciaWhile> ::= durante “[“ <ExpLogica> ”]” “¿” [<ListaSentencia>] “?”
      */
-    private fun esSenteciaWhile(): SentenciaWhile? {
+    private fun esSenteciaWhile(): CicloWhile? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "durante") {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
@@ -1089,7 +1094,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 val listaSentencia = esListaSentencia()
                 if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                     siguienteToken()
-                    return SentenciaWhile(expLogico, listaSentencia)
+                    return CicloWhile(expLogico, listaSentencia)
                 } else {
                     reportarError("Se esperaba una llave derecha")
                 }
@@ -1105,7 +1110,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <SentenciaFor> ::=  ciclo “[” <DeclaracionVariableLocal> “|” <ExpLogica> “|” <AsignacionCiclo> “]”
      *  “¿” [<ListaSentencia>] “?”
      */
-    private fun esSentenciaFor(): SentenciaFor? {
+    private fun esSentenciaFor(): CicloFor? {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "ciclo") {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.PARENTESIS_IZQUIERDO) {
@@ -1113,7 +1118,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             } else {
                 reportarError("Se esperaba un parentesis izquierdo")
             }
-            val decVariableLocal = esDeclaracionVariableLocal()
+            val decVariableLocal = esVariableLocal()
             if (decVariableLocal != null) {
                 if (tokenActual?.categoria == Categoria.DOS_PUNTOS) {
                     siguienteToken()
@@ -1127,7 +1132,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                     } else {
                         reportarError("Se esperaba un Dos puntos")
                     }
-                    val asigCiclo = esSentenciaIncrementoDecremento()
+                    val asigCiclo = esIncrementoDecremento()
                     if (asigCiclo != null) {
                         if (tokenActual?.categoria == Categoria.PARENTESIS_DERECHO) {
                             siguienteToken()
@@ -1145,7 +1150,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                         } else {
                             reportarError("Se esperaba una llave derecha")
                         }
-                        return SentenciaFor(decVariableLocal, expLogica, asigCiclo, listaSentencia)
+                        return CicloFor(decVariableLocal, expLogica, asigCiclo, listaSentencia)
 
                     } else {
                         reportarError("Se esperaba una asignacion de ciclo")

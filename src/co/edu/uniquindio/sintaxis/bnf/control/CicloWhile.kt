@@ -1,4 +1,4 @@
-package co.edu.uniquindio.sintaxis.bnf.sentencia
+package co.edu.uniquindio.sintaxis.bnf.control
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.sintaxis.ListaSintactica
@@ -7,7 +7,7 @@ import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class SentenciaWhile(private val expLogica : ExpresionLogica, private val listaSentencia: ArrayList<Sentencia>) : Sentencia(){
+class CicloWhile(private val expLogica : ExpresionLogica, private val listaSentencia: ArrayList<Sentencia>) : EstructuraControl(){
    init {
        nombre = "Sentencia while"
        estructura = "durante [ ... ] ¿ ... ?"

@@ -2,17 +2,21 @@ package co.edu.uniquindio.sintaxis.bnf.bloque
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.bnf.otro.TipoDato
 import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
 import co.edu.uniquindio.sintaxis.bnf.sentencia.InvocacionMetodo
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class DeclaracionVariableGlobal(private val modificador:Token?, private val tipoDato: TipoDato, val identificador:Token, private val expresion: Expresion?, private val metodo: InvocacionMetodo?) : Bloque() {
+class VariableGlobal(private val modificador:Token?, private val tipoDato: TipoDato, val identificador:Token, private val expresion: Expresion?, private val metodo: InvocacionMetodo?) : Bloque() {
     init {
         this.nombre = "Variable Glocal"
         this.estructura = "${modificador?.lexema} ${identificador.lexema}"
     }
+
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
@@ -45,4 +49,11 @@ class DeclaracionVariableGlobal(private val modificador:Token?, private val tipo
         return panel
     }
 
+    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        tablaSimbolos.agregarVariable(identificador.lexema, tipoDato.tipo.lexema, ambito, identificador.fila, identificador.columna)
+    }
+
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+
+    }
 }

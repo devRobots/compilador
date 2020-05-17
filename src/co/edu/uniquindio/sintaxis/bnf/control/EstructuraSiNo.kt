@@ -1,18 +1,19 @@
-package co.edu.uniquindio.sintaxis.bnf.sentencia
+package co.edu.uniquindio.sintaxis.bnf.control
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.Sintaxis
+import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class SentenciaSiNo(private val bloqueInstrucciones : ArrayList<Sentencia>, private val sentenciaSi : SentenciaSi?, private val sentenciaSiNo: SentenciaSiNo?) : Sintaxis() {
+class EstructuraSiNo(private val bloqueInstrucciones : ArrayList<Sentencia>, private val estructuraSi : EstructuraSi?, private val estructuraSiNo: EstructuraSiNo?) : Sintaxis() {
     init {
         nombre = "Sentencia Si-No"
-        if (sentenciaSi != null){
-            estructura = "wo ${sentenciaSi.estructura} "
+        estructura = if (estructuraSi != null){
+            "wo ${estructuraSi.estructura} "
         }else{
-            estructura = "wo ¿ .. ? "
+            "wo ¿ .. ? "
         }
     }
 
@@ -20,8 +21,8 @@ class SentenciaSiNo(private val bloqueInstrucciones : ArrayList<Sentencia>, priv
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        if (sentenciaSi != null){
-            treeItem.children.add(sentenciaSi?.getTreeItem())
+        if (estructuraSi != null){
+            treeItem.children.add(estructuraSi?.getTreeItem())
         }else{
             val listaObservable = SintaxisObservable(ListaSintactica("Lista de Sentencias"))
             val treeBloqueInstrucciones = TreeItem(listaObservable)
@@ -30,24 +31,24 @@ class SentenciaSiNo(private val bloqueInstrucciones : ArrayList<Sentencia>, priv
             }
             treeItem.children.add(treeBloqueInstrucciones)
         }
-        if (sentenciaSiNo != null){
-            treeItem.children.add(sentenciaSiNo?.getTreeItem())
+        if (estructuraSiNo != null){
+            treeItem.children.add(estructuraSiNo?.getTreeItem())
         }
 
         return treeItem
     }
 
     override fun getPropertiesPanel(): GridPane {
-        if (sentenciaSi != null){
+        if (estructuraSi != null){
             agregarAtributo("Condición si", 0)
-            agregarValor(sentenciaSi.toString(), 0)
+            agregarValor(estructuraSi.toString(), 0)
         }else{
             agregarAtributo("Instrucciones",0)
             agregarValor(bloqueInstrucciones.toString(),0)
         }
-        if (sentenciaSiNo != null){
+        if (estructuraSiNo != null){
             agregarAtributo("Sentencia Sino", 1)
-            agregarValor(sentenciaSiNo.toString(), 1)
+            agregarValor(estructuraSiNo.toString(), 1)
         }
 
         return panel

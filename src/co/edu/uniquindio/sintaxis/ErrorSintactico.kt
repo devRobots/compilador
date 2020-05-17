@@ -11,6 +11,6 @@ package co.edu.uniquindio.sintaxis
  */
 class ErrorSintactico(private var mensaje: String) {
     override fun toString(): String {
-        return ("Error Sintactico: $mensaje")
+        return "Error Sintactico: $mensaje"
     }
 }

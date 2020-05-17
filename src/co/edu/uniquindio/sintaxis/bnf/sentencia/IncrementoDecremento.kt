@@ -7,7 +7,7 @@ import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class SentenciaIncrementoDecremento(private val identificador: Token, private val operacion: Token) : Sentencia(){
+class IncrementoDecremento(private val identificador: Token, private val operacion: Token) : Sentencia(){
     init {
         nombre = "Sentencia de Incremento/Decremento"
         estructura = "${identificador.lexema}${operacion.lexema}"

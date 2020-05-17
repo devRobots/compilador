@@ -1,4 +1,4 @@
-package co.edu.uniquindio.sintaxis.bnf.sentencia
+package co.edu.uniquindio.sintaxis.bnf.control
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.sintaxis.ListaSintactica
@@ -9,7 +9,7 @@ import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class SentenciaSi(private val expLogica: ExpresionLogica, private val bloqueInstrucciones: ArrayList<Sentencia>):Sintaxis() {
+class EstructuraSi(private val expLogica: ExpresionLogica, private val bloqueInstrucciones: ArrayList<Sentencia>): Sintaxis() {
     init {
         this.nombre = "Sentencia Si"
         this.estructura = "wi [ Expresion Logica ] ¿ ... ?"

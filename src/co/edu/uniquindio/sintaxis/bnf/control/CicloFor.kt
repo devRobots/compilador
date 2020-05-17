@@ -1,13 +1,16 @@
-package co.edu.uniquindio.sintaxis.bnf.sentencia
+package co.edu.uniquindio.sintaxis.bnf.control
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.bnf.expresion.ExpresionLogica
+import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
+import co.edu.uniquindio.sintaxis.bnf.sentencia.IncrementoDecremento
+import co.edu.uniquindio.sintaxis.bnf.sentencia.VariableLocal
 
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class SentenciaFor(private val decVariableLocal: DeclaracionVariableLocal?, private val expLogica: ExpresionLogica, private val asignacionCiclo: SentenciaIncrementoDecremento, private val bloqueInstrucciones: ArrayList<Sentencia>) : Sentencia() {
+class CicloFor(private val decVariableLocal: VariableLocal?, private val expLogica: ExpresionLogica, private val asignacionCiclo: IncrementoDecremento, private val bloqueInstrucciones: ArrayList<Sentencia>) : EstructuraControl() {
     init {
         nombre = "Sentencia de ciclo For"
         estructura = "ciclo [ .. | ... | ... ] ¿ ... ?"
