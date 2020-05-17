@@ -136,24 +136,19 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "caja") {
             siguienteToken()
             var paquete: Token? = null
-
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
                 paquete = tokenActual!!
                 siguienteToken()
             } else {
                 reportarError("Se esperaba un identificador")
             }
-
             if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                 siguienteToken()
             } else {
                 reportarError("Se esperaba un terminal")
             }
             return Paquete(paquete)
-
-            return Paquete(paquete)
         }
-
         return null
     }
 
@@ -177,20 +172,21 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * <Importacion> ::= meter identificador “!”
      */
     private fun esImportacion(): Importacion? {
+        var importacion: Token? = null
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "meter") {
             siguienteToken()
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
-                val importacion = tokenActual!!
+                importacion = tokenActual!!
                 siguienteToken()
-                if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
-                    siguienteToken()
-                } else {
-                    reportarError("Se esperaba un terminal")
-                }
-                return Importacion(importacion)
             } else {
                 reportarError("Se esperaba un identificador")
             }
+            if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
+                siguienteToken()
+            } else {
+                reportarError("Se esperaba un terminal")
+            }
+            return Importacion(importacion)
         }
         return null
     }
@@ -211,26 +207,27 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
         if (tokenActual?.categoria == Categoria.PALABRA_RESERVADA && tokenActual?.lexema == "cosa") {
             siguienteToken()
+            val identificador = tokenActual!!
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
-                val identificador = tokenActual!!
                 siguienteToken()
-
-                if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
-                    siguienteToken()
-                } else {
-                    reportarError("Se esperaba una llave izquierda")
-                }
-                val listaBloque = esListaBloque()
-
-                if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
-                    siguienteToken()
-                } else {
-                    reportarError("Se esperaba una llave izquierda")
-                }
-                return Clase(modificadorAcceso, identificador, listaBloque)
             } else {
                 reportarError("Se esperaba un identificador")
             }
+
+            if (tokenActual?.categoria == Categoria.LLAVE_IZQUIERDO) {
+                siguienteToken()
+            } else {
+                reportarError("Se esperaba una llave izquierda")
+            }
+            val listaBloque = esListaBloque()
+
+            if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
+                siguienteToken()
+            } else {
+                reportarError("Se esperaba una llave izquierda")
+            }
+            return Clase(modificadorAcceso, identificador, listaBloque)
+
         }
         return null
     }
@@ -577,10 +574,11 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 if (expresion != null) {
                     if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                         siguienteToken()
-                        return Asignacion(identificador!!, expresion, metodo)
                     } else {
                         reportarError("Se esperaba un fin de sentencia")
                     }
+                    return Asignacion(identificador!!, expresion, metodo)
+
                 } else {
                     reportarError("Se esperaba una expresion")
                 }
@@ -635,8 +633,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             }
             if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                 siguienteToken()
-                return InvocacionMetodo(identificador!!, listaParametros)
+            } else {
+                reportarError("Se esperaba un fin de sentencia")
             }
+            return InvocacionMetodo(identificador!!, listaParametros)
         }
         return null
     }
@@ -674,15 +674,14 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             if (expresion != null) {
                 if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                     siguienteToken()
-                    return Retorno(expresion)
                 } else {
                     reportarError("Se esperaba un final de sentencia")
                 }
+                return Retorno(expresion)
             } else {
                 reportarError("Se esperaba una expresion, valor o indentificador")
             }
         }
-
         return null
     }
 
@@ -714,19 +713,19 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                     if (exp != null) {
                         if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                             siguienteToken()
-                            return DeclaracionVariableLocal(tipoDato, identificador!!, exp, null)
                         } else {
                             reportarError("se esperaba fin de sentencia")
                         }
+                        return DeclaracionVariableLocal(tipoDato, identificador!!, exp, null)
                     } else {
                         reportarError("se esperaba asignacion de valor")
                     }
                 } else if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                     siguienteToken()
-                    return DeclaracionVariableLocal(tipoDato, identificador!!, null, null)
                 } else {
                     reportarError("se esperaba fin de sentencia")
                 }
+                return DeclaracionVariableLocal(tipoDato, identificador!!, null, null)
             }
         }
         return null
@@ -765,18 +764,18 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                     if (exp != null) {
                         if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                             siguienteToken()
-                            return DeclaracionVariableGlobal(modificadorAcceso, tipoDato, identificador!!, exp, metodo)
                         } else {
                             reportarError("se esperaba fin de sentencia")
                         }
+                        return DeclaracionVariableGlobal(modificadorAcceso, tipoDato, identificador!!, exp, metodo)
                     }
                 } else {
                     if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                         siguienteToken()
-                        return DeclaracionVariableGlobal(modificadorAcceso, tipoDato, identificador!!, null, null)
                     } else {
                         reportarError("se esperaba fin de sentencia")
                     }
+                    return DeclaracionVariableGlobal(modificadorAcceso, tipoDato, identificador!!, null, null)
                 }
             } else {
                 reportarError("se esperaba identificador")
@@ -1023,10 +1022,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 val listaSentencia = esListaSentencia()
                 if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                     siguienteToken()
-                    return SentenciaSi(expLogica, listaSentencia)
                 } else {
                     reportarError("Se esperaba una llave derecha")
                 }
+                return SentenciaSi(expLogica, listaSentencia)
             } else {
                 reportarError("Se esperaba una expresion logica")
             }
@@ -1054,10 +1053,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 val listaSentencia = esListaSentencia()
                 if (tokenActual?.categoria == Categoria.LLAVE_DERECHA) {
                     siguienteToken()
-                    return SentenciaSiNo(listaSentencia, null, null)
                 } else {
                     reportarError("Se esperaba una llave derecha")
                 }
+                return SentenciaSiNo(listaSentencia, null, null)
             }
         }
         return null
@@ -1126,7 +1125,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                     if (tokenActual?.categoria == Categoria.DOS_PUNTOS) {
                         siguienteToken()
                     } else {
-                        reportarError("Se esperaba un fin de sentencia")
+                        reportarError("Se esperaba un Dos puntos")
                     }
                     val asigCiclo = esSentenciaIncrementoDecremento()
                     if (asigCiclo != null) {
@@ -1183,22 +1182,22 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                         siguienteToken()
                         if (tokenActual?.categoria == Categoria.CORCHETE_IZQUIERDO) {
                             siguienteToken()
-                            val listaParametros = esListaParametros()
-                            if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO) {
-                                siguienteToken()
-                            } else {
-                                reportarError("Se esperaba un corchete derecho")
-                            }
-                            if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
-                                siguienteToken()
-                            } else {
-                                reportarError("Se esperaba un fin de sentencia")
-                            }
-                            return Arreglo(tipoDato, identificador, listaParametros)
-
                         } else {
                             reportarError("Se esperaba un corchete izquierdo")
                         }
+                        val listaParametros = esListaParametros()
+                        if (tokenActual?.categoria == Categoria.CORCHETE_DERECHO) {
+                            siguienteToken()
+                        } else {
+                            reportarError("Se esperaba un corchete derecho")
+                        }
+                        if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
+                            siguienteToken()
+                        } else {
+                            reportarError("Se esperaba un fin de sentencia")
+                        }
+                        return Arreglo(tipoDato, identificador, listaParametros)
+
                     } else {
                         reportarError("Se esperaba el operador de asignación")
                     }
