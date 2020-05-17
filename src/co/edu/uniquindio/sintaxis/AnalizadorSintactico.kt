@@ -67,8 +67,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         posicionActual = posicion - 1
         siguienteToken()
 
-        for (i in 0..cantidadErrores) {
-            if (listaErrores.size > 0) {
+        if (cantidadErrores < listaErrores.size) {
+            val cant = cantidadErrores - listaErrores.size
+            for (i in 0..cant) {
                 listaErrores.removeAt(listaErrores.lastIndex)
             }
         }
@@ -101,11 +102,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
         while (centinela) {
             siguienteToken()
-            for (i in seleccion..tokensSeguros.size) {
-                if (tokenActual?.categoria == tokensSeguros[i].categoria) {
-                    centinela = false
-                    break
-                }
+            for (i in seleccion until tokensSeguros.size) if (tokenActual?.categoria == tokensSeguros[i].categoria) {
+                centinela = false
+                break
             }
         }
         siguienteToken()
@@ -120,7 +119,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     fun esUnidadDeCompilacion(): UnidadCompilacion? {
         val paquete: Paquete? = esPaquete()
         val listaImportaciones: ArrayList<Importacion> = esListaImportaciones()
-        val clase = esClase()
+        val clase: Clase? = esClase()
 
         return if (clase != null) {
             UnidadCompilacion(paquete, listaImportaciones, clase)
@@ -141,25 +140,18 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             if (tokenActual?.categoria == Categoria.IDENTIFICADOR) {
                 paquete = tokenActual!!
                 siguienteToken()
-                if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
-                    siguienteToken()
-                } else {
-                    reportarError("Se esperaba un terminal")
-                }
-                return Paquete(paquete)
             } else {
                 reportarError("Se esperaba un identificador")
-                buscarTokenSeguro(2)
             }
 
             if (tokenActual?.categoria == Categoria.FIN_SENTENCIA) {
                 siguienteToken()
-                return Paquete(paquete)
             } else {
                 reportarError("Se esperaba un terminal")
             }
+            return Paquete(paquete)
 
-
+            return Paquete(paquete)
         }
 
         return null
