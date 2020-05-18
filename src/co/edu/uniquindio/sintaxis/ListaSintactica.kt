@@ -8,11 +8,16 @@ import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
 import javafx.scene.text.Text
 
-class ListaSintactica(private val contenido: String) : Sintaxis() {
-    init {
-        this.nombre = "Lista de $contenido"
-    }
-
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 2.0
+ *
+ * Lista Sintactica
+ */
+class ListaSintactica(private val contenido: String) : Sintaxis("Lista de $contenido") {
     override fun toString(): String {
         return nombre
     }

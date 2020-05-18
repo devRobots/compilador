@@ -3,24 +3,37 @@ package co.edu.uniquindio.sintaxis.bnf.control
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.bnf.expresion.ExpresionLogica
-import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 import co.edu.uniquindio.sintaxis.bnf.sentencia.IncrementoDecremento
+import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 import co.edu.uniquindio.sintaxis.bnf.sentencia.VariableLocal
-
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class CicloFor(private val decVariableLocal: VariableLocal?, private val expLogica: ExpresionLogica, private val asignacionCiclo: IncrementoDecremento, private val bloqueInstrucciones: ArrayList<Sentencia>) : EstructuraControl() {
-    init {
-        nombre = "Sentencia de ciclo For"
-        estructura = "ciclo [ .. | ... | ... ] ¿ ... ?"
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 2.0
+ *
+ * Ciclo For
+ */
+class CicloFor(
+        private val decVariableLocal: VariableLocal?,
+        private val expLogica: ExpresionLogica,
+        private val asignacionCiclo: IncrementoDecremento,
+        private val bloqueInstrucciones: ArrayList<Sentencia>
+) : EstructuraControl("Ciclo For") {
+
+    override fun toString(): String {
+        return "ciclo [ ${decVariableLocal?.toString()} | $expLogica | $asignacionCiclo ] ¿ ... ?"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        if (decVariableLocal != null){
+        if (decVariableLocal != null) {
             treeItem.children.add(decVariableLocal.getTreeItem())
         }
 
@@ -29,10 +42,8 @@ class CicloFor(private val decVariableLocal: VariableLocal?, private val expLogi
 
         val listaObservable = SintaxisObservable(ListaSintactica("Bloques de Sentencias"))
         val treeBloqueInstrucciones = TreeItem(listaObservable)
-        if(bloqueInstrucciones != null){
-            for (bloque in bloqueInstrucciones) {
-                treeBloqueInstrucciones.children.add(bloque.getTreeItem())
-            }
+        for (bloque in bloqueInstrucciones) {
+            treeBloqueInstrucciones.children.add(bloque.getTreeItem())
         }
         treeItem.children.add(treeBloqueInstrucciones)
 
@@ -41,17 +52,17 @@ class CicloFor(private val decVariableLocal: VariableLocal?, private val expLogi
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Declaracion",0)
-        agregarValor(decVariableLocal?.nombre,0)
+        agregarAtributo("Declaracion")
+        agregarValor(decVariableLocal?.toString())
 
-        agregarAtributo("Expresion Logica",1)
-        agregarValor(expLogica.nombre,1)
+        agregarAtributo("Expresion Logica")
+        agregarValor(expLogica.toString())
 
-        agregarAtributo("Asignacion",2)
-        agregarValor(asignacionCiclo.nombre,2)
+        agregarAtributo("Asignacion")
+        agregarValor(asignacionCiclo.toString())
 
-        agregarAtributo("Lista de sentencia",3)
-        agregarValor("Lista de Sentencias",3)
+        agregarAtributo("Lista de sentencia")
+        agregarValor("Lista de Sentencias")
 
         return panel
     }

@@ -9,10 +9,22 @@ import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class EstructuraSi(private val expLogica: ExpresionLogica, private val bloqueInstrucciones: ArrayList<Sentencia>): Sintaxis() {
-    init {
-        this.nombre = "Sentencia Si"
-        this.estructura = "wi [ Expresion Logica ] ¿ ... ?"
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 2.0
+ *
+ * Estructura Si
+ */
+class EstructuraSi(
+        private val expLogica: ExpresionLogica,
+        private val bloqueInstrucciones: ArrayList<Sentencia>
+) : Sintaxis("Estructura Si") {
+
+    override fun toString(): String {
+        return "wi [ $expLogica ] ¿ ... ?"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -32,11 +44,11 @@ class EstructuraSi(private val expLogica: ExpresionLogica, private val bloqueIns
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("expresion Logica", 0)
-        agregarValor(estructura, 0)
+        agregarAtributo("Expresion Logica")
+        agregarValor(expLogica.toString())
 
-        agregarAtributo("Instrucciones", 1)
-        agregarValor(bloqueInstrucciones.toString(), 1)
+        agregarAtributo("Instrucciones")
+        agregarValor(bloqueInstrucciones.toString())
 
         return panel
     }

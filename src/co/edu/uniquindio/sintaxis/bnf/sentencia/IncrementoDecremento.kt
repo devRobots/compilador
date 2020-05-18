@@ -2,15 +2,25 @@ package co.edu.uniquindio.sintaxis.bnf.sentencia
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
-import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
-
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class IncrementoDecremento(private val identificador: Token, private val operacion: Token) : Sentencia(){
-    init {
-        nombre = "Sentencia de Incremento/Decremento"
-        estructura = "${identificador.lexema}${operacion.lexema}"
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 2.0
+ *
+ * Incremento o Decremento
+ */
+class IncrementoDecremento(
+        private val identificador: Token,
+        private val operacion: Token
+) : Sentencia("Incremento/Decremento") {
+
+    override fun toString(): String {
+        return "${identificador.lexema}${operacion.lexema}"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -19,11 +29,11 @@ class IncrementoDecremento(private val identificador: Token, private val operaci
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Identificador: ", 0)
-        agregarValor(identificador.lexema, 0)
+        agregarAtributo("Identificador: ")
+        agregarValor(identificador.lexema)
 
-        agregarAtributo("Operacion: ", 1)
-        agregarValor(operacion.lexema, 1)
+        agregarAtributo("Operacion: ")
+        agregarValor(operacion.lexema)
 
         return panel
     }

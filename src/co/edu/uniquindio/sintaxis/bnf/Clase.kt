@@ -12,10 +12,23 @@ import co.edu.uniquindio.sintaxis.bnf.bloque.Bloque
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class Clase(private val modificadorAcceso: Token?,private val identificador: Token, private val listaBloquesSentencia: ArrayList<Bloque>) : Sintaxis() {
-    init {
-        this.nombre = "Clase"
-        this.estructura = "${modificadorAcceso?.lexema} cosa ${identificador.lexema}"
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 2.0
+ *
+ * Clase
+ */
+class Clase(
+        private val modificadorAcceso: Token?,
+        private val identificador: Token,
+        private val listaBloquesSentencia: ArrayList<Bloque>
+) : Sintaxis("Clase") {
+
+    override fun toString(): String {
+        return "${modificadorAcceso?.lexema} cosa ${identificador.lexema}"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -33,14 +46,14 @@ class Clase(private val modificadorAcceso: Token?,private val identificador: Tok
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Modificador de Acceso", 0)
-        agregarValor(modificadorAcceso?.lexema, 0)
+        agregarAtributo("Modificador de Acceso")
+        agregarValor(modificadorAcceso?.lexema)
 
-        agregarAtributo("Identificador", 1)
-        agregarValor(identificador.lexema, 1)
+        agregarAtributo("Identificador")
+        agregarValor(identificador.lexema)
 
-        agregarAtributo("Lista de Bloques de Sentencia", 2)
-        agregarValor("Lista de Bloques de Sentencia", 2)
+        agregarAtributo("Lista de Bloques de Sentencia")
+        agregarValor("Lista de Bloques de Sentencia")
 
         return panel
     }

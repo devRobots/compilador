@@ -7,11 +7,22 @@ import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class CicloWhile(private val expLogica : ExpresionLogica, private val listaSentencia: ArrayList<Sentencia>) : EstructuraControl(){
-   init {
-       nombre = "Sentencia while"
-       estructura = "durante [ ... ] ¿ ... ?"
-   }
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 2.0
+ *
+ * Ciclo While
+ */
+class CicloWhile(
+        private val expLogica: ExpresionLogica,
+        private val listaSentencia: ArrayList<Sentencia>
+) : EstructuraControl("Ciclo While") {
+    override fun toString(): String {
+        return "durante [ $expLogica ] ¿ ... ?"
+    }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
@@ -31,11 +42,11 @@ class CicloWhile(private val expLogica : ExpresionLogica, private val listaSente
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Expresion Logica", 0)
-        agregarValor(expLogica.nombre, 0)
+        agregarAtributo("Expresion Logica")
+        agregarValor(expLogica.toString())
 
-        agregarAtributo("Bloques de Sentencia", 1)
-        agregarValor("Lista de Sentencias", 1)
+        agregarAtributo("Bloques de Sentencia")
+        agregarValor("Lista de Sentencias")
 
         return panel
     }

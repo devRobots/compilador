@@ -16,8 +16,6 @@ import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
 import javafx.util.Callback
 
-import kotlin.collections.ArrayList
-
 
 /**
  * @author Samara Rincon
@@ -32,36 +30,58 @@ class VentanaPrincipalController {
     /**
      * Codigo fuente
      */
-    @FXML lateinit var texto: TextArea
+    @FXML
+    lateinit var texto: TextArea
 
     /**
      * Elementos del Analizador Lexico
      */
-    @FXML lateinit var salidaLexico: TableView<TokenObservable>
-    @FXML lateinit var palabra: TableColumn<TokenObservable, String?>
-    @FXML lateinit var categoria: TableColumn<TokenObservable, String?>
-    @FXML lateinit var fila: TableColumn<TokenObservable, String?>
-    @FXML lateinit var columna: TableColumn<TokenObservable, String?>
+    @FXML
+    lateinit var salidaLexico: TableView<TokenObservable>
+    @FXML
+    lateinit var palabra: TableColumn<TokenObservable, String?>
+    @FXML
+    lateinit var categoria: TableColumn<TokenObservable, String?>
+    @FXML
+    lateinit var fila: TableColumn<TokenObservable, String?>
+    @FXML
+    lateinit var columna: TableColumn<TokenObservable, String?>
 
     /**
      * Elementos del Analizador Sintactico
      */
-    @FXML lateinit var arbolSintactico: TreeView<SintaxisObservable>
-    @FXML lateinit var propertiesPanel: BorderPane
+    @FXML
+    lateinit var arbolSintactico: TreeView<SintaxisObservable>
+    @FXML
+    lateinit var propertiesPanel: BorderPane
+
+    /**
+     * Elementos del Analizador Semantico
+     */
+    @FXML
+    lateinit var tablaVariables: TableView<TokenObservable>
+    @FXML
+    lateinit var tablaFunciones: TableView<TokenObservable>
+    @FXML
+    lateinit var tablaImportaciones: TableView<TokenObservable>
 
     /**
      * Elementos de Rutina de errores
      */
-    @FXML lateinit var mensaje: Label
-    @FXML lateinit var panelErroresLexicos: TitledPane
-    @FXML lateinit var erroresLexicos: ListView<String>
-    @FXML lateinit var panelErroresSintacticos: TitledPane
-    @FXML lateinit var erroresSintacticos: ListView<String>
+    @FXML
+    lateinit var mensaje: Label
+    @FXML
+    lateinit var erroresLexicos: ListView<String>
+    @FXML
+    lateinit var erroresSintacticos: ListView<String>
+    @FXML
+    lateinit var panelErroresLexicos: TitledPane
+    @FXML
+    lateinit var panelErroresSintacticos: TitledPane
 
     /**
      * Metodo initialize de JavaFX
-     *
-     * Inicializa las configuraciones basicas de los TableView
+     * Inicializa las configuraciones basicas de los TableView, TreeView, etc
      */
     @FXML
     fun initialize() {
@@ -145,7 +165,7 @@ class VentanaPrincipalController {
     }
 
     /**
-     * Limpia el campo de texto
+     * Limpia todos los elementos de la interfaz
      */
     @FXML
     fun limpiar() {
@@ -153,6 +173,9 @@ class VentanaPrincipalController {
         limpiarSalidas()
     }
 
+    /**
+     * Limpia las salidas de la interfaz
+     */
     private fun limpiarSalidas() {
         mensaje.text = ""
 
@@ -239,10 +262,10 @@ class VentanaPrincipalController {
     }
 
     /**
-     * Interpreta el flujo de errores
+     * Muestra el flujo de errores correspondiente en el Label mensaje
      */
     private fun mostrarMensajeErrores(errores: ArrayList<*>, panel: TitledPane, tipo: String) {
-        if(errores.isNotEmpty()) {
+        if (errores.isNotEmpty()) {
             panel.style = "-fx-text-fill: red;"
             mensaje.style = "-fx-text-fill: red;"
 

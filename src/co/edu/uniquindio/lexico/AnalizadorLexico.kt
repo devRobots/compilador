@@ -1,7 +1,5 @@
 package co.edu.uniquindio.lexico
 
-import kotlin.collections.ArrayList
-
 import co.edu.uniquindio.lexico.Categoria.*
 
 /**
@@ -759,6 +757,8 @@ class AnalizadorLexico(private val codigoFuente: String) {
 
     /**
      * Metodo para validar si es un terminal de Comentario de bloque
+     *
+     * @return Boolean true si es terminal de comentario de bloque, false sino es
      */
     private fun esTerminalBloque(): Boolean {
         if (posicionActual + 1 < codigoFuente.length && caracterActual == '/' && codigoFuente[posicionActual + 1] == ':') {
@@ -794,7 +794,9 @@ class AnalizadorLexico(private val codigoFuente: String) {
      * bip, bit,
      * ent,
      * dec,
-     * pal,
+     * pal
+     *
+     * @return esTipoDato retorna true si es, false sino es
      */
     private fun esTipoDato(): Boolean {
         val posicionInicial = posicionActual

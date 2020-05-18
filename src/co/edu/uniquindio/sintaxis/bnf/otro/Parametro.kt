@@ -8,11 +8,19 @@ import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.Sintaxis
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 2.0
+ *
+ * Parametro
+ */
+class Parametro(val tipo: Token, private val identificador: Token) : Sintaxis("Parametro") {
 
-class Parametro(val tipo: Token, private val identificador: Token) : Sintaxis() {
-    init {
-        nombre = "Parametro"
-        estructura = "${tipo.lexema} $identificador"
+    override fun toString(): String {
+        return  "${tipo.lexema} $identificador"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -20,17 +28,17 @@ class Parametro(val tipo: Token, private val identificador: Token) : Sintaxis() 
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Tipo de dato", 0)
-        agregarValor(tipo.lexema, 0)
+        agregarAtributo("Tipo de dato")
+        agregarValor(tipo.lexema)
 
-        agregarAtributo("Identificador", 1)
-        agregarValor(identificador.lexema, 1)
+        agregarAtributo("Identificador")
+        agregarValor(identificador.lexema)
 
         return panel
     }
 
     fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        tablaSimbolos.agregarVariable(identificador.lexema, tipo.lexema, ambito, identificador.fila, identificador.columna)
+        tablaSimbolos.agregarVariable(identificador.lexema, tipo.lexema, null, ambito, identificador.fila, identificador.columna)
     }
 
     fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {

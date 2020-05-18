@@ -9,4 +9,8 @@ package co.edu.uniquindio.sintaxis
  *
  * Error Sintactico
  */
-class ErrorSintactico(token: String, var fila: Int, var columna: Int): Error("Se esperaba $token en $fila:$columna")
+class ErrorSintactico(
+        token: String,
+        var fila: Int,
+        var columna: Int
+) : Error("Se esperaba $token en $fila:$columna")

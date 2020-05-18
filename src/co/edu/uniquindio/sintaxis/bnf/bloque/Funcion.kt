@@ -9,15 +9,29 @@ import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.bnf.otro.Parametro
 import co.edu.uniquindio.sintaxis.bnf.otro.Retorno
 import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
-
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
-import kotlin.collections.ArrayList
 
-class Funcion(private val modificadorAcceso: Token?, private val tipo: Token, private val identificador: Token, private val listaParametros: ArrayList<Parametro>, private val listaSentencias: ArrayList<Sentencia>, private val retorno: Retorno) : Bloque() {
-    init {
-        nombre = "Funcion"
-        estructura = "$modificadorAcceso ${tipo.lexema} $identificador [ ... ] ¿ ... ?"
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 2.0
+ *
+ * Funcion
+ */
+class Funcion(
+        private val modificadorAcceso: Token?,
+        private val tipo: Token,
+        private val identificador: Token,
+        private val listaParametros: ArrayList<Parametro>,
+        private val listaSentencias: ArrayList<Sentencia>,
+        private val retorno: Retorno
+) : Bloque("Funcion") {
+
+    override fun toString(): String {
+        return "$modificadorAcceso ${tipo.lexema} $identificador [ ... ] ¿ ... ?"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -44,23 +58,23 @@ class Funcion(private val modificadorAcceso: Token?, private val tipo: Token, pr
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Modificador de Acceso", 0)
-        agregarValor(modificadorAcceso?.lexema, 0)
+        agregarAtributo("Modificador de Acceso")
+        agregarValor(modificadorAcceso?.lexema)
 
-        agregarAtributo("Tipo de Dato de Retorno", 1)
-        agregarValor(tipo.lexema, 1)
+        agregarAtributo("Tipo de Dato de Retorno")
+        agregarValor(tipo.lexema)
 
-        agregarAtributo("Identificador", 2)
-        agregarValor(identificador.lexema, 2)
+        agregarAtributo("Identificador")
+        agregarValor(identificador.lexema)
 
-        agregarAtributo("Argumentos", 3)
-        agregarValor(listaParametros.toString(), 3)
+        agregarAtributo("Argumentos")
+        agregarValor(listaParametros.toString())
 
-        agregarAtributo("Bloques de Sentencia", 4)
-        agregarValor(listaSentencias.toString(), 4)
+        agregarAtributo("Bloques de Sentencia")
+        agregarValor(listaSentencias.toString())
 
-        agregarAtributo("Sentencia de Retorno", 5)
-        agregarValor(retorno.nombre, 5)
+        agregarAtributo("Sentencia de Retorno")
+        agregarValor(retorno.nombre)
 
         return panel
     }
@@ -73,10 +87,10 @@ class Funcion(private val modificadorAcceso: Token?, private val tipo: Token, pr
             argumento.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador.lexema))
         }
 
-        tablaSimbolos.agregarFuncion(identificador.lexema, tipo.lexema, tiposParametros, ambito)
+        tablaSimbolos.agregarFuncion(identificador.lexema, tipo.lexema, modificadorAcceso?.lexema, tiposParametros)
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-
+        TODO("No yet implemented")
     }
 }

@@ -10,12 +10,25 @@ import co.edu.uniquindio.sintaxis.bnf.otro.Parametro
 import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
-import kotlin.collections.ArrayList
 
-class Metodo(private val modificadorAcceso: Token?, private val identificador: Token, private val listaParametros: ArrayList<Parametro>, private val listaSentencias: ArrayList<Sentencia>) : Bloque() {
-    init {
-        nombre = "Metodo"
-        estructura = "$modificadorAcceso $identificador [ ... ] ¿ ... ?"
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 2.0
+ *
+ * Metodo
+ */
+class Metodo(
+        private val modificadorAcceso: Token?,
+        private val identificador: Token,
+        private val listaParametros: ArrayList<Parametro>,
+        private val listaSentencias: ArrayList<Sentencia>
+) : Bloque("Metodo") {
+
+    override fun toString(): String {
+        return "$modificadorAcceso $identificador [ ... ] ¿ ... ?"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -40,17 +53,17 @@ class Metodo(private val modificadorAcceso: Token?, private val identificador: T
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Modificador de Acceso", 0)
-        agregarValor(modificadorAcceso?.lexema, 0)
+        agregarAtributo("Modificador de Acceso")
+        agregarValor(modificadorAcceso?.lexema)
 
-        agregarAtributo("Identificador", 1)
-        agregarValor(identificador.lexema, 1)
+        agregarAtributo("Identificador")
+        agregarValor(identificador.lexema)
 
-        agregarAtributo("Argumentos", 2)
-        agregarValor(listaParametros.toString(), 2)
+        agregarAtributo("Argumentos")
+        agregarValor(listaParametros.toString())
 
-        agregarAtributo("Bloques de Sentencia", 3)
-        agregarValor(listaSentencias.toString(), 3)
+        agregarAtributo("Bloques de Sentencia")
+        agregarValor(listaSentencias.toString())
 
         return panel
     }
@@ -63,7 +76,7 @@ class Metodo(private val modificadorAcceso: Token?, private val identificador: T
             argumento.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador.lexema))
         }
 
-        tablaSimbolos.agregarFuncion(identificador.lexema, "void", tiposParametros, ambito)
+        tablaSimbolos.agregarFuncion(identificador.lexema, "void", modificadorAcceso?.lexema, tiposParametros)
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {

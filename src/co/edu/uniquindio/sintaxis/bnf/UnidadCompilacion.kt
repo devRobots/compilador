@@ -11,10 +11,20 @@ import co.edu.uniquindio.sintaxis.Sintaxis
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class UnidadCompilacion(var paquete: Paquete?, var listaImportaciones: ArrayList<Importacion>, var clase: Clase?) : Sintaxis() {
-    init {
-        this.nombre = "Unidad de Compilacion"
-    }
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 2.0
+ *
+ * Unidad de Compilacion
+ */
+class UnidadCompilacion(
+        var paquete: Paquete?,
+        var listaImportaciones: ArrayList<Importacion>,
+        var clase: Clase?
+) : Sintaxis("Unidad de Compilacion") {
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
@@ -35,14 +45,14 @@ class UnidadCompilacion(var paquete: Paquete?, var listaImportaciones: ArrayList
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Paquete", 0)
-        agregarValor(paquete.toString(), 0)
+        agregarAtributo("Paquete")
+        agregarValor(paquete.toString())
 
-        agregarAtributo("Lista de Importaciones", 1)
-        agregarValor(listaImportaciones.toString(), 1)
+        agregarAtributo("Lista de Importaciones")
+        agregarValor(listaImportaciones.toString())
 
-        agregarAtributo("Clase", 2)
-        agregarValor(clase.toString(), 2)
+        agregarAtributo("Clase")
+        agregarValor(clase.toString())
 
         return panel
     }

@@ -10,10 +10,23 @@ import co.edu.uniquindio.sintaxis.bnf.otro.Argumento
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class Arreglo (private val tipo : Token, private val identificador : Token, private val listArgumentos: ArrayList<Argumento>): Sentencia() {
-    init {
-        nombre = "Declarar arreglo"
-        estructura = "${tipo}{} $identificador = {List}"
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 2.0
+ *
+ * Arreglo
+ */
+class Arreglo(
+        private val tipo: Token,
+        private val identificador: Token,
+        private val listArgumentos: ArrayList<Argumento>
+) : Sentencia("Arreglo") {
+
+    override fun toString(): String {
+        return "${tipo}{} $identificador = {List}"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -31,20 +44,20 @@ class Arreglo (private val tipo : Token, private val identificador : Token, priv
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Declaración de arreglo",0)
-        agregarValor(estructura,0)
+        agregarAtributo("Declaración de arreglo")
+        agregarValor(identificador.lexema)
 
-        agregarAtributo("Lista de Parametros",1)
-        agregarValor(listArgumentos.toString(),1)
+        agregarAtributo("Tipo de dato")
+        agregarValor(tipo.lexema)
 
-        agregarAtributo("Tipo de dato",2)
-        agregarValor(tipo.lexema,2)
+        agregarAtributo("Lista de Parametros")
+        agregarValor(listArgumentos.toString())
 
         return panel
     }
 
     override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        tablaSimbolos.agregarVariable(identificador.lexema, tipo.lexema, ambito, identificador.fila, identificador.columna)
+        tablaSimbolos.agregarVariable(identificador.lexema, tipo.lexema, null, ambito, identificador.fila, identificador.columna)
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {

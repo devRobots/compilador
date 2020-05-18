@@ -6,10 +6,10 @@ import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class Retorno(private val expresion: Expresion) : Sintaxis() {
-    init {
-        nombre = "Retorno"
-        estructura = "devolver ${expresion.estructura} !"
+class Retorno(private val expresion: Expresion) : Sintaxis("Retorno") {
+
+    override fun toString(): String {
+        return "devolver ${expresion.toString()} !"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -22,8 +22,8 @@ class Retorno(private val expresion: Expresion) : Sintaxis() {
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Expresion de retorno: ", 0)
-        agregarValor(expresion.estructura, 0)
+        agregarAtributo("Expresion de retorno: ")
+        agregarValor(expresion.toString())
 
         return panel
     }

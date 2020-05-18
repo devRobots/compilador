@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -19,144 +20,227 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.app.VentanaPrincipalController">
-   <children>
-      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="693.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <center>
-            <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-              <tabs>
-                  <Tab text="Codigo Fuente">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                           <children>
-                              <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-                                 <top>
-                                    <Label text="Codigo a analizar:" BorderPane.alignment="CENTER" />
-                                 </top>
-                                 <center>
-                                    <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
-                                       <children>
-                                          <TextArea fx:id="texto" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="250.0" text="caja @paquete!&#10;&#10;meter @importar!&#10;meter @importar1!&#10;meter @importar2!&#10;&#10;: se crea la clase&#10;estrato1 cosa @clase ¿&#10;&#9;:/&#10;  &#9;   Apartir de la clase  cualquier cosa&#10;&#9;/:&#10;        estrato1 @Declaracion_y_Asignacion[ ] ¿ &#10;&#9;&#9;ent @Declarar = #73!&#10;&#9;&#9;pal @asignandoMetodo = @Metodo[@a,@b]!&#10;&#9;&#9;@Asignar = (Asignando Metodo) + #64 !&#10;&#9;&#9;dec @b = [@a ° *3.8  ] / *4.0 !&#10;&#9;&#9;bip @Relacion = @a &lt;&lt; *7.0 !&#10;&#9;&#9;bip @boolean = ¬ .false!&#10;&#9;&#9;ent{} @arreglo = {#1,#2,@a,#5}!&#10;&#9;?&#10;&#9;: Sentencias Condicionales y otras&#10;&#9;&#9;estrato1 ent @Decision[ent @a, ent @b, pal @salida] ¿&#10;&#9;&#9;:Metodo&#10;&#9;&#9;@a = @Scanner[ ( ingrese numero: ) ] !&#10;&#9;&#9;:Sentencia If y else&#10;&#9;&#9;wi[ @a &lt;&lt; @b]¿&#10;&#9;&#9;&#9;@Syso[( la variable es menor) ]!&#10;&#9;&#9;? wo wi[ @a &gt;&gt; @b ]¿&#10;&#9;&#9;&#9;@Syso[( la variable es mayor)] !&#10;&#9;&#9;? wo ¿&#10;&#9;&#9;&#9;@Syso[( las variables son iguales)]!&#10;&#9;&#9;?&#10;&#9;&#9;:Sentencia For&#10;&#9;&#9;ciclo[ ent @i! | @i &gt;&gt; #10 | @i^+ ]¿&#10;&#9;&#9;&#9;@Syso[( las variables son iguales)]!&#10;&#9;&#9;?&#10;&#9;&#9;: Sentencia While&#10;&#9;&#9;durante[ .true]¿&#10;&#9;&#9;&#9;@a += #3!&#10;&#9;&#9;?&#10;&#9;&#9;devolver @a!&#10;&#9;?&#10;?" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                                       </children>
-                                    </AnchorPane>
-                                 </center>
-                                 <bottom>
-                                    <BorderPane maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                                       <right>
-                                          <Button mnemonicParsing="false" onAction="#analizar" prefHeight="25.0" prefWidth="100.0" text="Analizar" BorderPane.alignment="CENTER" />
-                                       </right>
-                                       <left>
-                                          <Button mnemonicParsing="false" onAction="#limpiar" text="Limpiar" BorderPane.alignment="CENTER" />
-                                       </left>
-                                       <center>
-                                          <Label fx:id="mensaje" textFill="RED" BorderPane.alignment="CENTER">
-                                             <font>
-                                                <Font size="15.0" />
-                                             </font></Label>
-                                       </center>
-                                    </BorderPane>
-                                 </bottom>
-                              </BorderPane>
-                           </children>
-                        </AnchorPane>
-                    </content>
-                  </Tab>
-                <Tab text="Analisis Lexico">
-                  <content>
-                    <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
-                           <children>
-                              <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
-                                 <top>
-                                    <Label text="Resultado del analisis lexico:" BorderPane.alignment="CENTER" />
-                                 </top>
-                                 <center>
-                                    <AnchorPane BorderPane.alignment="CENTER">
-                                       <children>
-                                          <TableView fx:id="salidaLexico" prefHeight="313.0" prefWidth="348.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-                                            <columns>
-                                              <TableColumn fx:id="palabra" minWidth="30.0" prefWidth="248.0" text="Lexema" />
-                                              <TableColumn fx:id="categoria" maxWidth="254.0" minWidth="20.0" prefWidth="254.0" text="Categoria" />
-                                                <TableColumn fx:id="fila" maxWidth="305.0" prefWidth="59.0" text="Fil" />
-                                                <TableColumn fx:id="columna" maxWidth="293.0" prefWidth="47.0" text="Col" />
-                                            </columns>
-                                          </TableView>
-                                       </children>
-                                    </AnchorPane>
-                                 </center>
-                                 <bottom>
-                                    <Accordion BorderPane.alignment="CENTER">
-                                      <panes>
-                                        <TitledPane fx:id="panelErroresLexicos" text="Lista de errores">
-                                          <content>
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                                   <children>
-                                                      <ListView fx:id="erroresLexicos" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                   </children>
+    <children>
+        <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="693.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <center>
+                <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                    <tabs>
+                        <Tab text="Codigo Fuente">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                        <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                            <top>
+                                                <Label text="Codigo a analizar:" BorderPane.alignment="CENTER" />
+                                            </top>
+                                            <center>
+                                                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
+                                                    <children>
+                                                        <TextArea fx:id="texto" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="250.0" text="caja @paquete!&#10;&#10;meter @importar!&#10;meter @importar1!&#10;meter @importar2!&#10;&#10;: se crea la clase&#10;estrato1 cosa @clase ¿&#10;&#9;:/&#10;  &#9;   Apartir de la clase  cualquier cosa&#10;&#9;/:&#10;        estrato1 @Declaracion_y_Asignacion[ ] ¿ &#10;&#9;&#9;ent @Declarar = #73!&#10;&#9;&#9;pal @asignandoMetodo = @Metodo[@a,@b]!&#10;&#9;&#9;@Asignar = (Asignando Metodo) + #64 !&#10;&#9;&#9;dec @b = [@a ° *3.8  ] / *4.0 !&#10;&#9;&#9;bip @Relacion = @a &lt;&lt; *7.0 !&#10;&#9;&#9;bip @boolean = ¬ .false!&#10;&#9;&#9;ent{} @arreglo = {#1,#2,@a,#5}!&#10;&#9;?&#10;&#9;: Sentencias Condicionales y otras&#10;&#9;&#9;estrato1 ent @Decision[ent @a, ent @b, pal @salida] ¿&#10;&#9;&#9;:Metodo&#10;&#9;&#9;@a = @Scanner[ ( ingrese numero: ) ] !&#10;&#9;&#9;:Sentencia If y else&#10;&#9;&#9;wi[ @a &lt;&lt; @b]¿&#10;&#9;&#9;&#9;@Syso[( la variable es menor) ]!&#10;&#9;&#9;? wo wi[ @a &gt;&gt; @b ]¿&#10;&#9;&#9;&#9;@Syso[( la variable es mayor)] !&#10;&#9;&#9;? wo ¿&#10;&#9;&#9;&#9;@Syso[( las variables son iguales)]!&#10;&#9;&#9;?&#10;&#9;&#9;:Sentencia For&#10;&#9;&#9;ciclo[ ent @i! | @i &gt;&gt; #10 | @i^+ ]¿&#10;&#9;&#9;&#9;@Syso[( las variables son iguales)]!&#10;&#9;&#9;?&#10;&#9;&#9;: Sentencia While&#10;&#9;&#9;durante[ .true]¿&#10;&#9;&#9;&#9;@a += #3!&#10;&#9;&#9;?&#10;&#9;&#9;devolver @a!&#10;&#9;?&#10;?" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
+                                                    </children>
                                                 </AnchorPane>
-                                          </content>
-                                        </TitledPane>
-                                      </panes>
-                                    </Accordion>
-                                 </bottom>
-                              </BorderPane>
-                           </children>
-                        </AnchorPane>
-                  </content>
-                </Tab>
-                <Tab text="Analisis Sintactico">
-                  <content>
-                      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
-                          <children>
-                              <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
-                                  <top>
-                                      <Label text="Resultado del analisis sintactico:" BorderPane.alignment="CENTER" />
-                                  </top>
-                                  <center>
-                                      <AnchorPane BorderPane.alignment="CENTER">
-                                       <children>
-                                          <GridPane hgap="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-                                            <columnConstraints>
-                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                            </columnConstraints>
-                                            <rowConstraints>
-                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                            </rowConstraints>
-                                             <children>
-                                                <TreeView fx:id="arbolSintactico" prefHeight="200.0" prefWidth="200.0" />
-                                                <BorderPane fx:id="propertiesPanel" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
-                                             </children>
-                                          </GridPane>
-                                       </children>
-                                      </AnchorPane>
-                                  </center>
-                                  <bottom>
-                                      <Accordion BorderPane.alignment="CENTER">
-                                          <panes>
-                                              <TitledPane fx:id="panelErroresSintacticos" text="Lista de errores">
-                                                  <content>
-                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                                          <children>
-                                                              <ListView fx:id="erroresSintacticos" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                          </children>
-                                                      </AnchorPane>
-                                                  </content>
-                                              </TitledPane>
-                                          </panes>
-                                      </Accordion>
-                                  </bottom>
-                              </BorderPane>
-                          </children>
-                      </AnchorPane>
-                  </content>
-                </Tab>
-                  <Tab disable="true" text="Analisis Semantico">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                    </content>
-                  </Tab>
-              </tabs>
-            </TabPane>
-         </center>
-      </BorderPane>
-   </children>
+                                            </center>
+                                            <bottom>
+                                                <BorderPane maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                                    <right>
+                                                        <Button mnemonicParsing="false" onAction="#analizar" prefHeight="25.0" prefWidth="100.0" text="Analizar" BorderPane.alignment="CENTER" />
+                                                    </right>
+                                                    <left>
+                                                        <Button mnemonicParsing="false" onAction="#limpiar" text="Limpiar" BorderPane.alignment="CENTER" />
+                                                    </left>
+                                                    <center>
+                                                        <Label fx:id="mensaje" textFill="RED" BorderPane.alignment="CENTER">
+                                                            <font>
+                                                                <Font size="15.0" />
+                                                            </font>
+                                                        </Label>
+                                                    </center>
+                                                </BorderPane>
+                                            </bottom>
+                                        </BorderPane>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Analisis Lexico">
+                            <content>
+                                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
+                                    <children>
+                                        <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
+                                            <top>
+                                                <Label text="Resultado del analisis lexico:" BorderPane.alignment="CENTER" />
+                                            </top>
+                                            <center>
+                                                <AnchorPane BorderPane.alignment="CENTER">
+                                                    <children>
+                                                        <TableView fx:id="salidaLexico" prefHeight="313.0" prefWidth="348.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                                            <columns>
+                                                                <TableColumn fx:id="palabra" minWidth="30.0" prefWidth="248.0" text="Lexema" />
+                                                                <TableColumn fx:id="categoria" maxWidth="254.0" minWidth="20.0" prefWidth="254.0" text="Categoria" />
+                                                                <TableColumn fx:id="fila" maxWidth="305.0" prefWidth="59.0" text="Fil" />
+                                                                <TableColumn fx:id="columna" maxWidth="293.0" prefWidth="47.0" text="Col" />
+                                                            </columns>
+                                                        </TableView>
+                                                    </children>
+                                                </AnchorPane>
+                                            </center>
+                                            <bottom>
+                                                <Accordion BorderPane.alignment="CENTER">
+                                                    <panes>
+                                                        <TitledPane fx:id="panelErroresLexicos" text="Lista de errores">
+                                                            <content>
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                    <children>
+                                                                        <ListView fx:id="erroresLexicos" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </content>
+                                                        </TitledPane>
+                                                    </panes>
+                                                </Accordion>
+                                            </bottom>
+                                        </BorderPane>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Analisis Sintactico">
+                            <content>
+                                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
+                                    <children>
+                                        <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
+                                            <top>
+                                                <Label text="Resultado del analisis sintactico:" BorderPane.alignment="CENTER" />
+                                            </top>
+                                            <center>
+                                                <AnchorPane BorderPane.alignment="CENTER">
+                                                    <children>
+                                                        <GridPane hgap="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                                            <columnConstraints>
+                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                            </columnConstraints>
+                                                            <rowConstraints>
+                                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            </rowConstraints>
+                                                            <children>
+                                                                <BorderPane>
+                                                                    <center>
+                                                                        <TreeView fx:id="arbolSintactico" prefHeight="200.0" prefWidth="200.0" />
+                                                                    </center>
+                                                                </BorderPane>
+                                                                <BorderPane fx:id="propertiesPanel" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.columnIndex="1" />
+                                                            </children>
+                                                        </GridPane>
+                                                    </children>
+                                                </AnchorPane>
+                                            </center>
+                                            <bottom>
+                                                <Accordion BorderPane.alignment="CENTER">
+                                                    <panes>
+                                                        <TitledPane fx:id="panelErroresSintacticos" text="Lista de errores">
+                                                            <content>
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                    <children>
+                                                                        <ListView fx:id="erroresSintacticos" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </content>
+                                                        </TitledPane>
+                                                    </panes>
+                                                </Accordion>
+                                            </bottom>
+                                        </BorderPane>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Analisis Semantico">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                        <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <bottom>
+                                                <Accordion BorderPane.alignment="CENTER">
+                                                    <panes>
+                                                        <TitledPane animated="false" text="Lista de errores">
+                                                            <content>
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                            </content>
+                                                        </TitledPane>
+                                                    </panes>
+                                                </Accordion>
+                                            </bottom>
+                                            <center>
+                                                <TabPane prefHeight="200.0" prefWidth="200.0" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                                                    <tabs>
+                                                        <Tab text="Variables">
+                                                            <content>
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                    <children>
+                                                                        <TableView fx:id="tablaVariables" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                            <columns>
+                                                                                <TableColumn maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" text="Acceso" />
+                                                                                <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" text="Tipo Dato" />
+                                                                                <TableColumn maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="201.0" text="Nombre" />
+                                                                                <TableColumn maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Ambito" />
+                                                                                <TableColumn maxWidth="75.0" minWidth="75.0" prefWidth="75.0" resizable="false" text="Fila" />
+                                                                                <TableColumn maxWidth="75.0" minWidth="75.0" prefWidth="75.0" resizable="false" text="Columna" />
+                                                                            </columns>
+                                                                        </TableView>
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </content>
+                                                        </Tab>
+                                                        <Tab text="Funciones">
+                                                            <content>
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                    <children>
+                                                                        <TableView fx:id="tablaFunciones" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                            <columns>
+                                                                                <TableColumn maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" text="Acceso" />
+                                                                                <TableColumn maxWidth="115.0" minWidth="100.0" prefWidth="115.0" resizable="false" text="Tipo Retorno" />
+                                                                                <TableColumn maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="187.0" text="Nombre" />
+                                                                                <TableColumn maxWidth="1.7976931348623157E308" minWidth="150.0" prefWidth="300.0" text="Tipo de Parametros" />
+                                                                            </columns>
+                                                                        </TableView>
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </content>
+                                                        </Tab>
+                                                        <Tab text="Importaciones">
+                                                            <content>
+                                                                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="180.0" prefWidth="200.0">
+                                                                    <children>
+                                                                        <TableView fx:id="tablaImportaciones" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                            <columns>
+                                                                                <TableColumn maxWidth="540.0" minWidth="540.0" prefWidth="540.0" text="Nombre" />
+                                                                                <TableColumn maxWidth="75.0" minWidth="75.0" prefWidth="75.0" resizable="false" text="Fila" />
+                                                                                <TableColumn maxWidth="75.0" minWidth="75.0" prefWidth="75.0" resizable="false" text="Columna" />
+                                                                            </columns>
+                                                                        </TableView>
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </content>
+                                                        </Tab>
+                                                    </tabs>
+                                                </TabPane>
+                                            </center>
+                                            <top>
+                                                <Label text="Resultado del analisis semantico:" BorderPane.alignment="CENTER">
+                                                    <BorderPane.margin>
+                                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                    </BorderPane.margin>
+                                                </Label>
+                                            </top>
+                                        </BorderPane>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+            </center>
+        </BorderPane>
+    </children>
 </AnchorPane>

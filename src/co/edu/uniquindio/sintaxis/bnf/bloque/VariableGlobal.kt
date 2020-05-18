@@ -11,45 +11,58 @@ import co.edu.uniquindio.sintaxis.bnf.sentencia.InvocacionMetodo
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class VariableGlobal(modificador:Token?, private val tipo: Token, val identificador:Token, private val expresion: Expresion?, private val metodo: InvocacionMetodo?) : Bloque() {
-    init {
-        this.nombre = "Variable Glocal"
-        this.estructura = "${modificador?.lexema} ${identificador.lexema}"
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 2.0
+ *
+ * Variable Global
+ */
+class VariableGlobal(
+        private var modificador: Token?,
+        private val tipo: Token,
+        private val identificador: Token,
+        private val expresion: Expresion?,
+        private val metodo: InvocacionMetodo?
+) : Bloque("Variable Global") {
+
+    override fun toString(): String {
+        return "${modificador?.lexema} ${identificador.lexema}"
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        if (metodo != null){
+        if (metodo != null) {
             treeItem.children.add(metodo.getTreeItem())
         }
-        if (expresion != null){
+        if (expresion != null) {
             treeItem.children.add(expresion.getTreeItem())
         }
         return treeItem
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Tipo Dato", 0)
-        agregarValor(tipo.toString(), 0)
+        agregarAtributo("Tipo Dato")
+        agregarValor(tipo.toString())
 
-        agregarAtributo("identificador", 1)
-        agregarValor(estructura, 1)
+        agregarAtributo("Identificador")
+        agregarValor(identificador.lexema)
 
-        if (expresion != null){
-            agregarAtributo("valor", 2)
-            agregarValor(expresion.toString(), 2)
-        }else{
-            agregarAtributo("valor", 2)
-            agregarValor(metodo.toString(), 2)
-        }
+        agregarAtributo("Expresion")
+        agregarValor(expresion.toString())
+
+        agregarAtributo("Invocacion Metodo")
+        agregarValor(metodo.toString())
 
         return panel
     }
 
     override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        tablaSimbolos.agregarVariable(identificador.lexema, tipo.lexema, ambito, identificador.fila, identificador.columna)
+        tablaSimbolos.agregarVariable(identificador.lexema, tipo.lexema, modificador?.lexema, ambito, identificador.fila, identificador.columna)
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {

@@ -8,7 +8,7 @@ import javafx.beans.property.StringProperty
 /**
  * @author Samara Rincon
  * @author Yesid Rosas Toro
- * @author-fx-font-size: 24 Cristian Camilo Quiceno
+ * @author Cristian Camilo Quiceno
  *
  * @version 2.0
  *
@@ -24,6 +24,6 @@ class SintaxisObservable(var sintaxis: Sintaxis) {
 
     init {
         this.nombre = SimpleStringProperty(sintaxis.nombre)
-        this.estructura = SimpleStringProperty(sintaxis.estructura.toString())
+        this.estructura = SimpleStringProperty(sintaxis.toString())
     }
 }

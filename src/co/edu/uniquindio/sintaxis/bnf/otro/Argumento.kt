@@ -1,18 +1,23 @@
 package co.edu.uniquindio.sintaxis.bnf.otro
 
 import co.edu.uniquindio.app.SintaxisObservable
-import co.edu.uniquindio.semantica.Ambito
-import co.edu.uniquindio.semantica.ErrorSemantico
-import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.Sintaxis
 import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class Argumento(private val expresion: Expresion) : Sintaxis() {
-    init {
-        nombre = "Parametro"
-        estructura = expresion.estructura
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 2.0
+ *
+ * Argumento
+ */
+class Argumento(private val expresion: Expresion) : Sintaxis("Argumento") {
+    override fun toString(): String {
+        return expresion.toString()
     }
 
     override fun getTreeItem(): TreeItem<SintaxisObservable> {
@@ -25,8 +30,8 @@ class Argumento(private val expresion: Expresion) : Sintaxis() {
     }
 
     override fun getPropertiesPanel(): GridPane {
-        agregarAtributo("Parametro", 0)
-        agregarValor(expresion.nombre, 0)
+        agregarAtributo("Argumento")
+        agregarValor(expresion.nombre)
 
         return panel
     }

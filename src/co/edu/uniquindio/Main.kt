@@ -33,6 +33,10 @@ class Main : Application() {
 
         primaryStage?.scene = scene
         primaryStage?.title = "Compilador"
+
+        primaryStage?.minWidth = 600.0
+        primaryStage?.minHeight = 400.0
+
         primaryStage?.show()
     }
 

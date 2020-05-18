@@ -5,7 +5,16 @@ import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.Sintaxis
 
-abstract class Bloque: Sintaxis() {
+/**
+ * @author Samara Rincon
+ * @author Yesid Rosas Toro
+ * @author Cristian Camilo Quiceno
+ *
+ * @version 2.0
+ *
+ * Bloque
+ */
+abstract class Bloque(nombre: String) : Sintaxis(nombre) {
     abstract fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito)
     abstract fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito)
 }
