@@ -28,19 +28,21 @@ class EstructuraSiNo(
         "wo ¿ .. ?"
     }
 
-    override fun getTreeItem(): TreeItem<SintaxisObservable> {
+    /**
+     * Obtiene el nodo TreeItem necesario para la construccion
+     * de la vista del arbol sintactico
+     *
+     * @return TreeItem<SintaxisObservable> El nodo TreeItem
+     */
+	override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
         if (estructuraSi != null) {
             treeItem.children.add(estructuraSi.getTreeItem())
         } else {
-            val listaObservable = SintaxisObservable(ListaSintactica("Lista de Sentencias"))
-            val treeBloqueInstrucciones = TreeItem(listaObservable)
-            for (bloque in bloqueInstrucciones) {
-                treeBloqueInstrucciones.children.add(bloque.getTreeItem())
-            }
-            treeItem.children.add(treeBloqueInstrucciones)
+            val listaObservable = ListaSintactica("Lista de Sentencias", bloqueInstrucciones)
+            treeItem.children.add(listaObservable.getTreeItem())
         }
         if (estructuraSiNo != null) {
             treeItem.children.add(estructuraSiNo.getTreeItem())
@@ -49,17 +51,23 @@ class EstructuraSiNo(
         return treeItem
     }
 
-    override fun getPropertiesPanel(): GridPane {
+    /**
+     * Obtiene el panel necesario para mostrar la informacion
+     * de la estructura sintactica en la interfaz
+     *
+     * @return GridPane el panel que se mostrara en pantalla
+     */
+	override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Condición si")
         agregarValor(estructuraSi.toString())
 
-        agregarAtributo("Instrucciones")
-        agregarValor("Bloque de Intrucciones")
+        agregarAtributo("Lista de Sentencias")
+        agregarValor(ListaSintactica("Sentencias", bloqueInstrucciones).getPropertiesPanel())
 
         agregarAtributo("Sentencia Sino")
         agregarValor(estructuraSiNo?.toString())
 
-
+        configurarTabla()
         return panel
     }
 }

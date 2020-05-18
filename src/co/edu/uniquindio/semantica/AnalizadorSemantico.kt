@@ -1,6 +1,6 @@
 package co.edu.uniquindio.semantica
 
-import co.edu.uniquindio.sintaxis.bnf.UnidadCompilacion
+import co.edu.uniquindio.sintaxis.bnf.unidad.UnidadCompilacion
 
 /**
  * @author Samara Rincon

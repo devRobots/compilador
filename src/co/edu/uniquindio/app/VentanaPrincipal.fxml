@@ -117,18 +117,14 @@
                                                     <children>
                                                         <GridPane hgap="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                                             <columnConstraints>
-                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="40.0" />
+                                                                <ColumnConstraints hgrow="ALWAYS" />
                                                             </columnConstraints>
                                                             <rowConstraints>
                                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                             </rowConstraints>
                                                             <children>
-                                                                <BorderPane>
-                                                                    <center>
-                                                                        <TreeView fx:id="arbolSintactico" prefHeight="200.0" prefWidth="200.0" />
-                                                                    </center>
-                                                                </BorderPane>
+                                                                  <TreeView fx:id="arbolSintactico" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" GridPane.halignment="LEFT" GridPane.vgrow="ALWAYS" />
                                                                 <BorderPane fx:id="propertiesPanel" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.columnIndex="1" />
                                                             </children>
                                                         </GridPane>

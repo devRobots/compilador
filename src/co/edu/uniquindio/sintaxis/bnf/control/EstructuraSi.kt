@@ -27,29 +27,38 @@ class EstructuraSi(
         return "wi [ $expLogica ] ¿ ... ?"
     }
 
-    override fun getTreeItem(): TreeItem<SintaxisObservable> {
+    /**
+     * Obtiene el nodo TreeItem necesario para la construccion
+     * de la vista del arbol sintactico
+     *
+     * @return TreeItem<SintaxisObservable> El nodo TreeItem
+     */
+	override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
         treeItem.children.add(expLogica.getTreeItem())
 
-        val listaObservable = SintaxisObservable(ListaSintactica("Lista de Sentencias"))
-        val treeBloqueInstrucciones = TreeItem(listaObservable)
-        for (bloque in bloqueInstrucciones) {
-            treeBloqueInstrucciones.children.add(bloque.getTreeItem())
-        }
-        treeItem.children.add(treeBloqueInstrucciones)
+        val listaObservable = ListaSintactica("Lista de Sentencias", bloqueInstrucciones)
+        treeItem.children.add(listaObservable.getTreeItem())
 
         return treeItem
     }
 
-    override fun getPropertiesPanel(): GridPane {
+    /**
+     * Obtiene el panel necesario para mostrar la informacion
+     * de la estructura sintactica en la interfaz
+     *
+     * @return GridPane el panel que se mostrara en pantalla
+     */
+	override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Expresion Logica")
         agregarValor(expLogica.toString())
 
-        agregarAtributo("Instrucciones")
-        agregarValor(bloqueInstrucciones.toString())
+        agregarAtributo("Lista de Sentencias")
+        agregarValor(ListaSintactica("Sentencias", bloqueInstrucciones).getPropertiesPanel())
 
+        configurarTabla()
         return panel
     }
 

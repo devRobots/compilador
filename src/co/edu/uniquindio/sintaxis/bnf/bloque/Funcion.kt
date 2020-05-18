@@ -7,7 +7,6 @@ import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.bnf.otro.Parametro
-import co.edu.uniquindio.sintaxis.bnf.otro.Retorno
 import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
@@ -23,59 +22,58 @@ import javafx.scene.layout.GridPane
  */
 class Funcion(
         private val modificadorAcceso: Token?,
-        private val tipo: Token,
+        private val tipo: Token?,
         private val identificador: Token,
         private val listaParametros: ArrayList<Parametro>,
-        private val listaSentencias: ArrayList<Sentencia>,
-        private val retorno: Retorno
+        private val listaSentencias: ArrayList<Sentencia>
 ) : Bloque("Funcion") {
 
     override fun toString(): String {
-        return "$modificadorAcceso ${tipo.lexema} $identificador [ ... ] ¿ ... ?"
+        return "$modificadorAcceso ${tipo?.lexema ?: "Void"} $identificador [ ... ] ¿ ... ?"
     }
 
-    override fun getTreeItem(): TreeItem<SintaxisObservable> {
+    /**
+     * Obtiene el nodo TreeItem necesario para la construccion
+     * de la vista del arbol sintactico
+     *
+     * @return TreeItem<SintaxisObservable> El nodo TreeItem
+     */
+	override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        val listaParametrosObservable = SintaxisObservable(ListaSintactica("Parametros"))
-        val treeParametros = TreeItem(listaParametrosObservable)
-        for (parametro in listaParametros) {
-            treeParametros.children.add(parametro.getTreeItem())
-        }
-        treeItem.children.add(treeParametros)
+        val listaSintacticaParams = ListaSintactica("Parametros", listaParametros)
+        treeItem.children.add(listaSintacticaParams.getTreeItem())
 
-        val listaSentenciasObservable = SintaxisObservable(ListaSintactica("Sentencias"))
-        val treeSentencias = TreeItem(listaSentenciasObservable)
-        for (sentencia in listaSentencias) {
-            treeSentencias.children.add(sentencia.getTreeItem())
-        }
-        treeItem.children.add(treeSentencias)
-
-        treeItem.children.add(retorno.getTreeItem())
+        val listaSintacticaSentencias = ListaSintactica("Sentencias", listaSentencias)
+        treeItem.children.add(listaSintacticaSentencias.getTreeItem())
 
         return treeItem
     }
 
-    override fun getPropertiesPanel(): GridPane {
+    /**
+     * Obtiene el panel necesario para mostrar la informacion
+     * de la estructura sintactica en la interfaz
+     *
+     * @return GridPane el panel que se mostrara en pantalla
+     */
+	override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Modificador de Acceso")
         agregarValor(modificadorAcceso?.lexema)
 
         agregarAtributo("Tipo de Dato de Retorno")
-        agregarValor(tipo.lexema)
+        agregarValor(tipo?.lexema)
 
         agregarAtributo("Identificador")
         agregarValor(identificador.lexema)
 
-        agregarAtributo("Argumentos")
-        agregarValor(listaParametros.toString())
+        agregarAtributo("Parametros")
+        agregarValor(ListaSintactica("Parametros", listaParametros).getPropertiesPanel())
 
         agregarAtributo("Bloques de Sentencia")
-        agregarValor(listaSentencias.toString())
+        agregarValor(ListaSintactica("Sentencias", listaSentencias).getPropertiesPanel())
 
-        agregarAtributo("Sentencia de Retorno")
-        agregarValor(retorno.nombre)
-
+        configurarTabla()
         return panel
     }
 
@@ -87,7 +85,7 @@ class Funcion(
             argumento.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador.lexema))
         }
 
-        tablaSimbolos.agregarFuncion(identificador.lexema, tipo.lexema, modificadorAcceso?.lexema, tiposParametros)
+        tablaSimbolos.agregarFuncion(identificador.lexema, tipo?.lexema ?: "Void", modificadorAcceso?.lexema, tiposParametros)
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {

@@ -1,6 +1,7 @@
 package co.edu.uniquindio.sintaxis
 
 import co.edu.uniquindio.app.SintaxisObservable
+
 import javafx.geometry.Insets
 import javafx.scene.control.Label
 import javafx.scene.control.TreeItem
@@ -16,9 +17,13 @@ import javafx.scene.layout.Priority
  *
  * Sintaxis
  */
-abstract class Sintaxis(var nombre: String) {
-    protected val panel = GridPane()
+open class Sintaxis(var nombre: String) {
+    /**
+     * Elementos de la sintaxis
+     */
+    protected val panel : GridPane = GridPane()
 
+    private var editable = true
     private var contAtributo = 0
     private var contValor = 0
 
@@ -32,7 +37,9 @@ abstract class Sintaxis(var nombre: String) {
      *
      * @return TreeItem<SintaxisObservable> El nodo TreeItem
      */
-    abstract fun getTreeItem(): TreeItem<SintaxisObservable>
+    open fun getTreeItem(): TreeItem<SintaxisObservable> {
+        return TreeItem(SintaxisObservable(this))
+    }
 
     /**
      * Obtiene el panel necesario para mostrar la informacion
@@ -40,42 +47,85 @@ abstract class Sintaxis(var nombre: String) {
      *
      * @return GridPane el panel que se mostrara en pantalla
      */
-    abstract fun getPropertiesPanel(): GridPane
+    open fun getPropertiesPanel(): GridPane {
+        configurarTabla()
+        return panel
+    }
 
+    /**
+     * Agrega un atributo al panel que se va a mostrar
+     *
+     * @param atributo El atributo que se va a agregar al panel
+     */
     fun agregarAtributo(atributo: String) {
-        var texto = Label("$atributo:")
-        texto.style = "-fx-font-weight: bold"
+        if (editable) {
+            val texto = Label("$atributo:")
+            texto.style = "-fx-font-weight: bold"
 
-        texto.padding = Insets(10.0)
+            texto.padding = Insets(10.0)
 
-        GridPane.setVgrow(texto, Priority.ALWAYS)
-        GridPane.setHgrow(texto, Priority.ALWAYS)
-        panel.add(texto, 0, contAtributo)
+            GridPane.setVgrow(texto, Priority.ALWAYS)
+            GridPane.setHgrow(texto, Priority.SOMETIMES)
 
-        contAtributo++
-    }
+            panel.add(texto, 0, contAtributo)
 
-    fun agregarValor(valor: String?) {
-        var texto = if (valor != null) {
-            Label("$valor")
-        } else {
-            Label("Null")
+            contAtributo++
         }
-
-        texto.padding = Insets(10.0)
-
-        GridPane.setVgrow(texto, Priority.ALWAYS)
-        GridPane.setHgrow(texto, Priority.ALWAYS)
-        panel.add(texto, 1, contValor)
-
-        contValor++
     }
 
-    fun agregarValor(panel: GridPane) {
-        GridPane.setVgrow(panel, Priority.ALWAYS)
-        GridPane.setHgrow(panel, Priority.ALWAYS)
-        panel.add(panel, 1, contValor)
+    /**
+     * Agrega un valor al panel que se va a mostrar
+     *
+     * @param valor El valor que se va a agregar al panel
+     */
+    protected fun agregarValor(valor: String?) {
+        if (editable) {
+            val texto = Label(valor ?: "Null")
 
-        contValor++
+            texto.padding = Insets(10.0)
+
+            GridPane.setVgrow(texto, Priority.ALWAYS)
+            GridPane.setHgrow(texto, Priority.ALWAYS)
+            panel.add(texto, 1, contValor)
+
+            contValor++
+        }
+    }
+
+    /**
+     * Agrega un subpanel al panel que se va a mostrar
+     *
+     * @param panel El subpanel que se va a agregar al panel
+     */
+    protected fun agregarValor(panel: GridPane) {
+        if (editable) {
+            GridPane.setVgrow(panel, Priority.ALWAYS)
+            GridPane.setHgrow(panel, Priority.ALWAYS)
+            this.panel.add(panel, 1, contValor)
+
+            contValor++
+        }
+    }
+
+    /**
+     * Agrega un subpanel al panel que se va a mostrar
+     *
+     * @param panel El subpanel que se va a agregar al panel
+     */
+    protected fun agregarValor(panel: GridPane, posicion: Int) {
+        if (editable) {
+            GridPane.setVgrow(panel, Priority.ALWAYS)
+            GridPane.setHgrow(panel, Priority.ALWAYS)
+            this.panel.add(panel, 1, posicion)
+
+            contValor++
+        }
+    }
+
+    /**
+     * Configura la tabla para evitar mas agregaciones
+     */
+    protected fun configurarTabla() {
+        editable = false
     }
 }

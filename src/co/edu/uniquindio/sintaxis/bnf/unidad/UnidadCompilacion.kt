@@ -1,4 +1,4 @@
-package co.edu.uniquindio.sintaxis.bnf
+package co.edu.uniquindio.sintaxis.bnf.unidad
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.semantica.Ambito
@@ -21,39 +21,48 @@ import javafx.scene.layout.GridPane
  * Unidad de Compilacion
  */
 class UnidadCompilacion(
-        var paquete: Paquete?,
-        var listaImportaciones: ArrayList<Importacion>,
-        var clase: Clase?
+        private var paquete: Paquete?,
+        private var listaImportaciones: ArrayList<Importacion>,
+        private var clase: Clase?
 ) : Sintaxis("Unidad de Compilacion") {
+    var listaSintacticaImportacion: ListaSintactica = ListaSintactica("Importaciones", listaImportaciones)
 
-    override fun getTreeItem(): TreeItem<SintaxisObservable> {
+    /**
+     * Obtiene el nodo TreeItem necesario para la construccion
+     * de la vista del arbol sintactico
+     *
+     * @return TreeItem<SintaxisObservable> El nodo TreeItem
+     */
+	override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
         treeItem.children.add(paquete?.getTreeItem())
 
-        val listaObservable = SintaxisObservable(ListaSintactica("Importaciones"))
-        val treeImportaciones = TreeItem(listaObservable)
-        for (importacion in listaImportaciones) {
-            treeImportaciones.children.add(importacion.getTreeItem())
-        }
-        treeItem.children.add(treeImportaciones)
+        treeItem.children.add(listaSintacticaImportacion.getTreeItem())
 
         treeItem.children.add(clase?.getTreeItem())
 
         return treeItem
     }
 
-    override fun getPropertiesPanel(): GridPane {
+    /**
+     * Obtiene el panel necesario para mostrar la informacion
+     * de la estructura sintactica en la interfaz
+     *
+     * @return GridPane el panel que se mostrara en pantalla
+     */
+	override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Paquete")
         agregarValor(paquete.toString())
 
         agregarAtributo("Lista de Importaciones")
-        agregarValor(listaImportaciones.toString())
+        agregarValor(listaSintacticaImportacion.getPropertiesPanel())
 
         agregarAtributo("Clase")
         agregarValor(clase.toString())
 
+        configurarTabla()
         return panel
     }
 

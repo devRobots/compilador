@@ -24,30 +24,39 @@ class CicloWhile(
         return "durante [ $expLogica ] ¿ ... ?"
     }
 
-    override fun getTreeItem(): TreeItem<SintaxisObservable> {
+    /**
+     * Obtiene el nodo TreeItem necesario para la construccion
+     * de la vista del arbol sintactico
+     *
+     * @return TreeItem<SintaxisObservable> El nodo TreeItem
+     */
+	override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
         treeItem.children.add(expLogica.getTreeItem())
 
-        val listaSentenciasObservable = SintaxisObservable(ListaSintactica("Sentencias"))
-        val treeSentencias = TreeItem(listaSentenciasObservable)
-        for (sentencia in listaSentencia) {
-            treeSentencias.children.add(sentencia.getTreeItem())
-        }
-        treeItem.children.add(treeSentencias)
+        val listaSentenciasObservable = ListaSintactica("Sentencias", listaSentencia)
+        treeItem.children.add(listaSentenciasObservable.getTreeItem())
 
         return treeItem
 
     }
 
-    override fun getPropertiesPanel(): GridPane {
+    /**
+     * Obtiene el panel necesario para mostrar la informacion
+     * de la estructura sintactica en la interfaz
+     *
+     * @return GridPane el panel que se mostrara en pantalla
+     */
+	override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Expresion Logica")
         agregarValor(expLogica.toString())
 
         agregarAtributo("Bloques de Sentencia")
-        agregarValor("Lista de Sentencias")
+        agregarValor(ListaSintactica("Sentencias", listaSentencia).getPropertiesPanel())
 
+        configurarTabla()
         return panel
     }
 

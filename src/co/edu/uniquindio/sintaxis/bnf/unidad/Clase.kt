@@ -1,4 +1,4 @@
-package co.edu.uniquindio.sintaxis.bnf
+package co.edu.uniquindio.sintaxis.bnf.unidad
 
 import co.edu.uniquindio.app.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
@@ -31,30 +31,39 @@ class Clase(
         return "${modificadorAcceso?.lexema} cosa ${identificador.lexema}"
     }
 
-    override fun getTreeItem(): TreeItem<SintaxisObservable> {
+    /**
+     * Obtiene el nodo TreeItem necesario para la construccion
+     * de la vista del arbol sintactico
+     *
+     * @return TreeItem<SintaxisObservable> El nodo TreeItem
+     */
+	override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        val listaObservable = SintaxisObservable(ListaSintactica("Bloques de Sentencia"))
-        val treeBloquesSentencia = TreeItem(listaObservable)
-        for (bloqueSentencia in listaBloquesSentencia) {
-            treeBloquesSentencia.children.add(bloqueSentencia.getTreeItem())
-        }
-        treeItem.children.add(treeBloquesSentencia)
+        val listaObservable = ListaSintactica("Bloques de Sentencia", listaBloquesSentencia)
+        treeItem.children.add(listaObservable.getTreeItem())
 
         return treeItem
     }
 
-    override fun getPropertiesPanel(): GridPane {
+    /**
+     * Obtiene el panel necesario para mostrar la informacion
+     * de la estructura sintactica en la interfaz
+     *
+     * @return GridPane el panel que se mostrara en pantalla
+     */
+	override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Modificador de Acceso")
         agregarValor(modificadorAcceso?.lexema)
 
         agregarAtributo("Identificador")
         agregarValor(identificador.lexema)
 
-        agregarAtributo("Lista de Bloques de Sentencia")
-        agregarValor("Lista de Bloques de Sentencia")
+        agregarAtributo("Lista de Sentencias")
+        agregarValor(ListaSintactica("Sentenicas", listaBloquesSentencia).getPropertiesPanel())
 
+        configurarTabla()
         return panel
     }
 

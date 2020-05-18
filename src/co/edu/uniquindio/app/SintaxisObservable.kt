@@ -15,15 +15,9 @@ import javafx.beans.property.StringProperty
  * Sintaxis Observable
  */
 class SintaxisObservable(var sintaxis: Sintaxis) {
-    private val nombre: StringProperty
-    private val estructura: StringProperty
+    private val nombre: StringProperty = SimpleStringProperty(sintaxis.nombre)
 
     override fun toString(): String {
         return sintaxis.nombre
-    }
-
-    init {
-        this.nombre = SimpleStringProperty(sintaxis.nombre)
-        this.estructura = SimpleStringProperty(sintaxis.toString())
     }
 }

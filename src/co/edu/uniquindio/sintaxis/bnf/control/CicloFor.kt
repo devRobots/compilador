@@ -29,7 +29,13 @@ class CicloFor(
         return "ciclo [ ${decVariableLocal?.toString()} | $expLogica | $asignacionCiclo ] ¿ ... ?"
     }
 
-    override fun getTreeItem(): TreeItem<SintaxisObservable> {
+    /**
+     * Obtiene el nodo TreeItem necesario para la construccion
+     * de la vista del arbol sintactico
+     *
+     * @return TreeItem<SintaxisObservable> El nodo TreeItem
+     */
+	override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
@@ -40,18 +46,19 @@ class CicloFor(
         treeItem.children.add(expLogica.getTreeItem())
         treeItem.children.add(asignacionCiclo.getTreeItem())
 
-        val listaObservable = SintaxisObservable(ListaSintactica("Bloques de Sentencias"))
-        val treeBloqueInstrucciones = TreeItem(listaObservable)
-        for (bloque in bloqueInstrucciones) {
-            treeBloqueInstrucciones.children.add(bloque.getTreeItem())
-        }
-        treeItem.children.add(treeBloqueInstrucciones)
-
+        val listaObservable = ListaSintactica("Bloques de Sentencias", bloqueInstrucciones)
+        treeItem.children.add(listaObservable.getTreeItem())
 
         return treeItem
     }
 
-    override fun getPropertiesPanel(): GridPane {
+    /**
+     * Obtiene el panel necesario para mostrar la informacion
+     * de la estructura sintactica en la interfaz
+     *
+     * @return GridPane el panel que se mostrara en pantalla
+     */
+	override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Declaracion")
         agregarValor(decVariableLocal?.toString())
 
@@ -62,8 +69,9 @@ class CicloFor(
         agregarValor(asignacionCiclo.toString())
 
         agregarAtributo("Lista de sentencia")
-        agregarValor("Lista de Sentencias")
+        agregarValor(ListaSintactica("Sentencias", bloqueInstrucciones).getPropertiesPanel())
 
+        configurarTabla()
         return panel
     }
 }

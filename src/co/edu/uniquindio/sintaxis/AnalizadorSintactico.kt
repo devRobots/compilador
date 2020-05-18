@@ -2,18 +2,17 @@ package co.edu.uniquindio.sintaxis
 
 import co.edu.uniquindio.lexico.Categoria.*
 import co.edu.uniquindio.lexico.Token
-import co.edu.uniquindio.sintaxis.bnf.Clase
-import co.edu.uniquindio.sintaxis.bnf.Importacion
-import co.edu.uniquindio.sintaxis.bnf.Paquete
-import co.edu.uniquindio.sintaxis.bnf.UnidadCompilacion
+import co.edu.uniquindio.sintaxis.bnf.unidad.Clase
+import co.edu.uniquindio.sintaxis.bnf.unidad.Importacion
+import co.edu.uniquindio.sintaxis.bnf.unidad.Paquete
 import co.edu.uniquindio.sintaxis.bnf.bloque.Bloque
 import co.edu.uniquindio.sintaxis.bnf.bloque.Funcion
-import co.edu.uniquindio.sintaxis.bnf.bloque.Metodo
 import co.edu.uniquindio.sintaxis.bnf.bloque.VariableGlobal
 import co.edu.uniquindio.sintaxis.bnf.control.*
 import co.edu.uniquindio.sintaxis.bnf.expresion.*
 import co.edu.uniquindio.sintaxis.bnf.otro.*
 import co.edu.uniquindio.sintaxis.bnf.sentencia.*
+import co.edu.uniquindio.sintaxis.bnf.unidad.UnidadCompilacion
 
 /**
  * @author Samara Rincon
@@ -27,8 +26,8 @@ import co.edu.uniquindio.sintaxis.bnf.sentencia.*
 class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     init {
         val copia: ArrayList<*> = tokens.clone() as ArrayList<*>
-        for (any in copia) {
-            val token: Token = any as Token
+        for (token in copia!!) {
+            token as Token
             if (token.categoria == COMENTARIO_LINEA || token.categoria == COMENTARIO_BLOQUE) {
                 tokens.remove(token)
             }
@@ -290,20 +289,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         val posicionInicial = posicionActual
         val cantidadErrores = listaErrores.size
 
-        val funcion = esFuncion()
-        if (funcion != null) {
-            return funcion
-        } else {
-            backtracking(posicionInicial, cantidadErrores)
-        }
-
-        val metodo = esMetodo()
-        if (metodo != null) {
-            return metodo
-        } else {
-            backtracking(posicionInicial, cantidadErrores)
-        }
-
         val variableGlobal = esVariableGlobal()
         if (variableGlobal != null) {
             return variableGlobal
@@ -311,53 +296,11 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             backtracking(posicionInicial, cantidadErrores)
         }
 
-        return null
-    }
-
-    /**
-     * Metodo Para Determinar si es un Metodo
-     * <Metodo>::= [<ModificarAcceso>] identificador “[“ [<ListaParametros>] ”]” “¿” [<ListaSentencia>] “?”
-     *
-     * @return Metodo si existe, null sino existe
-     */
-    private fun esMetodo(): Metodo? {
-        var modificadorAcceso: Token? = null
-
-        if (tokenActual?.categoria == PALABRA_RESERVADA) {
-            if (tokenActual?.lexema == "estrato1" || tokenActual?.lexema == "estrato6") {
-                modificadorAcceso = tokenActual
-                siguienteToken()
-            }
-        }
-        if (tokenActual?.categoria == IDENTIFICADOR) {
-            val identificador = tokenActual!!
-            siguienteToken()
-
-            if (tokenActual?.categoria == PARENTESIS_IZQUIERDO) {
-                siguienteToken()
-            } else {
-                reportarError("un parentesis izquierdo")
-            }
-            val listaArgumentos = esListaParametros()
-
-            if (tokenActual?.categoria == PARENTESIS_DERECHO) {
-                siguienteToken()
-            } else {
-                reportarError("un parentesis derecho")
-            }
-            if (tokenActual?.categoria == LLAVE_IZQUIERDO) {
-                siguienteToken()
-            } else {
-                reportarError("una llave izquierda")
-            }
-            val listaSentencias = esListaSentencia()
-
-            if (tokenActual?.categoria == LLAVE_DERECHA) {
-                siguienteToken()
-            } else {
-                reportarError("una llave derecha")
-            }
-            return Metodo(modificadorAcceso, identificador, listaArgumentos, listaSentencias)
+        val funcion = esFuncion()
+        if (funcion != null) {
+            return funcion
+        } else {
+            backtracking(posicionInicial, cantidadErrores)
         }
 
         return null
@@ -380,7 +323,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         }
 
         if (tokenActual?.categoria == TIPO_DATO) {
-            val tipo = tokenActual!!
+            val tipo = tokenActual
             siguienteToken()
 
             if (tokenActual?.categoria == IDENTIFICADOR) {
@@ -405,17 +348,12 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 }
                 val listaSentencias = esListaSentencia()
 
-                val retorno = esRetorno()
-                if (retorno != null) {
-                    if (tokenActual?.categoria == LLAVE_DERECHA) {
-                        siguienteToken()
-                    } else {
-                        reportarError("una llave derecha")
-                    }
-                    return Funcion(modificadorAcceso, tipo, identificador, listaArgumentos, listaSentencias, retorno)
+                if (tokenActual?.categoria == LLAVE_DERECHA) {
+                    siguienteToken()
                 } else {
-                    reportarError("una sentencia de retorno")
+                    reportarError("una llave derecha")
                 }
+                return Funcion(modificadorAcceso, tipo, identificador, listaArgumentos, listaSentencias)
             } else {
                 reportarError("un identificador")
             }
@@ -562,6 +500,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         val arreglo = esArreglo()
         if (arreglo != null) {
             return arreglo
+        } else {
+            backtracking(posicionInicial, cantidadErrores)
+        }
+
+        val retorno = esRetorno()
+        if (retorno != null) {
+            return retorno
         } else {
             backtracking(posicionInicial, cantidadErrores)
         }

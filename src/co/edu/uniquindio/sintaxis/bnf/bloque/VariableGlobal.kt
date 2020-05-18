@@ -32,7 +32,13 @@ class VariableGlobal(
         return "${modificador?.lexema} ${identificador.lexema}"
     }
 
-    override fun getTreeItem(): TreeItem<SintaxisObservable> {
+    /**
+     * Obtiene el nodo TreeItem necesario para la construccion
+     * de la vista del arbol sintactico
+     *
+     * @return TreeItem<SintaxisObservable> El nodo TreeItem
+     */
+	override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
@@ -45,7 +51,13 @@ class VariableGlobal(
         return treeItem
     }
 
-    override fun getPropertiesPanel(): GridPane {
+    /**
+     * Obtiene el panel necesario para mostrar la informacion
+     * de la estructura sintactica en la interfaz
+     *
+     * @return GridPane el panel que se mostrara en pantalla
+     */
+	override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Tipo Dato")
         agregarValor(tipo.toString())
 
@@ -58,6 +70,7 @@ class VariableGlobal(
         agregarAtributo("Invocacion Metodo")
         agregarValor(metodo.toString())
 
+        configurarTabla()
         return panel
     }
 

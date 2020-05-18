@@ -20,7 +20,13 @@ class Argumento(private val expresion: Expresion) : Sintaxis("Argumento") {
         return expresion.toString()
     }
 
-    override fun getTreeItem(): TreeItem<SintaxisObservable> {
+    /**
+     * Obtiene el nodo TreeItem necesario para la construccion
+     * de la vista del arbol sintactico
+     *
+     * @return TreeItem<SintaxisObservable> El nodo TreeItem
+     */
+	override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
@@ -29,10 +35,17 @@ class Argumento(private val expresion: Expresion) : Sintaxis("Argumento") {
         return treeItem
     }
 
-    override fun getPropertiesPanel(): GridPane {
+    /**
+     * Obtiene el panel necesario para mostrar la informacion
+     * de la estructura sintactica en la interfaz
+     *
+     * @return GridPane el panel que se mostrara en pantalla
+     */
+	override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Argumento")
         agregarValor(expresion.nombre)
 
+        configurarTabla()
         return panel
     }
 }

@@ -5,7 +5,7 @@ import co.edu.uniquindio.lexico.ErrorLexico
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.sintaxis.AnalizadorSintactico
 import co.edu.uniquindio.sintaxis.ErrorSintactico
-import co.edu.uniquindio.sintaxis.bnf.UnidadCompilacion
+import co.edu.uniquindio.sintaxis.bnf.unidad.UnidadCompilacion
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.fxml.FXML
@@ -38,12 +38,16 @@ class VentanaPrincipalController {
      */
     @FXML
     lateinit var salidaLexico: TableView<TokenObservable>
+
     @FXML
     lateinit var palabra: TableColumn<TokenObservable, String?>
+
     @FXML
     lateinit var categoria: TableColumn<TokenObservable, String?>
+
     @FXML
     lateinit var fila: TableColumn<TokenObservable, String?>
+
     @FXML
     lateinit var columna: TableColumn<TokenObservable, String?>
 
@@ -52,6 +56,7 @@ class VentanaPrincipalController {
      */
     @FXML
     lateinit var arbolSintactico: TreeView<SintaxisObservable>
+
     @FXML
     lateinit var propertiesPanel: BorderPane
 
@@ -60,8 +65,10 @@ class VentanaPrincipalController {
      */
     @FXML
     lateinit var tablaVariables: TableView<TokenObservable>
+
     @FXML
     lateinit var tablaFunciones: TableView<TokenObservable>
+
     @FXML
     lateinit var tablaImportaciones: TableView<TokenObservable>
 
@@ -70,12 +77,16 @@ class VentanaPrincipalController {
      */
     @FXML
     lateinit var mensaje: Label
+
     @FXML
     lateinit var erroresLexicos: ListView<String>
+
     @FXML
     lateinit var erroresSintacticos: ListView<String>
+
     @FXML
     lateinit var panelErroresLexicos: TitledPane
+
     @FXML
     lateinit var panelErroresSintacticos: TitledPane
 
@@ -102,7 +113,9 @@ class VentanaPrincipalController {
 
         arbolSintactico.selectionModel.selectedItemProperty().addListener { observable, _, _ ->
             if (observable.value != null) {
-                val panel = observable.value.value.sintaxis.getPropertiesPanel()
+                val sintax = observable.value.value.sintaxis
+
+                val panel = sintax.getPropertiesPanel()
 
                 val title = GridPane()
 
@@ -113,7 +126,7 @@ class VentanaPrincipalController {
                 GridPane.setHgrow(texto, Priority.ALWAYS)
                 title.add(texto, 0, 0)
 
-                val objeto = Label(observable.value.value.toString())
+                val objeto = Label(sintax.nombre)
                 objeto.style = "-fx-font-weight: bold"
                 objeto.padding = Insets(10.0)
 

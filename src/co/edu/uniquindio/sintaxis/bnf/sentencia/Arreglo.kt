@@ -29,30 +29,39 @@ class Arreglo(
         return "${tipo}{} $identificador = {List}"
     }
 
-    override fun getTreeItem(): TreeItem<SintaxisObservable> {
+    /**
+     * Obtiene el nodo TreeItem necesario para la construccion
+     * de la vista del arbol sintactico
+     *
+     * @return TreeItem<SintaxisObservable> El nodo TreeItem
+     */
+	override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        val listaObservable = SintaxisObservable(ListaSintactica("Lista de parametros"))
-        val treeListaParametros = TreeItem(listaObservable)
-        for (lista in listArgumentos) {
-            treeListaParametros.children.add(lista.getTreeItem())
-        }
-        treeItem.children.add(treeListaParametros)
+        val listaSintacticaArgs = ListaSintactica("Lista de parametros", listArgumentos)
+        treeItem.children.add(listaSintacticaArgs.getTreeItem())
 
         return treeItem
     }
 
-    override fun getPropertiesPanel(): GridPane {
+    /**
+     * Obtiene el panel necesario para mostrar la informacion
+     * de la estructura sintactica en la interfaz
+     *
+     * @return GridPane el panel que se mostrara en pantalla
+     */
+	override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Declaración de arreglo")
         agregarValor(identificador.lexema)
 
         agregarAtributo("Tipo de dato")
         agregarValor(tipo.lexema)
 
-        agregarAtributo("Lista de Parametros")
-        agregarValor(listArgumentos.toString())
+        agregarAtributo("Lista de Argumentos")
+        agregarValor(ListaSintactica("Argumentos", listArgumentos).getPropertiesPanel())
 
+        configurarTabla()
         return panel
     }
 

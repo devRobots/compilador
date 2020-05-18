@@ -1,25 +1,14 @@
-package co.edu.uniquindio.sintaxis
+package co.edu.uniquindio.sintaxis.bnf.sentencia
 
 import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-/**
- * @author Samara Rincon
- * @author Yesid Rosas Toro
- * @author Cristian Camilo Quiceno
- *
- * @version 2.0
- *
- * Lista Sintactica
- */
-class ListaSintactica(
-        contenido: String,
-        private val lista: ArrayList<*>
-) : Sintaxis("Lista de $contenido") {
+class Retorno(private val expresion: Expresion) : Sentencia("Retorno") {
 
     override fun toString(): String {
-        return nombre
+        return "devolver ${expresion.toString()} !"
     }
 
     /**
@@ -29,13 +18,10 @@ class ListaSintactica(
      * @return TreeItem<SintaxisObservable> El nodo TreeItem
      */
 	override fun getTreeItem(): TreeItem<SintaxisObservable> {
-        val treeItem = TreeItem(SintaxisObservable(this))
+        val observable = SintaxisObservable(this)
+        val treeItem = TreeItem(observable)
 
-        for (elemento in lista) {
-            elemento as Sintaxis
-            val child = elemento.getTreeItem()
-            treeItem.children.add(child)
-        }
+        treeItem.children.add(expresion.getTreeItem())
 
         return treeItem
     }
@@ -47,10 +33,8 @@ class ListaSintactica(
      * @return GridPane el panel que se mostrara en pantalla
      */
 	override fun getPropertiesPanel(): GridPane {
-        for (elemento in lista) {
-            elemento as Sintaxis
-            agregarValor(elemento.getPropertiesPanel())
-        }
+        agregarAtributo("Expresion de retorno: ")
+        agregarValor(expresion.toString())
 
         configurarTabla()
         return panel

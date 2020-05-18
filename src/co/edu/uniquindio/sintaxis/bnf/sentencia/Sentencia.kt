@@ -18,6 +18,7 @@ abstract class Sentencia(nombre: String) : Sintaxis(nombre) {
     open fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         return
     }
+
     open fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         return
     }

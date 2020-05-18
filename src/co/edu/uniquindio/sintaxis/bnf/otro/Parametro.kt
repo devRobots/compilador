@@ -8,6 +8,7 @@ import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.Sintaxis
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
+
 /**
  * @author Samara Rincon
  * @author Yesid Rosas Toro
@@ -20,20 +21,33 @@ import javafx.scene.layout.GridPane
 class Parametro(val tipo: Token, private val identificador: Token) : Sintaxis("Parametro") {
 
     override fun toString(): String {
-        return  "${tipo.lexema} $identificador"
+        return "${tipo.lexema} $identificador"
     }
 
-    override fun getTreeItem(): TreeItem<SintaxisObservable> {
+    /**
+     * Obtiene el nodo TreeItem necesario para la construccion
+     * de la vista del arbol sintactico
+     *
+     * @return TreeItem<SintaxisObservable> El nodo TreeItem
+     */
+	override fun getTreeItem(): TreeItem<SintaxisObservable> {
         return TreeItem(SintaxisObservable(this))
     }
 
-    override fun getPropertiesPanel(): GridPane {
+    /**
+     * Obtiene el panel necesario para mostrar la informacion
+     * de la estructura sintactica en la interfaz
+     *
+     * @return GridPane el panel que se mostrara en pantalla
+     */
+	override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Tipo de dato")
         agregarValor(tipo.lexema)
 
         agregarAtributo("Identificador")
         agregarValor(identificador.lexema)
 
+        configurarTabla()
         return panel
     }
 
