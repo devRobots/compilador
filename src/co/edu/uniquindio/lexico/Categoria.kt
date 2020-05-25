@@ -15,6 +15,7 @@ enum class Categoria {
     BOOLEANO,
 
     IDENTIFICADOR,
+    IDENTIFICADOR_METODO,
     PALABRA_RESERVADA,
     TIPO_DATO,
 

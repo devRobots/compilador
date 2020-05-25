@@ -256,7 +256,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 reportarError("una llave derecha")
             }
             return Clase(modificadorAcceso, identificador, listaBloque)
-
         }
         return null
     }
@@ -321,44 +320,39 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 siguienteToken()
             }
         }
-
+        val tipo = tokenActual
         if (tokenActual?.categoria == TIPO_DATO) {
-            val tipo = tokenActual
             siguienteToken()
-
-            if (tokenActual?.categoria == IDENTIFICADOR) {
-                val identificador = tokenActual!!
-                siguienteToken()
-                if (tokenActual?.categoria == PARENTESIS_IZQUIERDO) {
-                    siguienteToken()
-                } else {
-                    reportarError("una llave izquierda")
-                }
-                val listaArgumentos = esListaParametros()
-
-                if (tokenActual?.categoria == PARENTESIS_DERECHO) {
-                    siguienteToken()
-                } else {
-                    reportarError("una llave derecho")
-                }
-                if (tokenActual?.categoria == LLAVE_IZQUIERDO) {
-                    siguienteToken()
-                } else {
-                    reportarError("un parentesis izquierdo")
-                }
-                val listaSentencias = esListaSentencia()
-
-                if (tokenActual?.categoria == LLAVE_DERECHA) {
-                    siguienteToken()
-                } else {
-                    reportarError("una llave derecha")
-                }
-                return Funcion(modificadorAcceso, tipo, identificador, listaArgumentos, listaSentencias)
-            } else {
-                reportarError("un identificador")
-            }
         }
+        if (tokenActual?.categoria == IDENTIFICADOR_METODO) {
+            val identificador = tokenActual!!
+            siguienteToken()
+            if (tokenActual?.categoria == PARENTESIS_IZQUIERDO) {
+                siguienteToken()
+            } else {
+                reportarError("una llave izquierda")
+            }
+            val listaArgumentos = esListaParametros()
 
+            if (tokenActual?.categoria == PARENTESIS_DERECHO) {
+                siguienteToken()
+            } else {
+                reportarError("una llave derecho")
+            }
+            if (tokenActual?.categoria == LLAVE_IZQUIERDO) {
+                siguienteToken()
+            } else {
+                reportarError("un parentesis izquierdo")
+            }
+            val listaSentencias = esListaSentencia()
+
+            if (tokenActual?.categoria == LLAVE_DERECHA) {
+                siguienteToken()
+            } else {
+                reportarError("una llave derecha")
+            }
+            return Funcion(modificadorAcceso, tipo, identificador, listaArgumentos, listaSentencias)
+        }
         return null
     }
 
@@ -628,7 +622,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * @return InvocacionMetodo si existe, null sino existe
      */
     private fun esInvocacionMetodo(): InvocacionMetodo? {
-        if (tokenActual?.categoria == IDENTIFICADOR) {
+        if (tokenActual?.categoria == IDENTIFICADOR_METODO) {
             val identificador = tokenActual
             siguienteToken()
             if (tokenActual?.categoria == PARENTESIS_IZQUIERDO) {

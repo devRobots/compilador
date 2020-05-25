@@ -56,6 +56,7 @@ class AnalizadorLexico(private val codigoFuente: String) {
             if (esBooleano()) continue
 
             if (esIdentificador()) continue
+            if (esIdentificadorMetodo()) continue
             if (esPalabraReservada()) continue
             if (esTipoDato()) continue
 
@@ -251,6 +252,45 @@ class AnalizadorLexico(private val codigoFuente: String) {
 
                 if (!palabra.endsWith("_")) {
                     listaTokens.add(Token(palabra, IDENTIFICADOR, fila, columna))
+                    centinela = true
+                }
+            }
+
+            if (!centinela) {
+                backtracking(posicionInicial, fila, columna)
+            }
+        }
+        return centinela
+    }
+
+    /**
+     * Verifica si la palabra actual es un identificador de Metodo
+     *
+     * @return esIdentificador retorna true si es identificador de Metodo
+     */
+    private fun esIdentificadorMetodo(): Boolean {
+        val posicionInicial = posicionActual
+        val fila = filaActual
+        val columna = columnaActual
+
+        var palabra = ""
+        var centinela = false
+
+        if (caracterActual == '&') {
+            palabra += caracterActual
+            siguienteCaracter()
+
+            if (Character.isLetter(caracterActual)) {
+                palabra += caracterActual
+                siguienteCaracter()
+
+                while (Character.isLetter(caracterActual) || caracterActual == '_' || Character.isDigit(caracterActual)) {
+                    palabra += caracterActual
+                    siguienteCaracter()
+                }
+
+                if (!palabra.endsWith("_")) {
+                    listaTokens.add(Token(palabra, IDENTIFICADOR_METODO, fila, columna))
                     centinela = true
                 }
             }
