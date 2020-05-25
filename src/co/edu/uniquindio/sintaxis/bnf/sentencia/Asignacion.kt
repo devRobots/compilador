@@ -21,14 +21,15 @@ import javafx.scene.layout.GridPane
  */
 class Asignacion(
         private val identificador: Token,
+        private val operador: Token,
         private val expresion: Expresion?,
         private val metodo: InvocacionMetodo?
 ) : Sentencia("Asignacion") {
 
     override fun toString(): String = if (expresion != null) {
-        "${identificador.lexema} = $expresion"
+        "${identificador.lexema} $operador $expresion"
     } else {
-        "${identificador.lexema} = $metodo"
+        "${identificador.lexema} $operador $metodo"
     }
 
     /**
@@ -59,6 +60,8 @@ class Asignacion(
 	override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Identificador")
         agregarValor(identificador.lexema)
+        agregarAtributo("Operador de Asignacion")
+        agregarValor(operador.lexema)
         if (expresion != null) {
             agregarAtributo("Expresion")
             agregarValor(expresion.toString())

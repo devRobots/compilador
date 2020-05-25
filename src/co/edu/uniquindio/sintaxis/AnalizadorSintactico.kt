@@ -55,9 +55,10 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * Verifica que no se desborde
      */
     private fun siguienteToken() {
-        fila = tokenActual?.fila
-        columna = tokenActual?.columna!! + tokenActual?.lexema!!.length
-
+        if (tokenActual!= null) {
+            fila = tokenActual?.fila
+            columna = tokenActual?.columna!! + tokenActual?.lexema!!.length
+        }
         posicionActual++
 
         tokenActual = if (posicionActual < tokens.size) {
@@ -79,9 +80,11 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         siguienteToken()
 
         if (cantidadErrores < listaErrores.size) {
-            val cant = cantidadErrores - listaErrores.size
+            val cant = listaErrores.size - cantidadErrores
             for (i in 0..cant) {
-                listaErrores.removeAt(listaErrores.lastIndex)
+                if (i >0){
+                    listaErrores.removeAt(listaErrores.lastIndex)
+                }
             }
         }
     }
@@ -320,8 +323,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 siguienteToken()
             }
         }
-        val tipo = tokenActual
+        var tipo:Token? = null
         if (tokenActual?.categoria == TIPO_DATO) {
+            tipo = tokenActual
             siguienteToken()
         }
         var identificador:Token? = null
@@ -357,7 +361,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         val listaSentencias = esListaSentencia()
 
         if (tokenActual?.categoria == LLAVE_DERECHA) {
-            centinela = true
             siguienteToken()
         } else {
             reportarError("una llave derecha")
@@ -572,13 +575,14 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             val identificador = tokenActual
             siguienteToken()
             if (tokenActual?.categoria == OPERADOR_ASIGNACION) {
+                val operador = tokenActual
                 siguienteToken()
                 val posicionInicial = posicionActual
                 val cantidadErrores = listaErrores.size
 
                 val metodo = esInvocacionMetodo()
                 if (metodo != null) {
-                    return Asignacion(identificador!!, null, metodo)
+                    return Asignacion(identificador!!,operador!!, null, metodo)
                 } else {
                     backtracking(posicionInicial, cantidadErrores)
                 }
@@ -591,7 +595,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                         reportarError("un fin de sentencia")
                         buscarTokenSeguro(2)
                     }
-                    return Asignacion(identificador!!, expresion, metodo)
+                    return Asignacion(identificador!!,operador!!, expresion, metodo)
 
                 } else {
                     reportarError("una expresion")
@@ -636,16 +640,24 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      * @return InvocacionMetodo si existe, null sino existe
      */
     private fun esInvocacionMetodo(): InvocacionMetodo? {
-        if (tokenActual?.categoria == IDENTIFICADOR_METODO) {
+        if (tokenActual?.categoria == IDENTIFICADOR_METODO || tokenActual?.categoria == IDENTIFICADOR) {
+            var centinela = false
             val identificador = tokenActual
+            if (tokenActual?.categoria == IDENTIFICADOR){
+                reportarError("identificador metodo")
+            }else{
+                centinela = true
+            }
             siguienteToken()
             if (tokenActual?.categoria == PARENTESIS_IZQUIERDO) {
+                centinela = true
                 siguienteToken()
             } else {
                 reportarError("un parentesis Izquierdo")
             }
             val listaParametros = esListaArgumentos()
             if (tokenActual?.categoria == PARENTESIS_DERECHO) {
+                centinela = true
                 siguienteToken()
             } else {
                 reportarError("un parentesis Derecho")
@@ -655,7 +667,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             } else {
                 reportarError("un fin de sentencia")
             }
-            return InvocacionMetodo(identificador!!, listaParametros)
+            if (centinela){
+                return InvocacionMetodo(identificador!!, listaParametros)
+            }
         }
         return null
     }
