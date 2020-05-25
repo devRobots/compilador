@@ -120,13 +120,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         var centinela = true
 
         while (centinela) {
-            siguienteToken()
             for (i in seleccion until categorias.size) if (tokenActual?.categoria == categorias[i]) {
                 centinela = false
                 break
             }
+            siguienteToken()
         }
-        siguienteToken()
+       // siguienteToken()
     }
 
     /**
@@ -288,16 +288,16 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         val posicionInicial = posicionActual
         val cantidadErrores = listaErrores.size
 
-        val variableGlobal = esVariableGlobal()
-        if (variableGlobal != null) {
-            return variableGlobal
+        val funcion = esFuncion()
+        if (funcion != null) {
+            return funcion
         } else {
             backtracking(posicionInicial, cantidadErrores)
         }
 
-        val funcion = esFuncion()
-        if (funcion != null) {
-            return funcion
+        val variableGlobal = esVariableGlobal()
+        if (variableGlobal != null) {
+            return variableGlobal
         } else {
             backtracking(posicionInicial, cantidadErrores)
         }
@@ -313,7 +313,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
     private fun esFuncion(): Funcion? {
         var modificadorAcceso: Token? = null
-
+        var centinela = false
         if (tokenActual?.categoria == PALABRA_RESERVADA) {
             if (tokenActual?.lexema == "estrato1" || tokenActual?.lexema == "estrato6") {
                 modificadorAcceso = tokenActual
@@ -324,33 +324,45 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         if (tokenActual?.categoria == TIPO_DATO) {
             siguienteToken()
         }
-        if (tokenActual?.categoria == IDENTIFICADOR_METODO) {
-            val identificador = tokenActual!!
+        var identificador:Token? = null
+        if (tokenActual?.categoria == IDENTIFICADOR_METODO || tokenActual?.categoria == IDENTIFICADOR) {
+            if (tokenActual?.categoria == IDENTIFICADOR_METODO){
+                centinela = true
+            }else{
+                reportarError("se esperaba un identificador de metodo")
+            }
+            identificador = tokenActual!!
             siguienteToken()
-            if (tokenActual?.categoria == PARENTESIS_IZQUIERDO) {
-                siguienteToken()
-            } else {
-                reportarError("una llave izquierda")
-            }
-            val listaArgumentos = esListaParametros()
+        }
+        if (tokenActual?.categoria == PARENTESIS_IZQUIERDO) {
+            centinela = true
+            siguienteToken()
+        } else {
+            reportarError("un parentesis izquierda")
+        }
+        val listaArgumentos = esListaParametros()
 
-            if (tokenActual?.categoria == PARENTESIS_DERECHO) {
-                siguienteToken()
-            } else {
-                reportarError("una llave derecho")
-            }
-            if (tokenActual?.categoria == LLAVE_IZQUIERDO) {
-                siguienteToken()
-            } else {
-                reportarError("un parentesis izquierdo")
-            }
-            val listaSentencias = esListaSentencia()
+        if (tokenActual?.categoria == PARENTESIS_DERECHO) {
+            centinela = true
+            siguienteToken()
+        } else {
+            reportarError("un parentesis derecho")
+        }
+        if (tokenActual?.categoria == LLAVE_IZQUIERDO) {
+            centinela = true
+            siguienteToken()
+        } else {
+            reportarError("una llave izquierdo")
+        }
+        val listaSentencias = esListaSentencia()
 
-            if (tokenActual?.categoria == LLAVE_DERECHA) {
-                siguienteToken()
-            } else {
-                reportarError("una llave derecha")
-            }
+        if (tokenActual?.categoria == LLAVE_DERECHA) {
+            centinela = true
+            siguienteToken()
+        } else {
+            reportarError("una llave derecha")
+        }
+        if (centinela){
             return Funcion(modificadorAcceso, tipo, identificador, listaArgumentos, listaSentencias)
         }
         return null
@@ -463,6 +475,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         val posicionInicial = posicionActual
         val cantidadErrores = listaErrores.size
 
+        val arreglo = esArreglo()
+        if (arreglo != null) {
+            return arreglo
+        } else {
+            backtracking(posicionInicial, cantidadErrores)
+        }
+
         val declaracionVariable = esVariableLocal()
         if (declaracionVariable != null) {
             return declaracionVariable
@@ -487,13 +506,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         val asignacion = esAsignacion()
         if (asignacion != null) {
             return asignacion
-        } else {
-            backtracking(posicionInicial, cantidadErrores)
-        }
-
-        val arreglo = esArreglo()
-        if (arreglo != null) {
-            return arreglo
         } else {
             backtracking(posicionInicial, cantidadErrores)
         }
@@ -649,31 +661,6 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
     }
 
     /**
-     * Metodo Para Determinar si es una SentenciaRetorno
-     * <SentenciaRetorno> ::= devolver <Expresion>“!”
-     *
-     * @return Retorno si existe, null sino existe
-     */
-    private fun esRetorno(): Retorno? {
-        if (tokenActual?.categoria == PALABRA_RESERVADA && tokenActual?.lexema == "devolver") {
-            siguienteToken()
-
-            val expresion = esExpresion()
-            if (expresion != null) {
-                if (tokenActual?.categoria == FIN_SENTENCIA) {
-                    siguienteToken()
-                } else {
-                    reportarError("un final de sentencia")
-                }
-                return Retorno(expresion)
-            } else {
-                reportarError("una expresion, valor o indentificador")
-            }
-        }
-        return null
-    }
-
-    /**
      * Metodo Para Determinar si es una Variable Lobal
      * <VariableLobal> ::= <TipoDato> identificador “=” <Expresion> “!” |
      *  <TipoDato> identificador “=” <InvocacionMetodo>
@@ -685,42 +672,42 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             val tipo = tokenActual!!
             siguienteToken()
 
+            val identificador = tokenActual
             if (tokenActual?.categoria == IDENTIFICADOR) {
-                val identificador = tokenActual
-
                 siguienteToken()
-                if (tokenActual?.categoria == OPERADOR_ASIGNACION && tokenActual?.lexema == "=") {
-                    siguienteToken()
-                    val posicionInicial = posicionActual
-                    val cantidadErrores = listaErrores.size
-
-                    val metodo = esInvocacionMetodo()
-                    if (metodo != null) {
-                        return VariableLocal(tipo, identificador!!, null, metodo)
-                    } else {
-                        backtracking(posicionInicial, cantidadErrores)
-                    }
-
-                    val exp = esExpresion()
-                    if (exp != null) {
-                        if (tokenActual?.categoria == FIN_SENTENCIA) {
-                            siguienteToken()
-                        } else {
-                            reportarError("un fin de sentencia")
-                        }
-                        return VariableLocal(tipo, identificador!!, exp, null)
-                    } else {
-                        buscarTokenSeguro(2)
-                        reportarError("una asignacion de valor")
-                    }
-                } else if (tokenActual?.categoria == FIN_SENTENCIA) {
-                    siguienteToken()
-                } else {
-                    reportarError("un fin de sentencia")
-                    buscarTokenSeguro(2)
-                }
-                return VariableLocal(tipo, identificador!!, null, null)
             }
+            if (tokenActual?.categoria == OPERADOR_ASIGNACION && tokenActual?.lexema == "=") {
+                siguienteToken()
+                val posicionInicial = posicionActual
+                val cantidadErrores = listaErrores.size
+
+                val metodo = esInvocacionMetodo()
+                if (metodo != null) {
+                    return VariableLocal(tipo, identificador!!, null, metodo)
+                } else {
+                    backtracking(posicionInicial, cantidadErrores)
+                }
+
+                val exp = esExpresion()
+                if (exp != null) {
+                    if (tokenActual?.categoria == FIN_SENTENCIA) {
+                        siguienteToken()
+                    } else {
+                        reportarError("un fin de sentencia")
+                        buscarTokenSeguro(2)
+                    }
+                    return VariableLocal(tipo, identificador!!, exp, null)
+                } else {
+                    buscarTokenSeguro(2)
+                    reportarError("una asignacion de valor")
+                }
+            } else if (tokenActual?.categoria == FIN_SENTENCIA) {
+                siguienteToken()
+            } else {
+                reportarError("un fin de sentencia")
+                buscarTokenSeguro(2)
+            }
+            return VariableLocal(tipo, identificador!!, null, null)
         }
         return null
     }
@@ -734,54 +721,58 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
      */
     private fun esVariableGlobal(): VariableGlobal? {
         var modificadorAcceso: Token? = null
+        var centinela = false
         if (tokenActual?.categoria == PALABRA_RESERVADA) {
             if (tokenActual?.lexema == "estrato1" || tokenActual?.lexema == "estrato6") {
                 modificadorAcceso = tokenActual
                 siguienteToken()
             }
         }
+        val tipo = tokenActual!!
         if (tokenActual?.categoria == TIPO_DATO) {
-            val tipo = tokenActual!!
+            centinela = true
             siguienteToken()
+        }
+        var identificador:Token? = null
+        if (tokenActual?.categoria == IDENTIFICADOR) {
+            centinela = true
+            identificador = tokenActual
+            siguienteToken()
+        }
+        if (tokenActual?.categoria == OPERADOR_ASIGNACION && tokenActual?.lexema == "=") {
+            siguienteToken()
+            val posicionInicial = posicionActual
+            val cantidadErrores = listaErrores.size
 
-            if (tokenActual?.categoria == IDENTIFICADOR) {
-                val identificador = tokenActual
-                siguienteToken()
-                if (tokenActual?.categoria == OPERADOR_ASIGNACION && tokenActual?.lexema == "=") {
-                    siguienteToken()
-                    val posicionInicial = posicionActual
-                    val cantidadErrores = listaErrores.size
-
-                    val metodo = esInvocacionMetodo()
-                    if (metodo != null) {
-                        return VariableGlobal(modificadorAcceso, tipo, identificador!!, null, metodo)
-                    } else {
-                        backtracking(posicionInicial, cantidadErrores)
-                    }
-                    val exp = esExpresion()
-                    if (exp != null) {
-                        if (tokenActual?.categoria == FIN_SENTENCIA) {
-                            siguienteToken()
-                        } else {
-                            reportarError("un fin de sentencia")
-                            buscarTokenSeguro(2)
-                        }
-                        return VariableGlobal(modificadorAcceso, tipo, identificador!!, exp, metodo)
-                    }else{
-                        reportarError("Expesion")
-                        buscarTokenSeguro(2)
-                    }
-                } else {
-                    if (tokenActual?.categoria == FIN_SENTENCIA) {
-                        siguienteToken()
-                    } else {
-                        reportarError("un fin de sentencia")
-                        buscarTokenSeguro(2)
-                    }
-                    return VariableGlobal(modificadorAcceso, tipo, identificador!!, null, null)
-                }
+            val metodo = esInvocacionMetodo()
+            if (metodo != null) {
+                return VariableGlobal(modificadorAcceso, tipo, identificador!!, null, metodo)
             } else {
-                reportarError("un identificador")
+                backtracking(posicionInicial, cantidadErrores)
+            }
+            val exp = esExpresion()
+            if (exp != null) {
+                if (tokenActual?.categoria == FIN_SENTENCIA) {
+                    siguienteToken()
+                } else {
+                    reportarError("un fin de sentencia")
+                    buscarTokenSeguro(2)
+                }
+                return VariableGlobal(modificadorAcceso, tipo, identificador!!, exp, metodo)
+            }else{
+                reportarError("Expesion")
+                buscarTokenSeguro(2)
+                return VariableGlobal(modificadorAcceso, tipo, identificador!!, null, null)
+            }
+        } else {
+            if (tokenActual?.categoria == FIN_SENTENCIA) {
+                siguienteToken()
+            } else {
+                reportarError("un fin de sentencia")
+            }
+            if (centinela){
+                reportarError("asignar variable")
+                return VariableGlobal(modificadorAcceso, tipo, identificador!!, null, null)
             }
         }
         return null
@@ -1198,14 +1189,21 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
         if (tokenActual?.categoria == TIPO_DATO) {
             val tipo = tokenActual!!
             siguienteToken()
+            var centinela = false
 
             if (tokenActual?.categoria == CORCHETE_IZQUIERDO) {
+                centinela = true
                 siguienteToken()
-                if (tokenActual?.categoria == CORCHETE_DERECHO) {
-                    siguienteToken()
-                } else {
-                    reportarError("un corchete derecho")
-                }
+            } else {
+                reportarError("un corchete izquierdo")
+            }
+            if (tokenActual?.categoria == CORCHETE_DERECHO) {
+                centinela = true
+                siguienteToken()
+            } else {
+                reportarError("un corchete derecho")
+            }
+            if(centinela){
                 if (tokenActual?.categoria == IDENTIFICADOR) {
                     val identificador = tokenActual!!
                     siguienteToken()
@@ -1230,16 +1228,38 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                         }
                         return Arreglo(tipo, identificador, listaParametros)
 
+                    } else if (tokenActual?.categoria == FIN_SENTENCIA) {
+                        siguienteToken()
                     } else {
-                        reportarError("un operador de asignación")
+                        reportarError("un fin de sentencia")
+                        buscarTokenSeguro(2)
                     }
+                    return Arreglo(tipo, identificador!!, ArrayList())
                 } else {
                     reportarError("un identificador")
                 }
-
-            } else {
-                reportarError("un corchete izquierdo")
             }
+        }
+        return null
+    }
+
+    /**
+     * Metodo Para Determinar si es una SentenciaRetorno
+     * <SentenciaRetorno> ::= devolver <Expresion>“!”
+     *
+     * @return Retorno si existe, null sino existe
+     */
+    private fun esRetorno(): Retorno? {
+        if (tokenActual?.categoria == PALABRA_RESERVADA && tokenActual?.lexema == "devolver") {
+            siguienteToken()
+
+            val expresion = esExpresion()
+            if (tokenActual?.categoria == FIN_SENTENCIA) {
+                siguienteToken()
+            } else {
+                reportarError("un final de sentencia")
+            }
+            return Retorno(expresion)
         }
         return null
     }

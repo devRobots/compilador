@@ -23,7 +23,7 @@ import javafx.scene.layout.GridPane
 class Funcion(
         private val modificadorAcceso: Token?,
         private val tipo: Token?,
-        private val identificador: Token,
+        private val identificador: Token?,
         private val listaParametros: ArrayList<Parametro>,
         private val listaSentencias: ArrayList<Sentencia>
 ) : Bloque("Funcion") {
@@ -65,7 +65,7 @@ class Funcion(
         agregarValor(tipo?.lexema)
 
         agregarAtributo("Identificador")
-        agregarValor(identificador.lexema)
+        agregarValor(identificador?.lexema)
 
         agregarAtributo("Parametros")
         agregarValor(ListaSintactica("Parametros", listaParametros).getPropertiesPanel())
@@ -82,10 +82,13 @@ class Funcion(
 
         for (argumento in listaParametros) {
             tiposParametros.add(argumento.tipo.lexema)
-            argumento.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador.lexema))
+            if (identificador != null){
+                argumento.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador.lexema))
+            }
         }
-
-        tablaSimbolos.agregarFuncion(identificador.lexema, tipo?.lexema ?: "Void", modificadorAcceso?.lexema, tiposParametros)
+        if (identificador != null){
+            tablaSimbolos.agregarFuncion(identificador.lexema, tipo?.lexema ?: "Void", modificadorAcceso?.lexema, tiposParametros)
+        }
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {

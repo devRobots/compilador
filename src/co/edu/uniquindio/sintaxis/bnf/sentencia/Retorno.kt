@@ -5,7 +5,7 @@ import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
-class Retorno(private val expresion: Expresion) : Sentencia("Retorno") {
+class Retorno(private val expresion: Expresion?) : Sentencia("Retorno") {
 
     override fun toString(): String {
         return "devolver ${expresion.toString()} !"
@@ -20,8 +20,9 @@ class Retorno(private val expresion: Expresion) : Sentencia("Retorno") {
 	override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
-
-        treeItem.children.add(expresion.getTreeItem())
+        if(expresion != null){
+            treeItem.children.add(expresion?.getTreeItem())
+        }
 
         return treeItem
     }
