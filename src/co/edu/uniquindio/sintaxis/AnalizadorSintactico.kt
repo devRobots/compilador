@@ -577,11 +577,13 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                         siguienteToken()
                     } else {
                         reportarError("un fin de sentencia")
+                        buscarTokenSeguro(2)
                     }
                     return Asignacion(identificador!!, expresion, metodo)
 
                 } else {
                     reportarError("una expresion")
+                    buscarTokenSeguro(2)
                 }
             } else {
                 reportarError("un operador de asignacion")
@@ -708,12 +710,14 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                         }
                         return VariableLocal(tipo, identificador!!, exp, null)
                     } else {
+                        buscarTokenSeguro(2)
                         reportarError("una asignacion de valor")
                     }
                 } else if (tokenActual?.categoria == FIN_SENTENCIA) {
                     siguienteToken()
                 } else {
                     reportarError("un fin de sentencia")
+                    buscarTokenSeguro(2)
                 }
                 return VariableLocal(tipo, identificador!!, null, null)
             }
@@ -760,14 +764,19 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                             siguienteToken()
                         } else {
                             reportarError("un fin de sentencia")
+                            buscarTokenSeguro(2)
                         }
                         return VariableGlobal(modificadorAcceso, tipo, identificador!!, exp, metodo)
+                    }else{
+                        reportarError("Expesion")
+                        buscarTokenSeguro(2)
                     }
                 } else {
                     if (tokenActual?.categoria == FIN_SENTENCIA) {
                         siguienteToken()
                     } else {
                         reportarError("un fin de sentencia")
+                        buscarTokenSeguro(2)
                     }
                     return VariableGlobal(modificadorAcceso, tipo, identificador!!, null, null)
                 }
@@ -1217,6 +1226,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                             siguienteToken()
                         } else {
                             reportarError("un fin de sentencia")
+                            buscarTokenSeguro(2)
                         }
                         return Arreglo(tipo, identificador, listaParametros)
 
