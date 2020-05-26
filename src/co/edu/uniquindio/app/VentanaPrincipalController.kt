@@ -22,6 +22,7 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.Priority
 import javafx.util.Callback
+import java.io.File
 
 
 /**
@@ -195,6 +196,25 @@ class VentanaPrincipalController {
                         mensaje.style = "-fx-text-fill: darkgreen;"
                     }
                 }
+            }
+        }
+    }
+
+    @FXML
+    fun ejecutar() {
+        val alerta = Alert(Alert.AlertType.INFORMATION)
+        alerta.headerText = "Verdad que te engañe?"
+        alerta.contentText = "xdxdxd"
+        alerta.show()
+
+        if (salida.text.isNotBlank()) {
+            File("src/Principal.java").writeText( salida.text )
+            try {
+                val p = Runtime.getRuntime().exec("javac src/Principal.java")
+                p.waitFor()
+                Runtime.getRuntime().exec("java Principal", null, File("src"))
+            } catch (ea: Exception) {
+                ea.printStackTrace()
             }
         }
     }
