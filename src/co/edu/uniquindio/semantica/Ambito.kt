@@ -28,7 +28,7 @@ class Ambito(var nombre: String) {
         var salida = nombre
 
         if (padre != null) {
-            salida += "${padre.toString()}.$salida"
+            salida = "${padre.toString()}.$salida"
         }
 
         return salida

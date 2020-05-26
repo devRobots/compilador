@@ -1,6 +1,6 @@
 package co.edu.uniquindio.sintaxis.bnf.expresion
 
-import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane

@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -36,7 +37,7 @@
                                             <center>
                                                 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
                                                     <children>
-                                                        <TextArea fx:id="texto" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="250.0" text="caja @paquete!&#10;&#10;meter @importar!&#10;meter @importar1!&#10;meter @importar2!&#10;&#10;: se crea la clase&#10;estrato1 cosa @clase ¿&#10;&#9;:/&#10;  &#9;   Apartir de la clase  cualquier cosa&#10;&#9;/:&#10;        estrato1 @Declaracion_y_Asignacion[ ] ¿ &#10;&#9;&#9;ent @Declarar = #73!&#10;&#9;&#9;pal @asignandoMetodo = @Metodo[@a,@b]!&#10;&#9;&#9;@Asignar = (Asignando Metodo) + #64 !&#10;&#9;&#9;dec @b = [@a ° *3.8  ] / *4.0 !&#10;&#9;&#9;bip @Relacion = @a &lt;&lt; *7.0 !&#10;&#9;&#9;bip @boolean = ¬ .false!&#10;&#9;&#9;ent{} @arreglo = {#1,#2,@a,#5}!&#10;&#9;?&#10;&#9;: Sentencias Condicionales y otras&#10;&#9;&#9;estrato1 ent @Decision[ent @a, ent @b, pal @salida] ¿&#10;&#9;&#9;:Metodo&#10;&#9;&#9;@a = @Scanner[ ( ingrese numero: ) ] !&#10;&#9;&#9;:Sentencia If y else&#10;&#9;&#9;wi[ @a &lt;&lt; @b]¿&#10;&#9;&#9;&#9;@Syso[( la variable es menor) ]!&#10;&#9;&#9;? wo wi[ @a &gt;&gt; @b ]¿&#10;&#9;&#9;&#9;@Syso[( la variable es mayor)] !&#10;&#9;&#9;? wo ¿&#10;&#9;&#9;&#9;@Syso[( las variables son iguales)]!&#10;&#9;&#9;?&#10;&#9;&#9;:Sentencia For&#10;&#9;&#9;ciclo[ ent @i! | @i &gt;&gt; #10 | @i^+ ]¿&#10;&#9;&#9;&#9;@Syso[( las variables son iguales)]!&#10;&#9;&#9;?&#10;&#9;&#9;: Sentencia While&#10;&#9;&#9;durante[ .true]¿&#10;&#9;&#9;&#9;@a += #3!&#10;&#9;&#9;?&#10;&#9;&#9;devolver @a!&#10;&#9;?&#10;?" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
+                                                        <TextArea fx:id="texto" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="250.0" text="caja @paquete!&#10;&#10;meter @importar!&#10;meter @importar1!&#10;meter @importar2!&#10;&#10;: se crea la clase&#10;estrato1 cosa @clase ¿&#10;&#9;:/&#10;  &#9;   Apartir de la clase  cualquier cosa&#10;&#9;/:&#10;        estrato1 &amp;Declaracion_y_Asignacion[ ] ¿ &#10;&#9;&#9;ent @Declarar = #73!&#10;&#9;&#9;pal @asignandoMetodo = &amp;Metodo[@a,@b]!&#10;&#9;&#9;@Asignar = (Asignando Metodo) + #64 !&#10;&#9;&#9;dec @b = [@a ° *3.8  ] / *4.0 !&#10;&#9;&#9;bip @Relacion = @a &lt;&lt; *7.0 !&#10;&#9;&#9;bip @boolean = ¬ .false!&#10;&#9;&#9;ent{} @arreglo = {#1,#2,@a,#5}!&#10;&#9;?&#10;&#9;: Sentencias Condicionales y otras&#10;&#9;estrato1 ent &amp;Decision[ent @a, ent @b, pal @salida] ¿&#10;&#9;&#9;:Metodo&#10;&#9;&#9;@a = &amp;Scanner[ ( ingrese numero: ) ] !&#10;&#9;&#9;:Sentencia If y else&#10;&#9;&#9;wi[ @a &lt;&lt; @b]¿&#10;&#9;&#9;&#9;&amp;Syso[( la variable es menor) ]!&#10;&#9;&#9;? wo wi[ @a &gt;&gt; @b ]¿&#10;&#9;&#9;&#9;&amp;Syso[( la variable es mayor)] !&#10;&#9;&#9;? wo ¿&#10;&#9;&#9;&#9;&amp;Syso[( las variables son iguales)]!&#10;&#9;&#9;?&#10;&#9;&#9;:Sentencia For&#10;&#9;&#9;ciclo[ ent @i! | @i &gt;&gt; #10 | @i^+ ]¿&#10;&#9;&#9;&#9;&amp;Syso[( las variables son iguales)]!&#10;&#9;&#9;?&#10;&#9;&#9;: Sentencia While&#10;&#9;&#9;durante[ .true]¿&#10;&#9;&#9;&#9;@a += #3!&#10;&#9;&#9;?&#10;&#9;&#9;devolver @a!&#10;&#9;?&#10;?" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
                                                     </children>
                                                 </AnchorPane>
                                             </center>
@@ -125,7 +126,11 @@
                                                             </rowConstraints>
                                                             <children>
                                                                   <TreeView fx:id="arbolSintactico" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" GridPane.halignment="LEFT" GridPane.vgrow="ALWAYS" />
-                                                                <BorderPane fx:id="propertiesPanel" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" GridPane.columnIndex="1" />
+                                                <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                                                   <content>
+                                                                      <BorderPane fx:id="propertiesPanel" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: black;" />
+                                                   </content>
+                                                </ScrollPane>
                                                             </children>
                                                         </GridPane>
                                                     </children>
@@ -176,12 +181,12 @@
                                                                     <children>
                                                                         <TableView fx:id="tablaVariables" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                             <columns>
-                                                                                <TableColumn maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" text="Acceso" />
-                                                                                <TableColumn maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" text="Tipo Dato" />
-                                                                                <TableColumn maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="201.0" text="Nombre" />
-                                                                                <TableColumn maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Ambito" />
-                                                                                <TableColumn maxWidth="75.0" minWidth="75.0" prefWidth="75.0" resizable="false" text="Fila" />
-                                                                                <TableColumn maxWidth="75.0" minWidth="75.0" prefWidth="75.0" resizable="false" text="Columna" />
+                                                                                <TableColumn fx:id="accesoVar" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" text="Acceso" />
+                                                                                <TableColumn fx:id="tipoVar" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" text="Tipo Dato" />
+                                                                                <TableColumn fx:id="nombreVar" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="201.0" text="Nombre" />
+                                                                                <TableColumn fx:id="ambVar" maxWidth="1.7976931348623157E308" minWidth="150.0" prefWidth="150.0" text="Ambito" />
+                                                                                <TableColumn fx:id="filVar" maxWidth="75.0" minWidth="75.0" prefWidth="75.0" resizable="false" text="Fila" />
+                                                                                <TableColumn fx:id="colVar" maxWidth="75.0" minWidth="75.0" prefWidth="75.0" resizable="false" text="Columna" />
                                                                             </columns>
                                                                         </TableView>
                                                                     </children>
@@ -194,10 +199,10 @@
                                                                     <children>
                                                                         <TableView fx:id="tablaFunciones" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                             <columns>
-                                                                                <TableColumn maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" text="Acceso" />
-                                                                                <TableColumn maxWidth="115.0" minWidth="100.0" prefWidth="115.0" resizable="false" text="Tipo Retorno" />
-                                                                                <TableColumn maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="187.0" text="Nombre" />
-                                                                                <TableColumn maxWidth="1.7976931348623157E308" minWidth="150.0" prefWidth="300.0" text="Tipo de Parametros" />
+                                                                                <TableColumn fx:id="accFun" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" text="Acceso" />
+                                                                                <TableColumn fx:id="tipoFun" maxWidth="115.0" minWidth="100.0" prefWidth="115.0" resizable="false" text="Tipo Retorno" />
+                                                                                <TableColumn fx:id="nombreFun" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="187.0" text="Nombre" />
+                                                                                <TableColumn fx:id="paramsFun" maxWidth="1.7976931348623157E308" minWidth="150.0" prefWidth="300.0" text="Tipo de Parametros" />
                                                                             </columns>
                                                                         </TableView>
                                                                     </children>
@@ -210,9 +215,9 @@
                                                                     <children>
                                                                         <TableView fx:id="tablaImportaciones" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                             <columns>
-                                                                                <TableColumn maxWidth="540.0" minWidth="540.0" prefWidth="540.0" text="Nombre" />
-                                                                                <TableColumn maxWidth="75.0" minWidth="75.0" prefWidth="75.0" resizable="false" text="Fila" />
-                                                                                <TableColumn maxWidth="75.0" minWidth="75.0" prefWidth="75.0" resizable="false" text="Columna" />
+                                                                                <TableColumn fx:id="nombreImport" maxWidth="540.0" minWidth="540.0" prefWidth="540.0" text="Nombre" />
+                                                                                <TableColumn fx:id="filImport" maxWidth="75.0" minWidth="75.0" prefWidth="75.0" resizable="false" text="Fila" />
+                                                                                <TableColumn fx:id="colImport" maxWidth="75.0" minWidth="75.0" prefWidth="75.0" resizable="false" text="Columna" />
                                                                             </columns>
                                                                         </TableView>
                                                                     </children>

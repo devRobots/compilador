@@ -13,9 +13,9 @@ import co.edu.uniquindio.semantica.Ambito
  */
 class Variable(
         val nombre: String,
-        private val tipoDato: String,
-        private val modificadorAcceso: String?,
+        val tipoDato: String,
+        val modificadorAcceso: String,
         val ambito: Ambito,
-        private val fila: Int,
-        private val columna: Int
+        val fila: Int,
+        val columna: Int
 ) : Simbolo(nombre, ambito, fila, columna)

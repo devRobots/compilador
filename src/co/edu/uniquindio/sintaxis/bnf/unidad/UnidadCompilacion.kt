@@ -1,6 +1,6 @@
 package co.edu.uniquindio.sintaxis.bnf.unidad
 
-import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.semantica.Ambito
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos

@@ -1,6 +1,6 @@
 package co.edu.uniquindio.sintaxis
 
-import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.app.observable.SintaxisObservable
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 

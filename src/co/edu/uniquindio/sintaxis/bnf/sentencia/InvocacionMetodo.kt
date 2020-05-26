@@ -1,7 +1,10 @@
 package co.edu.uniquindio.sintaxis.bnf.sentencia
 
-import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.bnf.otro.Argumento
 
@@ -59,4 +62,7 @@ class InvocacionMetodo(
         return panel
     }
 
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        TODO("Not yet implemented")
+    }
 }

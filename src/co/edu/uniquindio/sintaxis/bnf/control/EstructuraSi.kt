@@ -1,6 +1,6 @@
 package co.edu.uniquindio.sintaxis.bnf.control
 
-import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.Sintaxis
 import co.edu.uniquindio.sintaxis.bnf.expresion.ExpresionLogica

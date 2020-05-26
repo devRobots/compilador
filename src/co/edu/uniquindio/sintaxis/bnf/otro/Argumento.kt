@@ -1,6 +1,6 @@
 package co.edu.uniquindio.sintaxis.bnf.otro
 
-import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.sintaxis.Sintaxis
 import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
 import javafx.scene.control.TreeItem

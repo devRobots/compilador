@@ -1,7 +1,10 @@
 package co.edu.uniquindio.sintaxis.bnf.sentencia
 
-import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
@@ -49,5 +52,9 @@ class IncrementoDecremento(
 
         configurarTabla()
         return panel
+    }
+
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        TODO("Not yet implemented")
     }
 }

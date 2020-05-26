@@ -1,12 +1,19 @@
 package co.edu.uniquindio.app
 
+import co.edu.uniquindio.app.observable.*
 import co.edu.uniquindio.lexico.AnalizadorLexico
 import co.edu.uniquindio.lexico.ErrorLexico
 import co.edu.uniquindio.lexico.Token
+import co.edu.uniquindio.semantica.AnalizadorSemantico
+import co.edu.uniquindio.semantica.simbolo.Funcion
+import co.edu.uniquindio.semantica.simbolo.Importacion
+import co.edu.uniquindio.semantica.simbolo.Simbolo
+import co.edu.uniquindio.semantica.simbolo.Variable
 import co.edu.uniquindio.sintaxis.AnalizadorSintactico
 import co.edu.uniquindio.sintaxis.ErrorSintactico
 import co.edu.uniquindio.sintaxis.bnf.unidad.UnidadCompilacion
 import javafx.collections.FXCollections
+import javafx.collections.FXCollections.observableArrayList
 import javafx.collections.ObservableList
 import javafx.fxml.FXML
 import javafx.geometry.Insets
@@ -30,65 +37,53 @@ class VentanaPrincipalController {
     /**
      * Codigo fuente
      */
-    @FXML
-    lateinit var texto: TextArea
+    @FXML lateinit var texto: TextArea
 
     /**
      * Elementos del Analizador Lexico
      */
-    @FXML
-    lateinit var salidaLexico: TableView<TokenObservable>
-
-    @FXML
-    lateinit var palabra: TableColumn<TokenObservable, String?>
-
-    @FXML
-    lateinit var categoria: TableColumn<TokenObservable, String?>
-
-    @FXML
-    lateinit var fila: TableColumn<TokenObservable, String?>
-
-    @FXML
-    lateinit var columna: TableColumn<TokenObservable, String?>
+    @FXML lateinit var salidaLexico: TableView<TokenObservable>
+    @FXML lateinit var palabra: TableColumn<TokenObservable, String?>
+    @FXML lateinit var categoria: TableColumn<TokenObservable, String?>
+    @FXML lateinit var fila: TableColumn<TokenObservable, String?>
+    @FXML lateinit var columna: TableColumn<TokenObservable, String?>
 
     /**
      * Elementos del Analizador Sintactico
      */
-    @FXML
-    lateinit var arbolSintactico: TreeView<SintaxisObservable>
-
-    @FXML
-    lateinit var propertiesPanel: BorderPane
+    @FXML lateinit var arbolSintactico: TreeView<SintaxisObservable>
+    @FXML lateinit var propertiesPanel: BorderPane
 
     /**
      * Elementos del Analizador Semantico
      */
-    @FXML
-    lateinit var tablaVariables: TableView<TokenObservable>
+    @FXML lateinit var tablaVariables: TableView<VariableObservable>
+    @FXML lateinit var accesoVar: TableColumn<VariableObservable, String?>
+    @FXML lateinit var tipoVar: TableColumn<VariableObservable, String?>
+    @FXML lateinit var nombreVar: TableColumn<VariableObservable, String?>
+    @FXML lateinit var ambVar: TableColumn<VariableObservable, String?>
+    @FXML lateinit var filVar: TableColumn<VariableObservable, String?>
+    @FXML lateinit var colVar: TableColumn<VariableObservable, String?>
 
-    @FXML
-    lateinit var tablaFunciones: TableView<TokenObservable>
+    @FXML lateinit var tablaFunciones: TableView<FuncionObservable>
+    @FXML lateinit var accFun: TableColumn<FuncionObservable, String?>
+    @FXML lateinit var tipoFun: TableColumn<FuncionObservable, String?>
+    @FXML lateinit var nombreFun: TableColumn<FuncionObservable, String?>
+    @FXML lateinit var paramsFun: TableColumn<FuncionObservable, String?>
 
-    @FXML
-    lateinit var tablaImportaciones: TableView<TokenObservable>
+    @FXML lateinit var tablaImportaciones: TableView<ImportacionObservable>
+    @FXML lateinit var nombreImport: TableColumn<ImportacionObservable, String?>
+    @FXML lateinit var filImport: TableColumn<ImportacionObservable, String?>
+    @FXML lateinit var colImport: TableColumn<ImportacionObservable, String?>
 
     /**
      * Elementos de Rutina de errores
      */
-    @FXML
-    lateinit var mensaje: Label
-
-    @FXML
-    lateinit var erroresLexicos: ListView<String>
-
-    @FXML
-    lateinit var erroresSintacticos: ListView<String>
-
-    @FXML
-    lateinit var panelErroresLexicos: TitledPane
-
-    @FXML
-    lateinit var panelErroresSintacticos: TitledPane
+    @FXML lateinit var mensaje: Label
+    @FXML lateinit var erroresLexicos: ListView<String>
+    @FXML lateinit var erroresSintacticos: ListView<String>
+    @FXML lateinit var panelErroresLexicos: TitledPane
+    @FXML lateinit var panelErroresSintacticos: TitledPane
 
     /**
      * Metodo initialize de JavaFX
@@ -137,6 +132,22 @@ class VentanaPrincipalController {
                 propertiesPanel.center = panel
             }
         }
+
+        accesoVar.cellValueFactory = Callback { variable: TableColumn.CellDataFeatures<VariableObservable, String?> -> variable.value.acceso }
+        nombreVar.cellValueFactory = Callback { variable: TableColumn.CellDataFeatures<VariableObservable, String?> -> variable.value.nombre }
+        filVar.cellValueFactory = Callback { variable: TableColumn.CellDataFeatures<VariableObservable, String?> -> variable.value.fila }
+        colVar.cellValueFactory = Callback { variable: TableColumn.CellDataFeatures<VariableObservable, String?> -> variable.value.columna }
+        ambVar.cellValueFactory = Callback { variable: TableColumn.CellDataFeatures<VariableObservable, String?> -> variable.value.ambito }
+        tipoVar.cellValueFactory = Callback { variable: TableColumn.CellDataFeatures<VariableObservable, String?> -> variable.value.tipo }
+
+        tipoFun.cellValueFactory = Callback { funcion: TableColumn.CellDataFeatures<FuncionObservable, String?> -> funcion.value.tipo }
+        nombreFun.cellValueFactory = Callback { funcion: TableColumn.CellDataFeatures<FuncionObservable, String?> -> funcion.value.nombre }
+        accFun.cellValueFactory = Callback { funcion: TableColumn.CellDataFeatures<FuncionObservable, String?> -> funcion.value.acceso }
+        paramsFun.cellValueFactory = Callback { funcion: TableColumn.CellDataFeatures<FuncionObservable, String?> -> funcion.value.parametros }
+
+        nombreImport.cellValueFactory = Callback { importacion: TableColumn.CellDataFeatures<ImportacionObservable, String?> -> importacion.value.nombre }
+        filImport.cellValueFactory = Callback { importacion: TableColumn.CellDataFeatures<ImportacionObservable, String?> -> importacion.value.fila }
+        colImport.cellValueFactory = Callback { importacion: TableColumn.CellDataFeatures<ImportacionObservable, String?> -> importacion.value.columna }
     }
 
     /**
@@ -169,9 +180,17 @@ class VentanaPrincipalController {
                 }
                 mostrarErroresSintacticos(listaErroresSintacticos)
 
-                if (mensaje.text.isBlank()) {
-                    mensaje.text = "Se completo el analisis sintactico"
-                    mensaje.style = "-fx-text-fill: darkgreen;"
+                if (listaErroresSintacticos.isEmpty() && unidadCompilacion != null) {
+                    val analizadorSemantico = AnalizadorSemantico(unidadCompilacion)
+                    analizadorSemantico.analizar()
+
+                    val simbolos = analizadorSemantico.tablaSimbolos.listaSimbolos
+                    mostrarSimbolos(simbolos)
+
+                    if (mensaje.text.isBlank()) {
+                        mensaje.text = "Se completo el analisis semantico"
+                        mensaje.style = "-fx-text-fill: darkgreen;"
+                    }
                 }
             }
         }
@@ -216,7 +235,7 @@ class VentanaPrincipalController {
      * mostrarlos en un TableView
      */
     private fun mostrarTokens(listaTokens: ArrayList<Token>) {
-        val tokensObservables: ObservableList<TokenObservable> = FXCollections.observableArrayList()
+        val tokensObservables: ObservableList<TokenObservable> = observableArrayList()
         for (token in listaTokens) {
             val observable = TokenObservable(token)
             tokensObservables.add(observable)
@@ -224,6 +243,32 @@ class VentanaPrincipalController {
 
         salidaLexico.items = tokensObservables
         salidaLexico.refresh()
+    }
+
+    /**
+     * Genera las variables, funciones e importaciones observables para
+     * posteriormente mostrarlos cada uno en un TableView
+     */
+    private fun mostrarSimbolos(lista: ArrayList<Simbolo>) {
+        val variablesObservables: ObservableList<VariableObservable> = observableArrayList()
+        val funcionesObservables: ObservableList<FuncionObservable> = observableArrayList()
+        val importacionesObservables: ObservableList<ImportacionObservable> = observableArrayList()
+
+        for (simbolo in lista) {
+            when(simbolo) {
+                is Variable     -> variablesObservables.add(VariableObservable(simbolo))
+                is Funcion      -> funcionesObservables.add(FuncionObservable(simbolo))
+                is Importacion  -> importacionesObservables.add(ImportacionObservable(simbolo))
+            }
+        }
+
+        tablaVariables.items = variablesObservables
+        tablaFunciones.items = funcionesObservables
+        tablaImportaciones.items = importacionesObservables
+
+        tablaVariables.refresh()
+        tablaFunciones.refresh()
+        tablaImportaciones.refresh()
     }
 
     /**
@@ -266,7 +311,7 @@ class VentanaPrincipalController {
      * errores observables
      */
     private fun extraerErroresObservables(listaErrores: ArrayList<*>): ObservableList<String> {
-        val erroresObservables: ObservableList<String> = FXCollections.observableArrayList()
+        val erroresObservables: ObservableList<String> = observableArrayList()
         for (error in listaErrores) {
             erroresObservables.add(error.toString())
         }

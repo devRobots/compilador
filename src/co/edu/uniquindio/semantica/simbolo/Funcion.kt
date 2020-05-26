@@ -13,7 +13,7 @@ import co.edu.uniquindio.semantica.Ambito
  */
 class Funcion(
         val nombre: String,
-        private val tipoRetorno: String,
-        private val modificadorAcceso: String?,
+        val tipoRetorno: String,
+        val modificadorAcceso: String,
         val tiposParametros: ArrayList<String>
 ) : Simbolo(nombre, Ambito("Clase principal"), -1, -1)

@@ -15,7 +15,7 @@ import co.edu.uniquindio.semantica.simbolo.Variable
  * Tabla de Simbolos
  */
 class TablaSimbolos(private var listaErrores: ArrayList<ErrorSemantico>) {
-    private var listaSimbolos: ArrayList<Simbolo> = ArrayList()
+    var listaSimbolos: ArrayList<Simbolo> = ArrayList()
 
     /**
      * Permite guardar un símbolo de tipo variable en la tabla de símbolos
@@ -32,7 +32,7 @@ class TablaSimbolos(private var listaErrores: ArrayList<ErrorSemantico>) {
     fun agregarVariable(nombre: String, tipo: String, modificadorAcceso: String?, ambito: Ambito, fila: Int, columna: Int): Simbolo? {
         val s = buscarVariable(nombre, ambito)
         if (s == null) {
-            val nuevo = Variable(nombre, tipo, modificadorAcceso, ambito, fila, columna)
+            val nuevo = Variable(nombre, tipo, modificadorAcceso ?: "pack", ambito, fila, columna)
             listaSimbolos.add(nuevo)
             return nuevo
         } else {
@@ -72,10 +72,10 @@ class TablaSimbolos(private var listaErrores: ArrayList<ErrorSemantico>) {
      *
      * @return                  Simbolo si la funcion no existe en la tabla, null en caso contrario
      */
-    fun agregarFuncion(nombre: String, tipo: String, modificadorAcceso: String?, tipoParametros: ArrayList<String>): Simbolo? {
+    fun agregarFuncion(nombre: String, tipo: String?, modificadorAcceso: String?, tipoParametros: ArrayList<String>): Simbolo? {
         val s = buscarFuncion(nombre, tipoParametros)
         if (s == null) {
-            val nuevo = Funcion(nombre, tipo, modificadorAcceso, tipoParametros)
+            val nuevo = Funcion(nombre, tipo ?: "void", modificadorAcceso ?: "pack", tipoParametros)
             listaSimbolos.add(nuevo)
             return nuevo
         } else {

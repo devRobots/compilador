@@ -770,7 +770,6 @@ class AnalizadorLexico(private val codigoFuente: String) {
             val columna = columnaActual
             palabra += caracterActual
             siguienteCaracter()
-            // Verifica si es un comentario de bloque o de linea
             if (caracterActual == '/') {
                 category = COMENTARIO_BLOQUE
                 palabra += caracterActual

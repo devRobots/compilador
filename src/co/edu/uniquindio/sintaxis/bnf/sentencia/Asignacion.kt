@@ -1,6 +1,6 @@
 package co.edu.uniquindio.sintaxis.bnf.sentencia
 
-import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
 import co.edu.uniquindio.semantica.ErrorSemantico
@@ -72,10 +72,6 @@ class Asignacion(
         }
         configurarTabla()
         return panel
-    }
-
-    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {

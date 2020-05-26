@@ -1,6 +1,6 @@
 package co.edu.uniquindio.sintaxis.bnf.bloque
 
-import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
 import co.edu.uniquindio.semantica.ErrorSemantico
@@ -86,8 +86,13 @@ class Funcion(
                 argumento.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador.lexema))
             }
         }
+
+        for (sentencia in listaSentencias) {
+            sentencia.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador!!.lexema))
+        }
+
         if (identificador != null){
-            tablaSimbolos.agregarFuncion(identificador.lexema, tipo?.lexema ?: "Void", modificadorAcceso?.lexema, tiposParametros)
+            tablaSimbolos.agregarFuncion(identificador.lexema, tipo?.lexema, modificadorAcceso?.lexema, tiposParametros)
         }
     }
 

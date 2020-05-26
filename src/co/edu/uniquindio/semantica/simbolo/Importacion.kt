@@ -13,6 +13,6 @@ import co.edu.uniquindio.semantica.Ambito
  */
 class Importacion(
         val nombre: String,
-        private val fila: Int,
-        private val columna: Int
+        val fila: Int,
+        val columna: Int
 ) : Simbolo(nombre, Ambito("Unidad de Compilacion"), fila, columna)

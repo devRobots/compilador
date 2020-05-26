@@ -1,6 +1,6 @@
 package co.edu.uniquindio.sintaxis.bnf.expresion
 
-import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.sintaxis.bnf.otro.ValorNumerico
 

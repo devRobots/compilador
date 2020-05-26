@@ -16,6 +16,7 @@ enum class Categoria {
 
     IDENTIFICADOR,
     IDENTIFICADOR_METODO,
+
     PALABRA_RESERVADA,
     TIPO_DATO,
 

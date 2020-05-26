@@ -1,6 +1,6 @@
 package co.edu.uniquindio.sintaxis
 
-import co.edu.uniquindio.app.SintaxisObservable
+import co.edu.uniquindio.app.observable.SintaxisObservable
 
 import javafx.geometry.Insets
 import javafx.scene.control.Label
