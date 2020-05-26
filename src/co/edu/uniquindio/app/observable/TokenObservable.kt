@@ -1,4 +1,4 @@
-package co.edu.uniquindio.app
+package co.edu.uniquindio.app.observable
 
 import co.edu.uniquindio.lexico.Token
 import javafx.beans.property.SimpleStringProperty
