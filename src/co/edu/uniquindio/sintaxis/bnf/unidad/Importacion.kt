@@ -48,6 +48,10 @@ class Importacion(private val importacion: Token?) : Sintaxis("Importacion") {
         return panel
     }
 
+    override fun getJavaCode(): String {
+        return "import ${importacion!!.lexema.substring(1)};\n"
+    }
+
     fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos) {
         tablaSimbolos.agregarImportacion(importacion!!.lexema, importacion.fila, importacion.columna)
     }

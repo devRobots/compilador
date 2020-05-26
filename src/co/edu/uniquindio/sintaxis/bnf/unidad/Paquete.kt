@@ -46,4 +46,8 @@ class Paquete(private val paquete: Token?) : Sintaxis("Paquete") {
         configurarTabla()
         return panel
     }
+
+    override fun getJavaCode(): String {
+        return "package ${paquete!!.lexema.substring(1)};\n"
+    }
 }

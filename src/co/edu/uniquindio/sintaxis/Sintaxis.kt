@@ -17,7 +17,7 @@ import javafx.scene.layout.Priority
  *
  * Sintaxis
  */
-open class Sintaxis(var nombre: String) {
+abstract class Sintaxis(var nombre: String) {
     /**
      * Elementos de la sintaxis
      */
@@ -50,6 +50,15 @@ open class Sintaxis(var nombre: String) {
     open fun getPropertiesPanel(): GridPane {
         configurarTabla()
         return panel
+    }
+
+    /**
+     * Obtiene la traduccion a Java del elemento
+     *
+     * @return String el codigo de Java al que corresponde el elemento
+     */
+    open fun getJavaCode(): String {
+        return "// TODO: No implementado aun"
     }
 
     /**

@@ -29,7 +29,7 @@ import javafx.util.Callback
  * @author Yesid Rosas Toro
  * @author Cristian Camilo Quiceno
  *
- * @version 2.0
+ * @version 3.1
  *
  * Controlador de la Ventana Principal
  */
@@ -38,6 +38,7 @@ class VentanaPrincipalController {
      * Codigo fuente
      */
     @FXML lateinit var texto: TextArea
+    @FXML lateinit var salida: TextArea
 
     /**
      * Elementos del Analizador Lexico
@@ -187,6 +188,8 @@ class VentanaPrincipalController {
                     val simbolos = analizadorSemantico.tablaSimbolos.listaSimbolos
                     mostrarSimbolos(simbolos)
 
+                    salida.text = unidadCompilacion.getJavaCode()
+
                     if (mensaje.text.isBlank()) {
                         mensaje.text = "Se completo el analisis semantico"
                         mensaje.style = "-fx-text-fill: darkgreen;"
@@ -210,6 +213,7 @@ class VentanaPrincipalController {
      */
     private fun limpiarSalidas() {
         mensaje.text = ""
+        salida.clear()
 
         salidaLexico.items.clear()
         salidaLexico.refresh()

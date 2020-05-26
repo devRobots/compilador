@@ -25,7 +25,7 @@ class UnidadCompilacion(
         private var listaImportaciones: ArrayList<Importacion>,
         private var clase: Clase?
 ) : Sintaxis("Unidad de Compilacion") {
-    var listaSintacticaImportacion: ListaSintactica = ListaSintactica("Importaciones", listaImportaciones)
+    private var listaSintacticaImportacion: ListaSintactica = ListaSintactica("Importaciones", listaImportaciones)
 
     /**
      * Obtiene el nodo TreeItem necesario para la construccion
@@ -64,6 +64,28 @@ class UnidadCompilacion(
 
         configurarTabla()
         return panel
+    }
+
+    override fun getJavaCode(): String {
+        var unidadCompilacion = ""
+
+        if (paquete != null) {
+            unidadCompilacion += paquete!!.getJavaCode()
+        }
+
+        unidadCompilacion += "\n"
+
+        for (importacion in listaImportaciones) {
+            unidadCompilacion += importacion.getJavaCode()
+        }
+
+        unidadCompilacion += "\n"
+
+        if (clase != null) {
+            unidadCompilacion += clase!!.getJavaCode()
+        }
+
+        return unidadCompilacion
     }
 
     fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>) {
