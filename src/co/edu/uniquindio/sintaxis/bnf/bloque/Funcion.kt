@@ -99,4 +99,26 @@ class Funcion(
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         TODO("No yet implemented")
     }
+
+    override fun getJavaCode(): String {
+        var codigo = ""
+        if (modificadorAcceso != null){
+            codigo += modificadorAcceso.getJavaCode()
+        }
+        if (tipo != null){
+            codigo += tipo.getJavaCode()
+        }else{
+            codigo += "void "
+        }
+        codigo += "${identificador?.lexema?.substring(1)}("
+        for(parametro in listaParametros){
+            codigo += parametro.getJavaCode()+","
+        }
+        codigo += ") {\n"
+        for(sentencia in listaSentencias){
+            codigo += sentencia.getJavaCode()+"\n"
+        }
+        codigo += "}"
+        return codigo
+    }
 }

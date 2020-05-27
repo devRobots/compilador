@@ -21,7 +21,7 @@ import javafx.scene.layout.GridPane
  *
  * Clase
  */
-class Clase(
+class  Clase(
         private val modificadorAcceso: Token?,
         private val identificador: Token,
         private val listaBloquesSentencia: ArrayList<Bloque>
@@ -77,5 +77,18 @@ class Clase(
         for (bloque in listaBloquesSentencia) {
             bloque.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador.lexema))
         }
+    }
+
+    override fun getJavaCode(): String {
+        var codigo:String = ""
+        if (modificadorAcceso != null){
+            codigo += modificadorAcceso.getJavaCode()
+        }
+        codigo += "class ${identificador!!.lexema.substring(1)} {\n"
+        for (bloque in listaBloquesSentencia){
+            codigo += bloque.getJavaCode()
+        }
+        codigo += "}"
+        return codigo
     }
 }

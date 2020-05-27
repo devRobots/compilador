@@ -58,4 +58,8 @@ class Parametro(val tipo: Token, private val identificador: Token) : Sintaxis("P
     fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
 
     }
+
+    override fun getJavaCode(): String {
+        return "${tipo.getJavaCode()} ${identificador.lexema.substring(1)}"
+    }
 }

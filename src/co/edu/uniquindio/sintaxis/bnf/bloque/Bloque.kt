@@ -15,6 +15,10 @@ import co.edu.uniquindio.sintaxis.Sintaxis
  * Bloque
  */
 abstract class Bloque(nombre: String) : Sintaxis(nombre) {
-    abstract fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito)
-    abstract fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito)
+    open fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito){
+        return
+    }
+    open fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito){
+        return
+    }
 }

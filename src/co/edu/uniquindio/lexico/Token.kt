@@ -35,4 +35,15 @@ class Token(var lexema: String, var categoria: Categoria, var fila: Int, var col
         result = 31 * result + columna
         return result
     }
+
+    //TODO: Mira sammy puedes llenar esto xd
+    fun getJavaCode():String{
+        if (categoria == Categoria.PALABRA_RESERVADA){
+            when(lexema){
+                "example" -> return "ejemplo"
+                "pal" -> return "String" //este no va aca es solo un ejemplo xd
+            }
+        }
+        return ""
+    }
 }
