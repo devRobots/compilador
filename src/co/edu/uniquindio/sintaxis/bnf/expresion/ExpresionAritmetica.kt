@@ -1,13 +1,10 @@
 package co.edu.uniquindio.sintaxis.bnf.expresion
 
 import co.edu.uniquindio.app.observable.SintaxisObservable
-import co.edu.uniquindio.lexico.Categoria
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
-import co.edu.uniquindio.semantica.AmbitoTipo
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
-import co.edu.uniquindio.semantica.simbolo.Variable
 import co.edu.uniquindio.sintaxis.bnf.otro.ValorNumerico
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
@@ -87,21 +84,28 @@ class ExpresionAritmetica(
         return panel
     }
 
-    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        val ambitoTipo = ambito.obtenerAmbitoTipo()!!
-        if (ambito.nombre == "VariableLocal" || ambito.nombre == "Asignacion") {
-            if (ambitoTipo.tipoRetorno != "dec" && ambitoTipo.tipoRetorno != "ent") {
-                erroresSemanticos.add(ErrorSemantico("No concuerdan los tipos de dato. Se esperaba un ${ambitoTipo.tipoRetorno} en $ambito."))
+    override fun obtenerTipoDato(tablaSimbolos: TablaSimbolos, ambito: Ambito): String {
+        val valNumericoTipo = valor?.obtenerTipoDato(tablaSimbolos, ambito)
+        val izquierdaTipo = izquierda?.obtenerTipoDato(tablaSimbolos, ambito)
+        val derechoTipo = derecho?.obtenerTipoDato(tablaSimbolos, ambito)
+
+        val tipoAmbito = ambito.obtenerAmbitoTipo()?.tipoRetorno
+
+        return if (derechoTipo != null) {
+            if (derechoTipo == tipoAmbito && (derechoTipo == izquierdaTipo || derechoTipo == valNumericoTipo)) {
+                tipoAmbito
+            } else {
+                "null"
             }
         } else {
-            if (ambitoTipo.tipoRetorno != "dec" && ambitoTipo.tipoRetorno != "ent") {
-                erroresSemanticos.add(ErrorSemantico("No concuerdan los tipos de dato. Se esperaba un ent o un dec en $ambito."))
-            } else {
-                valor?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, "ExpresionAritmetica", ambitoTipo.tipoRetorno))
-                izquierda?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, "ExpresionAritmetica", ambitoTipo.tipoRetorno))
-                derecho?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, "ExpresionAritmetica", ambitoTipo.tipoRetorno))
-            }
+            valNumericoTipo ?: izquierdaTipo!!
         }
+    }
+
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        izquierda?.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
+        derecho?.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
+        valor?.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
     }
 
     override fun getJavaCode(): String {

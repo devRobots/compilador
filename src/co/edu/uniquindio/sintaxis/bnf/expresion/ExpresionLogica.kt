@@ -75,34 +75,20 @@ class ExpresionLogica(
         return panel
     }
 
+    override fun obtenerTipoDato(tablaSimbolos: TablaSimbolos, ambito: Ambito): String {
+        return "bip"
+    }
+
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        val ambitoTipo = ambito.obtenerAmbitoTipo()!!
-        if (ambitoTipo.tipoRetorno != "bip") {
-            erroresSemanticos.add(ErrorSemantico("No concuerdan los tipos de dato. Se esperaba un bip pero se encontro un ${ambitoTipo.tipoRetorno} en $ambito."))
-        }
-        // TODO: Falta
-        izquierda?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, "ExpresionLogica", "bip"))
-        logico?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, "ExpresionLogica", "bip"))
+        logico?.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
+        izquierda?.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
     }
 
     override fun getJavaCode(): String {
-        var codigo =""
-        if (operador?.lexema == "¬"){
-            return if(izquierda != null){
-                codigo += "!(${izquierda.getJavaCode()})"
-                return codigo
-            } else{
-                codigo += "!${logico?.getJavaCode()}"
-                return codigo
-            }
-        }else if(operador != null){
-            return "${izquierda?.getJavaCode()} ${operador.getJavaCode()} ${logico?.getJavaCode()}"
-        }else{
-            if (izquierda != null){
-                return izquierda.getJavaCode()
-            }else{
-                return "${logico?.getJavaCode()}"
-            }
+        return when {
+            operador?.lexema == "¬" -> if(izquierda != null) "!(${izquierda.getJavaCode()})"  else "!${logico?.getJavaCode()}"
+            operador != null -> "${izquierda?.getJavaCode()} ${operador.getJavaCode()} ${logico?.getJavaCode()}"
+            else -> izquierda?.getJavaCode() ?: "${logico?.getJavaCode()}"
         }
     }
 }

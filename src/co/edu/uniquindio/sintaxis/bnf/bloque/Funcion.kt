@@ -78,22 +78,25 @@ class Funcion(
         return panel
     }
 
-    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        val tiposParametros = ArrayList<String>()
+    private fun obtenerTiposParametros(): ArrayList<String> {
+        val tipoParametros = ArrayList<String>()
 
-        for (argumento in listaParametros) {
-            tiposParametros.add(argumento.tipo.lexema)
-            if (identificador != null){
-                argumento.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, identificador.lexema, tipo?.lexema ?: "void"))
-            }
+        for (parametro in listaParametros) {
+            tipoParametros.add(parametro.tipo.lexema)
+        }
+
+        return tipoParametros
+    }
+
+    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        tablaSimbolos.agregarFuncion(identificador!!.lexema, tipo?.lexema, modificadorAcceso?.lexema, obtenerTiposParametros())
+
+        for (parametro in listaParametros) {
+            tablaSimbolos.agregarVariable(parametro.identificador.lexema, parametro.tipo.lexema, null, ambito, parametro.identificador.fila, parametro.identificador.columna)
         }
 
         for (sentencia in listaSentencias) {
-            sentencia.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador!!.lexema))
-        }
-
-        if (identificador != null){
-            tablaSimbolos.agregarFuncion(identificador.lexema, tipo?.lexema, modificadorAcceso?.lexema, tiposParametros)
+            sentencia.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador.lexema))
         }
     }
 
@@ -108,16 +111,8 @@ class Funcion(
         if (modificadorAcceso != null){
             codigo += "${modificadorAcceso.getJavaCode()} "
         }
-        if (tipo != null){
-            codigo += "${tipo.getJavaCode()} "
-        }else{
-            codigo += "void "
-        }
-        if(identificador?.lexema == "&principal"){
-            codigo += "main ( "
-        }else{
-            codigo += "${identificador?.getJavaCode()}( "
-        }
+        codigo += tipo?.getJavaCode() ?: "void "
+        codigo += if(identificador?.lexema == "&principal") "main ( " else "${identificador?.getJavaCode()}( "
         for(parametro in listaParametros){
             codigo += parametro.getJavaCode() + ","
         }

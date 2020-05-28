@@ -5,6 +5,7 @@ import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
+import co.edu.uniquindio.semantica.simbolo.Variable
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
@@ -55,7 +56,14 @@ class IncrementoDecremento(
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        // TODO("Not yet implemented")
+        val variable = tablaSimbolos.buscarVariable(identificador.lexema, ambito) as Variable?
+        if (variable != null) {
+            if (variable.tipoDato != "ent" && variable.tipoDato != "dec") {
+                erroresSemanticos.add(ErrorSemantico("Los tipos de dato no coinciden. Se esperaba un ent o dec pero se encontro un ${variable.tipoDato} en $ambito"))
+            }
+        } else {
+            erroresSemanticos.add(ErrorSemantico("La variable ${identificador.lexema} no se encuentra declarada"))
+        }
     }
 
     override fun getJavaCode(): String {

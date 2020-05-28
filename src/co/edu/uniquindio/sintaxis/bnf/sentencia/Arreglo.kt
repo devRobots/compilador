@@ -73,7 +73,12 @@ class Arreglo(
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         for (argumento in  listArgumentos) {
             argumento.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, identificador.lexema, tipo.lexema))
+            val tipoArg = argumento.obtenerTipoDato(tablaSimbolos, ambito)
+            if (tipo.lexema != tipoArg) {
+                erroresSemanticos.add(ErrorSemantico("Los tipos de dato no coinciden. Se esperaba un ${tipo.lexema} pero se encontro un $tipoArg en $ambito"))
+            }
         }
+
     }
 
     override fun getJavaCode(): String {

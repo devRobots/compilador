@@ -54,20 +54,24 @@ class ValorNumerico(val signo: Token?, val identificador: Token) : Sintaxis("Val
         return panel
     }
 
+    fun obtenerTipoDato(tablaSimbolos: TablaSimbolos, ambito: Ambito): String {
+        return if (identificador.categoria == Categoria.IDENTIFICADOR) {
+            val variable = tablaSimbolos.buscarVariable(identificador.lexema, ambito) as Variable?
+            variable?.tipoDato ?: "null"
+        } else {
+            when(identificador.categoria) {
+                Categoria.ENTERO -> "dec"
+                Categoria.REAL -> "ent"
+                else -> "null"
+            }
+        }
+    }
+
     fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        val ambitoTipo = ambito.obtenerAmbitoTipo()
-        if (ambitoTipo?.tipoRetorno == "ent" || ambitoTipo?.tipoRetorno == "dec") {
-            if (identificador.categoria == Categoria.IDENTIFICADOR) {
-                val variable = tablaSimbolos.buscarVariable(identificador.lexema, ambito) as Variable?
-                if (variable != null) {
-                    if (variable?.tipoDato != ambitoTipo.tipoRetorno) {
-                        erroresSemanticos.add(ErrorSemantico("No concuerdan los tipos de dato. Se esperaba un ${ambitoTipo?.tipoRetorno} pero se encontro un ${variable?.tipoDato} en $ambito."))
-                    }
-                } else {
-                    erroresSemanticos.add(ErrorSemantico("La variable ${identificador.lexema} no se encuentra declarada"))
-                }
-            } else if ((ambitoTipo.tipoRetorno == "ent" && identificador.categoria == Categoria.REAL) || (ambitoTipo.tipoRetorno == "dec" && identificador.categoria == Categoria.ENTERO)) {
-                erroresSemanticos.add(ErrorSemantico("No concuerdan los tipos de dato. Se esperaba un ${ambitoTipo.tipoRetorno} pero se encontro un ${if (identificador.categoria == Categoria.REAL) "dec" else "ent"} en $ambito."))
+        if (identificador.categoria == Categoria.IDENTIFICADOR) {
+            val variable = tablaSimbolos.buscarVariable(identificador.lexema, ambito) as Variable?
+            if (variable == null) {
+                erroresSemanticos.add(ErrorSemantico("La variable ${identificador.lexema} no se encuentra declarada"))
             }
         }
     }

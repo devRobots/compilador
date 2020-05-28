@@ -5,6 +5,7 @@ import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
+import co.edu.uniquindio.semantica.simbolo.Funcion
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.bnf.otro.Argumento
 
@@ -62,17 +63,42 @@ class InvocacionMetodo(
         return panel
     }
 
+    fun obtenerTipoDato(tablaSimbolos: TablaSimbolos, ambito: Ambito): String {
+        val funcion = tablaSimbolos.buscarFuncion(identificador.lexema, obtenerTiposArgumentos(tablaSimbolos, ambito)) as Funcion?
+        return funcion?.tipoRetorno ?: "void"
+    }
+
+    private fun obtenerTiposArgumentos(tablaSimbolos: TablaSimbolos, ambito: Ambito): ArrayList<String> {
+        val tipoArgumentos = ArrayList<String>()
+
+        for (argumento in listaArgumentos) {
+            val tipoArg = argumento.obtenerTipoDato(tablaSimbolos, ambito)
+            tipoArgumentos.add(tipoArg)
+        }
+
+        return tipoArgumentos
+    }
+
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        // TODO("F")
+        val funcion = tablaSimbolos.buscarFuncion(identificador.lexema, obtenerTiposArgumentos(tablaSimbolos, ambito)) as Funcion?
+        if (funcion == null) {
+            erroresSemanticos.add(ErrorSemantico("La funcion ${identificador.lexema} no se encuentra definida"))
+        } else {
+            for (argumento in listaArgumentos) {
+                argumento.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
+            }
+        }
     }
 
     override fun getJavaCode(): String {
         var codigo = ""
-        if(identificador.lexema == "&Syso"){
-            codigo = "JOptionPane.showMessajeDialog(null, "
+        codigo = if(identificador.lexema == "&Syso"){
+            "JOptionPane.showMessajeDialog(null, "
         }else if(identificador.lexema == "&Scanner"){
-            codigo = "JOptionPane.showInputDialog( "
-        }else{ codigo = "${identificador.getJavaCode()}( " }
+            "JOptionPane.showInputDialog( "
+        }else{
+            "${identificador.getJavaCode()}( "
+        }
 
         for(argumento: Argumento in listaArgumentos){
             codigo += argumento.getJavaCode() +","

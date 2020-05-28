@@ -79,7 +79,15 @@ class VariableLocal(
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        expresion?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, "VariableLocal", tipo.lexema))
+        expresion?.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
+        metodo?.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
+
+        val tipoFun = metodo?.obtenerTipoDato(tablaSimbolos, ambito) ?: "void"
+        val tipoExpr = expresion?.obtenerTipoDato(tablaSimbolos, ambito) ?: "null"
+
+        if (tipo.lexema != tipoFun && tipo.lexema != tipoExpr) {
+            erroresSemanticos.add(ErrorSemantico("Los tipos de dato no coinciden. Se esperaba un ${tipo.lexema} pero se encontro un ${if (tipoExpr == "null") tipoFun else tipoExpr} en $ambito"))
+        }
     }
 
     override fun getJavaCode(): String {

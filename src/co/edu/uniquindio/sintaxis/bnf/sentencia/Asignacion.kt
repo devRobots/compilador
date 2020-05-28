@@ -80,6 +80,10 @@ class Asignacion(
         val variable = tablaSimbolos.buscarVariable(identificador.lexema, ambito) as Variable?
         if (variable != null) {
             expresion?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, identificador.lexema, variable.tipoDato))
+            val tipoExpr = expresion?.obtenerTipoDato(tablaSimbolos, ambito)
+            if (variable.tipoDato != tipoExpr) {
+                erroresSemanticos.add(ErrorSemantico("Los tipos de dato no coinciden. Se esperaba un ${ambito.obtenerAmbitoTipo()!!.tipoRetorno} pero se encontro un $tipoExpr en $ambito"))
+            }
         } else {
             erroresSemanticos.add(ErrorSemantico("La variable ${identificador.lexema} no se encuentra declarada"))
         }

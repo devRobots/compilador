@@ -54,6 +54,10 @@ class Argumento(private val expresion: Expresion) : Sintaxis("Argumento") {
         return panel
     }
 
+    fun obtenerTipoDato(tablaSimbolos: TablaSimbolos, ambito: Ambito): String {
+        return expresion.obtenerTipoDato(tablaSimbolos, ambito)
+    }
+
     fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         expresion.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
     }

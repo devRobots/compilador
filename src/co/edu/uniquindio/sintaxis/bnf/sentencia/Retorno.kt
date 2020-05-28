@@ -46,7 +46,16 @@ class Retorno(private val expresion: Expresion?) : Sentencia("Retorno") {
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        // TODO("Paila")
+        val tipoFun = ambito.obtenerAmbitoTipo()?.tipoRetorno
+        if (tipoFun != null) {
+            val tipoExpr = expresion!!.obtenerTipoDato(tablaSimbolos, ambito)
+            if (tipoFun != tipoExpr) {
+                erroresSemanticos.add(ErrorSemantico("Los tipos de dato no coinciden. Se esperaba un $tipoFun pero se encontro un $tipoExpr en $ambito"))
+            }
+        }
+        else {
+            erroresSemanticos.add(ErrorSemantico("Retorno incorrecto en $ambito. Las funciones void no retornan"))
+        }
     }
 
     override fun getJavaCode(): String {

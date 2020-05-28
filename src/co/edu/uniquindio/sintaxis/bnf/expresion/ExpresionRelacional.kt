@@ -72,13 +72,12 @@ class ExpresionRelacional(
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        val ambitoTipo = ambito.obtenerAmbitoTipo()!!
-        if (ambitoTipo.tipoRetorno != "bip") {
-            erroresSemanticos.add(ErrorSemantico("No concuerdan los tipos de dato. Se esperaba un bip pero se encontro un ${ambitoTipo.tipoRetorno} en $ambito."))
-        } else {
-            izquierda?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, "ExpresionRelacional", "bip"))
-            derecho?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, "ExpresionRelacional", "bip"))
-        }
+        izquierda?.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
+        derecho?.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
+    }
+
+    override fun obtenerTipoDato(tablaSimbolos: TablaSimbolos, ambito: Ambito): String {
+        return "bip"
     }
 
     override fun getJavaCode(): String {

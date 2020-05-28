@@ -113,9 +113,9 @@ class TablaSimbolos(private var listaErrores: ArrayList<ErrorSemantico>) {
     fun buscarVariable(nombre: String, ambito: Ambito): Simbolo? {
         for (simbolo in listaSimbolos) {
             if (simbolo is Variable) {
-                var ambitoActual: Ambito? = simbolo.ambito
+                var ambitoActual: Ambito? = ambito
                 while (ambitoActual != null) {
-                    if (nombre == simbolo.nombre && ambito == ambitoActual) {
+                    if (nombre == simbolo.nombre && simbolo.ambito == ambitoActual) {
                         return simbolo
                     }
                     ambitoActual = ambitoActual.padre
@@ -133,7 +133,7 @@ class TablaSimbolos(private var listaErrores: ArrayList<ErrorSemantico>) {
      *
      * @return Funcion si la encontro, null sino la encuentra
      */
-    private fun buscarFuncion(nombre: String, tiposParametros: ArrayList<String>): Simbolo? {
+    fun buscarFuncion(nombre: String, tiposParametros: ArrayList<String>): Simbolo? {
         for (simbolo in listaSimbolos) {
             if (simbolo is Funcion) {
                 if (nombre == simbolo.nombre && tiposParametros == simbolo.tiposParametros) {

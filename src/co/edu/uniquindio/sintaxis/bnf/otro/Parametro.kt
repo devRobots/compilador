@@ -18,7 +18,7 @@ import javafx.scene.layout.GridPane
  *
  * Parametro
  */
-class Parametro(val tipo: Token, private val identificador: Token) : Sintaxis("Parametro") {
+class Parametro(val tipo: Token, val identificador: Token) : Sintaxis("Parametro") {
 
     override fun toString(): String {
         return "${tipo.lexema} $identificador"
@@ -49,10 +49,6 @@ class Parametro(val tipo: Token, private val identificador: Token) : Sintaxis("P
 
         configurarTabla()
         return panel
-    }
-
-    fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        tablaSimbolos.agregarVariable(identificador.lexema, tipo.lexema, null, ambito, identificador.fila, identificador.columna)
     }
 
     override fun getJavaCode(): String {
