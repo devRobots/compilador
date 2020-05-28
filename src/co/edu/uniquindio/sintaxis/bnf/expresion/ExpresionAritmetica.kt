@@ -46,7 +46,7 @@ class ExpresionAritmetica(
      *
      * @return TreeItem<SintaxisObservable> El nodo TreeItem
      */
-	override fun getTreeItem(): TreeItem<SintaxisObservable> {
+    override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
@@ -69,7 +69,7 @@ class ExpresionAritmetica(
      *
      * @return GridPane el panel que se mostrara en pantalla
      */
-	override fun getPropertiesPanel(): GridPane {
+    override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Valor")
         agregarValor(valor?.toString())
 
@@ -88,7 +88,9 @@ class ExpresionAritmetica(
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         TODO("Not yet implemented")
-    override fun getJavaCode(): String {
+    }
 
+    override fun getJavaCode(): String {
         return "expAritmetica"
     }
+}

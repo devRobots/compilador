@@ -38,7 +38,7 @@ class CicloFor(
      *
      * @return TreeItem<SintaxisObservable> El nodo TreeItem
      */
-	override fun getTreeItem(): TreeItem<SintaxisObservable> {
+    override fun getTreeItem(): TreeItem<SintaxisObservable> {
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
@@ -61,7 +61,7 @@ class CicloFor(
      *
      * @return GridPane el panel que se mostrara en pantalla
      */
-	override fun getPropertiesPanel(): GridPane {
+    override fun getPropertiesPanel(): GridPane {
         agregarAtributo("Declaracion")
         agregarValor(decVariableLocal?.toString())
 
@@ -86,3 +86,4 @@ class CicloFor(
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         expLogica.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CicloFor"))
     }
+}
