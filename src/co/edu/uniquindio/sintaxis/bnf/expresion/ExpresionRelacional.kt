@@ -72,5 +72,16 @@ class ExpresionRelacional(
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         TODO("Not yet implemented")
+    override fun getJavaCode(): String {
+        var codigo =""
+        if (operacion.lexema == "¬"){
+            return if(izquierda != null){
+                codigo += "!${izquierda.getJavaCode()}"
+                return codigo
+            } else{
+                codigo += "!${derecho?.getJavaCode()}"
+                return codigo
+            }
+        }
+        return "${izquierda?.getJavaCode()} ${operacion.getJavaCode()} ${derecho?.getJavaCode()}"
     }
-}

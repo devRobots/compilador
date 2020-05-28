@@ -7,6 +7,7 @@ import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
+import kotlin.math.exp
 
 class Retorno(private val expresion: Expresion?) : Sentencia("Retorno") {
 
@@ -46,5 +47,13 @@ class Retorno(private val expresion: Expresion?) : Sentencia("Retorno") {
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
 
+    }
+
+    override fun getJavaCode(): String {
+        if(expresion != null){
+            return "return ${expresion.getJavaCode()};"
+        }else{
+            return "return;"
+        }
     }
 }

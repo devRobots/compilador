@@ -62,4 +62,13 @@ class EstructuraSi(
         return panel
     }
 
+    override fun getJavaCode(): String {
+        var codigo = "if( ${expLogica.getJavaCode()} ){\n"
+        for(sentencia in bloqueInstrucciones){
+            codigo += sentencia.getJavaCode()+"\n"
+        }
+        codigo += "}"
+        return codigo
+    }
+
 }

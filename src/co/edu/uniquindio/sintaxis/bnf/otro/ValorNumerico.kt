@@ -49,4 +49,11 @@ class ValorNumerico(private val signo: Token?, private val identificador: Token)
         configurarTabla()
         return panel
     }
+
+    override fun getJavaCode(): String {
+        if (signo != null){
+            return "${signo?.lexema}${identificador.lexema.substring(1)}"
+        }
+        return "${identificador.lexema.substring(1)}"
+    }
 }

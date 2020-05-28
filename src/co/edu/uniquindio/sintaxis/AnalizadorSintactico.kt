@@ -742,8 +742,9 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 siguienteToken()
             }
         }
-        val tipo = tokenActual!!
+        var tipo:Token? = tokenActual!! //TODO: cambiar
         if (tokenActual?.categoria == TIPO_DATO) {
+            tipo = tokenActual!!
             centinela = true
             siguienteToken()
         }
@@ -760,7 +761,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
 
             val metodo = esInvocacionMetodo()
             if (metodo != null) {
-                return VariableGlobal(modificadorAcceso, tipo, identificador!!, null, metodo)
+                return VariableGlobal(modificadorAcceso, tipo!!, identificador!!, null, metodo)
             } else {
                 backtracking(posicionInicial, cantidadErrores)
             }
@@ -772,11 +773,11 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                     reportarError("un fin de sentencia")
                     buscarTokenSeguro(2)
                 }
-                return VariableGlobal(modificadorAcceso, tipo, identificador!!, exp, metodo)
+                return VariableGlobal(modificadorAcceso, tipo!!, identificador!!, exp, metodo)
             }else{
                 reportarError("Expesion")
                 buscarTokenSeguro(2)
-                return VariableGlobal(modificadorAcceso, tipo, identificador!!, null, null)
+                return VariableGlobal(modificadorAcceso, tipo!!, identificador!!, null, null)
             }
         } else {
             if (tokenActual?.categoria == FIN_SENTENCIA) {
@@ -786,7 +787,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             }
             if (centinela){
                 reportarError("asignar variable")
-                return VariableGlobal(modificadorAcceso, tipo, identificador!!, null, null)
+                return VariableGlobal(modificadorAcceso, tipo!!, identificador!!, null, null)
             }
         }
         return null

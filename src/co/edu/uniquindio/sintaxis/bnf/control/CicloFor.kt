@@ -86,4 +86,3 @@ class CicloFor(
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         expLogica.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CicloFor"))
     }
-}

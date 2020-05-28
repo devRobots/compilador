@@ -81,4 +81,19 @@ class VariableGlobal(
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         TODO("Cosa por hacer :'v")
     }
+
+    override fun getJavaCode(): String {
+        var codigo = ""
+        if (modificador != null){
+            codigo += modificador?.getJavaCode()
+        }
+        codigo += " ${tipo} ${identificador.lexema.substring(1)}"
+        if(expresion != null){
+            codigo += " = ${expresion.getJavaCode()}"
+        }else if( metodo != null){
+            codigo += " = ${metodo.getJavaCode()}"
+        }
+        codigo += ";"
+        return codigo
+    }
 }

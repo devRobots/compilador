@@ -56,4 +56,12 @@ class ValorLogico(
         configurarTabla()
         return panel
     }
+
+    override fun getJavaCode(): String {
+        if(identificador != null){
+            return "${identificador.lexema.substring(1)}"
+        }else{
+            return "${expresionRelacional?.getJavaCode()}"
+        }
+    }
 }

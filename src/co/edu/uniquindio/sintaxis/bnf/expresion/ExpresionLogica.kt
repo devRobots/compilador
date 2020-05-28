@@ -76,5 +76,14 @@ class ExpresionLogica(
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         TODO("Not yet implemented")
+    override fun getJavaCode(): String {
+        return if (operador == null) {
+            "$izquierda"
+        } else {
+            if (operador?.lexema == "¬") {
+                "$operador [ $izquierda ]"
+            } else {
+                "$izquierda $operador $logico"
+            }
+        }
     }
-}

@@ -80,4 +80,15 @@ class VariableLocal(
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
 
     }
+
+    override fun getJavaCode(): String {
+       var codigo = "${tipo.getJavaCode()} ${identificador.lexema.substring(1)}"
+        if (expresion != null){
+            codigo += " ${expresion.getJavaCode()}"
+        }else if(metodo != null){
+            codigo += "${metodo.getJavaCode()}"
+        }
+        codigo += ";"
+        return codigo
+    }
 }
