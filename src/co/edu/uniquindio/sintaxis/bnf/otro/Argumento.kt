@@ -1,7 +1,12 @@
 package co.edu.uniquindio.sintaxis.bnf.otro
 
 import co.edu.uniquindio.app.observable.SintaxisObservable
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.Sintaxis
+import co.edu.uniquindio.sintaxis.bnf.bloque.Funcion
+import co.edu.uniquindio.sintaxis.bnf.bloque.VariableGlobal
 import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
@@ -47,6 +52,10 @@ class Argumento(private val expresion: Expresion) : Sintaxis("Argumento") {
 
         configurarTabla()
         return panel
+    }
+
+    fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
     }
 
     override fun getJavaCode(): String {

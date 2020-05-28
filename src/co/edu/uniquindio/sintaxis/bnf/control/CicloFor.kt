@@ -81,9 +81,18 @@ class CicloFor(
     override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         decVariableLocal?.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CicloFor"))
 
+        for (sentencia in bloqueInstrucciones) {
+            sentencia.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CicloFor"))
+        }
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         expLogica.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CicloFor"))
+
+        for (sentencia in bloqueInstrucciones) {
+            sentencia.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CicloFor"))
+        }
+
+        asignacionCiclo.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CicloFor"))
     }
 }

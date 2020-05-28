@@ -1,8 +1,13 @@
 package co.edu.uniquindio.sintaxis.bnf.control
 
 import co.edu.uniquindio.app.observable.SintaxisObservable
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.Sintaxis
+import co.edu.uniquindio.sintaxis.bnf.bloque.Funcion
+import co.edu.uniquindio.sintaxis.bnf.bloque.VariableGlobal
 import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
@@ -69,6 +74,26 @@ class EstructuraSiNo(
 
         configurarTabla()
         return panel
+    }
+
+    fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        estructuraSi?.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, ambito)
+
+        for (sentencia in bloqueInstrucciones) {
+            sentencia.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CondicionalSino"))
+        }
+
+        estructuraSiNo?.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, ambito)
+    }
+
+    fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        estructuraSi?.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
+
+        for (sentencia in bloqueInstrucciones) {
+            sentencia.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CondicionalSino"))
+        }
+
+        estructuraSiNo?.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
     }
 
     override fun getJavaCode(): String {

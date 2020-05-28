@@ -1,6 +1,9 @@
 package co.edu.uniquindio.sintaxis.bnf.control
 
 import co.edu.uniquindio.app.observable.SintaxisObservable
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.bnf.expresion.ExpresionLogica
 import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
@@ -58,6 +61,12 @@ class CicloWhile(
 
         configurarTabla()
         return panel
+    }
+
+    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        for (sentencia in listaSentencia) {
+            sentencia.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CicloWhile"))
+        }
     }
 
     override fun getJavaCode(): String {

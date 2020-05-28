@@ -1,8 +1,13 @@
 package co.edu.uniquindio.sintaxis.bnf.control
 
 import co.edu.uniquindio.app.observable.SintaxisObservable
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.Sintaxis
+import co.edu.uniquindio.sintaxis.bnf.bloque.Funcion
+import co.edu.uniquindio.sintaxis.bnf.bloque.VariableGlobal
 import co.edu.uniquindio.sintaxis.bnf.expresion.ExpresionLogica
 import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
 
@@ -60,6 +65,20 @@ class EstructuraSi(
 
         configurarTabla()
         return panel
+    }
+
+    fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        for (sentencia in bloqueInstrucciones) {
+            sentencia.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CondicionalSi"))
+        }
+    }
+
+    fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        expLogica.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CondicionalSi"))
+
+        for (sentencia in bloqueInstrucciones) {
+            sentencia.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CondicionalSi"))
+        }
     }
 
     override fun getJavaCode(): String {

@@ -1,6 +1,9 @@
 package co.edu.uniquindio.sintaxis.bnf.control
 
 import co.edu.uniquindio.app.observable.SintaxisObservable
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
 
@@ -55,6 +58,11 @@ class Condicional(
 
         configurarTabla()
         return panel
+    }
+
+    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        estructuraSi.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, ambito)
+
     }
 
     override fun getJavaCode(): String {

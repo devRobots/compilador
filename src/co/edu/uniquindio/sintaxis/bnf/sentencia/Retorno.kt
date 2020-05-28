@@ -46,14 +46,14 @@ class Retorno(private val expresion: Expresion?) : Sentencia("Retorno") {
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-
+        TODO("Paila")
     }
 
     override fun getJavaCode(): String {
-        if(expresion != null){
-            return "return ${expresion.getJavaCode()};"
+        return if(expresion != null){
+            "return ${expresion.getJavaCode()};"
         }else{
-            return "return;"
+            "return;"
         }
     }
 }

@@ -58,10 +58,10 @@ class ValorLogico(
     }
 
     override fun getJavaCode(): String {
-        if(identificador != null){
-            return "${identificador.lexema.substring(1)}"
+        return if(identificador != null){
+            "${identificador.lexema.substring(1)}"
         }else{
-            return "${expresionRelacional?.getJavaCode()}"
+            "${expresionRelacional?.getJavaCode()}"
         }
     }
 }

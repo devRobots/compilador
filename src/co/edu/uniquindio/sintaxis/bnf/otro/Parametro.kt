@@ -55,10 +55,6 @@ class Parametro(val tipo: Token, private val identificador: Token) : Sintaxis("P
         tablaSimbolos.agregarVariable(identificador.lexema, tipo.lexema, null, ambito, identificador.fila, identificador.columna)
     }
 
-    fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-
-    }
-
     override fun getJavaCode(): String {
         return "${tipo.getJavaCode()} ${identificador.lexema.substring(1)}"
     }

@@ -75,16 +75,16 @@ class Arreglo(
 
     override fun getJavaCode(): String {
         var codigo = ""
-        if (listArgumentos!= null){
+        return if (listArgumentos!= null){
             codigo += "${tipo.getJavaCode()}[] ${identificador.lexema.substring(1)} = ["
             for (argumento in listArgumentos){
                 codigo += argumento.getJavaCode()+","
             }
             codigo += "];"
-            return codigo
+            codigo
         }else{
             codigo +=  "${tipo.getJavaCode()}[] ${identificador.lexema.substring(1)};"
-            return codigo
+            codigo
         }
     }
 }
