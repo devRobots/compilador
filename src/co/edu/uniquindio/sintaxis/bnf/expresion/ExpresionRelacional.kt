@@ -3,6 +3,7 @@ package co.edu.uniquindio.sintaxis.bnf.expresion
 import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.AmbitoTipo
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
@@ -70,16 +71,14 @@ class ExpresionRelacional(
         return panel
     }
 
-    override fun obtenerTipo(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito): String {
-        return "bip"
-    }
-
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         val ambitoTipo = ambito.obtenerAmbitoTipo()!!
         if (ambitoTipo.tipoRetorno != "bip") {
             erroresSemanticos.add(ErrorSemantico("No concuerdan los tipos de dato. Se esperaba un bip pero se encontro un ${ambitoTipo.tipoRetorno} en $ambito."))
+        } else {
+            izquierda?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, "ExpresionRelacional", "bip"))
+            derecho?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, "ExpresionRelacional", "bip"))
         }
-        //TODO("Falta")
     }
 
     override fun getJavaCode(): String {

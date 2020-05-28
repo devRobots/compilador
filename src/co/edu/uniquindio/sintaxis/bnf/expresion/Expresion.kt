@@ -16,5 +16,4 @@ import co.edu.uniquindio.sintaxis.Sintaxis
  */
 abstract class Expresion(nombre: String) : Sintaxis(nombre) {
     abstract fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito)
-    abstract fun obtenerTipo(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito): String
 }

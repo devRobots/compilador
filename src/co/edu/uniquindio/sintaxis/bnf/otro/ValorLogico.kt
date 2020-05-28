@@ -1,10 +1,12 @@
 package co.edu.uniquindio.sintaxis.bnf.otro
 
 import co.edu.uniquindio.app.observable.SintaxisObservable
+import co.edu.uniquindio.lexico.Categoria
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
+import co.edu.uniquindio.semantica.simbolo.Variable
 import co.edu.uniquindio.sintaxis.Sintaxis
 import co.edu.uniquindio.sintaxis.bnf.expresion.ExpresionRelacional
 
@@ -61,7 +63,21 @@ class ValorLogico(
     }
 
     fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        TODO("Analizar si el tipo de dato concuerda")
+        val ambitoTipo = ambito.obtenerAmbitoTipo()
+        if (ambitoTipo?.tipoRetorno == "bip") {
+            if (identificador?.categoria == Categoria.IDENTIFICADOR) {
+                val variable = tablaSimbolos.buscarVariable(identificador.lexema, ambito) as Variable?
+                if (variable != null) {
+                    if (variable?.tipoDato != ambitoTipo.tipoRetorno) {
+                        erroresSemanticos.add(ErrorSemantico("No concuerdan los tipos de dato. Se esperaba un ${ambitoTipo.tipoRetorno} pero se encontro un ${variable?.tipoDato} en $ambito."))
+                    }
+                } else {
+                    erroresSemanticos.add(ErrorSemantico("La variable ${identificador.lexema} no se encuentra declarada"))
+                }
+            } else if (identificador?.categoria == Categoria.BOOLEANO) {
+                erroresSemanticos.add(ErrorSemantico("No concuerdan los tipos de dato. Se esperaba un bip en $ambito."))
+            }
+        }
     }
 
     override fun getJavaCode(): String {

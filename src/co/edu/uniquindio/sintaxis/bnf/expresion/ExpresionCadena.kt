@@ -3,6 +3,7 @@ package co.edu.uniquindio.sintaxis.bnf.expresion
 import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.AmbitoTipo
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
 import javafx.scene.control.TreeItem
@@ -63,16 +64,13 @@ class ExpresionCadena(
         return panel
     }
 
-    override fun obtenerTipo(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito): String {
-        return "pal"
-    }
-
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         val ambitoTipo = ambito.obtenerAmbitoTipo()!!
         if (ambitoTipo.tipoRetorno != "pal") {
             erroresSemanticos.add(ErrorSemantico("No concuerdan los tipos de dato. Se esperaba un pal en $ambito."))
+        } else {
+            valor?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, "ExpresionCadena", "pal"))
         }
-        //TODO("Falta")
     }
 
     override fun getJavaCode(): String {
