@@ -73,7 +73,7 @@ class UnidadCompilacion(
             unidadCompilacion += paquete!!.getJavaCode()
         }
 
-        unidadCompilacion += "\n"
+        unidadCompilacion += "\nimport javax.swing.JOptionPane;\n"
 
         for (importacion in listaImportaciones) {
             unidadCompilacion += importacion.getJavaCode()

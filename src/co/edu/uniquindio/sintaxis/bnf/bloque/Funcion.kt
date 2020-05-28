@@ -113,7 +113,11 @@ class Funcion(
         }else{
             codigo += "void "
         }
-        codigo += "${identificador?.getJavaCode()}( "
+        if(identificador?.lexema == "&principal"){
+            codigo += "main ( "
+        }else{
+            codigo += "${identificador?.getJavaCode()}( "
+        }
         for(parametro in listaParametros){
             codigo += parametro.getJavaCode() + ","
         }

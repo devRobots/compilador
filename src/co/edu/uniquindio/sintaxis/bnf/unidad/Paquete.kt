@@ -48,6 +48,6 @@ class Paquete(private val paquete: Token?) : Sintaxis("Paquete") {
     }
 
     override fun getJavaCode(): String {
-        return "package ${paquete!!.lexema.substring(1)};\n"
+        return "package ${paquete!!.getJavaCode()};\n"
     }
 }

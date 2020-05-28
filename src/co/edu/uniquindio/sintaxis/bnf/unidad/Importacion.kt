@@ -49,7 +49,7 @@ class Importacion(private val importacion: Token?) : Sintaxis("Importacion") {
     }
 
     override fun getJavaCode(): String {
-        return "import ${importacion!!.lexema.substring(1)};\n"
+        return "import ${importacion!!.getJavaCode()};\n"
     }
 
     fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos) {

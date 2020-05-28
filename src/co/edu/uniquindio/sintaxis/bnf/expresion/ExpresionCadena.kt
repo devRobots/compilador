@@ -63,8 +63,8 @@ class ExpresionCadena(
         return panel
     }
 
-    override fun obtenerTipo(): String {
-        TODO("Not yet implemented")
+    override fun obtenerTipo(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito): String {
+        return "pal"
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {

@@ -67,11 +67,17 @@ class InvocacionMetodo(
     }
 
     override fun getJavaCode(): String {
-        var codigo = "${identificador.getJavaCode()}( "
+        var codigo = ""
+        if(identificador.lexema == "&Syso"){
+            codigo = "JOptionPane.showMessajeDialog(null, "
+        }else if(identificador.lexema == "&Scanner"){
+            codigo = "JOptionPane.showInputDialog( "
+        }else{ codigo = "${identificador.getJavaCode()}( " }
+
         for(argumento: Argumento in listaArgumentos){
             codigo += argumento.getJavaCode() +","
         }
-        codigo = codigo.substring(0,codigo.length-1) + " )"
+        codigo = codigo.substring(0,codigo.length-1) + " );"
         return codigo
     }
 }

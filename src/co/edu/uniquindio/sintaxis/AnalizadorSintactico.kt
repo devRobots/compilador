@@ -624,7 +624,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 val incremento = tokenActual
                 siguienteToken()
                 return IncrementoDecremento(identificador!!, incremento!!)
-            } else if (tokenActual?.categoria == OPERADOR_INCREMENTO) {
+            } else if (tokenActual?.categoria == OPERADOR_DECREMENTO) {
                 val decremento = tokenActual
                 siguienteToken()
                 return IncrementoDecremento(identificador!!, decremento!!)

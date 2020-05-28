@@ -90,7 +90,7 @@ class Asignacion(
         if(expresion!= null){
             codigo += "${expresion.getJavaCode()};"
         }else{
-            codigo += "${metodo?.getJavaCode()};"
+            codigo += "${metodo?.getJavaCode()}"
         }
         return codigo
     }

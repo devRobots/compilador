@@ -1,10 +1,12 @@
 package co.edu.uniquindio.sintaxis.bnf.expresion
 
 import co.edu.uniquindio.app.observable.SintaxisObservable
+import co.edu.uniquindio.lexico.Categoria
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
+import co.edu.uniquindio.semantica.simbolo.Simbolo
 import co.edu.uniquindio.sintaxis.bnf.otro.ValorNumerico
 
 import javafx.scene.control.TreeItem
@@ -85,9 +87,56 @@ class ExpresionAritmetica(
         return panel
     }
 
-    override fun obtenerTipo(): String {
-        TODO("Not yet implemented")
+    /**
+     * Metodo para Determinar si es una Expresion Aritmetica
+     * <ExpAritmetica> ::= “[“ <ExpAritmetica> “]” [ operadorAritmetico <ExpAritmetica>] |
+     * <ValorNumerico> [operadorAritmetico <ExpAritmetica>]
+     *
+     * @return ExpresionAritmetica si existe, null sino existe
+     */
+    override fun obtenerTipo(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito): String {
+        if (izquierda != null) {
+            var izq:String = izquierda.obtenerTipo(tablaSimbolos,erroresSemanticos,ambito)
+            if (derecho != null) {
+                var der:String = derecho.obtenerTipo(tablaSimbolos,erroresSemanticos,ambito)
+                if(izq == "dec" || der == "dec"){
+                    return "dec"
+                }else if(izq != "" || der != ""){
+                    return "ent"
+                }else{
+                    return ""
+                }
+            }else{
+                return izq
+            }
+        }else{
+            var tipo = ""
+            if(valor != null){
+                if(valor.identificador.categoria == Categoria.ENTERO){
+                    tipo = "ent"
+                }else if(valor.identificador.categoria == Categoria.REAL){
+                    tipo = "dec"
+                }else{
+                    var simbolo:Simbolo? = tablaSimbolos.buscarVariable(valor.identificador.lexema,ambito)
+                    if(simbolo != null){
+                        tipo = simbolo.toString() //TODO: es agregar el tipo, nose cual es??
+                    }else{
+                        erroresSemanticos.add(ErrorSemantico("El campo ${valor.identificador.lexema} no existe dentro del ambito ${ambito.nombre}"))
+                    }
+                }
+                if(derecho != null){
+                    var der: String = derecho.obtenerTipo(tablaSimbolos,erroresSemanticos,ambito)
+                    if(tipo == "dec" || der == "dec"){
+                        tipo = "dec"
+                    }else if(tipo != "" || der != ""){
+                        tipo= "ent"
+                    }
+                }
+            }
+            return tipo
+        }
     }
+
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         val ambitoTipo = ambito.obtenerAmbitoTipo()!!

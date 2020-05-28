@@ -21,7 +21,7 @@ import javafx.scene.layout.GridPane
  *
  * Valor Numerico
  */
-class ValorNumerico(private val signo: Token?, private val identificador: Token) : Sintaxis("Valor Numerico") {
+class ValorNumerico(val signo: Token?, val identificador: Token) : Sintaxis("Valor Numerico") {
 
     override fun toString(): String {
         return "${signo?.lexema ?: ""}${identificador.lexema}"

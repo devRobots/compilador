@@ -74,8 +74,8 @@ class ExpresionLogica(
         return panel
     }
 
-    override fun obtenerTipo(): String {
-        TODO("Not yet implemented")
+    override fun obtenerTipo(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito): String {
+        return "bip"
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {

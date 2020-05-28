@@ -94,11 +94,11 @@ class  Clase(
         if (modificadorAcceso != null){
             codigo += "${modificadorAcceso.getJavaCode()} "
         }
-        codigo += "class ${identificador.getJavaCode()}\n"
+        codigo += "class ${identificador.getJavaCode()} {\n"
         for (bloque: Bloque in listaBloquesSentencia){
             codigo += "\t"+ bloque.getJavaCode()
         }
-        codigo += "}"
+        codigo += "}\n"
         return codigo
     }
 }

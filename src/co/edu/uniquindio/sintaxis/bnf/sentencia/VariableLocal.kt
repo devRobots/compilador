@@ -85,11 +85,10 @@ class VariableLocal(
     override fun getJavaCode(): String {
        var codigo = "${tipo.getJavaCode()} ${identificador.getJavaCode()}"
         if (expresion != null){
-            codigo += " = ${expresion.getJavaCode()}"
+            codigo += " = ${expresion.getJavaCode()};"
         }else if(metodo != null){
             codigo += " = ${metodo.getJavaCode()}"
         }
-        codigo += ";"
         return codigo
     }
 }
