@@ -3,6 +3,7 @@ package co.edu.uniquindio.sintaxis.bnf.sentencia
 import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.AmbitoTipo
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.ListaSintactica
@@ -70,7 +71,9 @@ class Arreglo(
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-
+        for (argumento in  listArgumentos) {
+            argumento.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, identificador.lexema, tipo.lexema))
+        }
     }
 
     override fun getJavaCode(): String {

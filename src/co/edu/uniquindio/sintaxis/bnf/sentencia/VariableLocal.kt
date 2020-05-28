@@ -78,7 +78,7 @@ class VariableLocal(
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-
+        TODO("Hacer")
     }
 
     override fun getJavaCode(): String {

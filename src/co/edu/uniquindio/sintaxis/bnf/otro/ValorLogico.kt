@@ -2,6 +2,9 @@ package co.edu.uniquindio.sintaxis.bnf.otro
 
 import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.Sintaxis
 import co.edu.uniquindio.sintaxis.bnf.expresion.ExpresionRelacional
 
@@ -57,11 +60,11 @@ class ValorLogico(
         return panel
     }
 
+    fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        TODO("Analizar si el tipo de dato concuerda")
+    }
+
     override fun getJavaCode(): String {
-        return if(identificador != null){
-            "${identificador.lexema.substring(1)}"
-        }else{
-            "${expresionRelacional?.getJavaCode()}"
-        }
+        return identificador?.lexema?.substring(1) ?: expresionRelacional?.getJavaCode() ?: ""
     }
 }

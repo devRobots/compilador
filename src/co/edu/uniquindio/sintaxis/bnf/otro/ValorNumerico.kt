@@ -2,7 +2,12 @@ package co.edu.uniquindio.sintaxis.bnf.otro
 
 import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.Sintaxis
+import co.edu.uniquindio.sintaxis.bnf.bloque.Funcion
+import co.edu.uniquindio.sintaxis.bnf.bloque.VariableGlobal
 
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
@@ -50,10 +55,15 @@ class ValorNumerico(private val signo: Token?, private val identificador: Token)
         return panel
     }
 
+    fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        TODO("Analizar si el tipo de dato concuerda")
+    }
+
     override fun getJavaCode(): String {
-        if (signo != null){
-            return "${signo?.lexema}${identificador.lexema.substring(1)}"
+        return if (signo != null){
+            "${signo.lexema}${identificador.lexema.substring(1)}"
+        } else {
+            identificador.lexema.substring(1)
         }
-        return "${identificador.lexema.substring(1)}"
     }
 }

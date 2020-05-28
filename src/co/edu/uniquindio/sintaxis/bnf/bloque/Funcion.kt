@@ -3,7 +3,7 @@ package co.edu.uniquindio.sintaxis.bnf.bloque
 import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
-import co.edu.uniquindio.semantica.AmbitoFuncion
+import co.edu.uniquindio.semantica.AmbitoTipo
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.ListaSintactica
@@ -84,7 +84,7 @@ class Funcion(
         for (argumento in listaParametros) {
             tiposParametros.add(argumento.tipo.lexema)
             if (identificador != null){
-                argumento.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, AmbitoFuncion(ambito, identificador.lexema, tipo?.lexema ?: "void"))
+                argumento.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, identificador.lexema, tipo?.lexema ?: "void"))
             }
         }
 
@@ -99,7 +99,7 @@ class Funcion(
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         for (sentencia in listaSentencias) {
-            sentencia.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoFuncion(ambito, identificador!!.lexema, tipo?.lexema ?: "void"))
+            sentencia.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, identificador!!.lexema, tipo?.lexema ?: "void"))
         }
     }
 

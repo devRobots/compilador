@@ -22,8 +22,8 @@ open class Ambito(var nombre: String) {
     /**
      * Metodo que obtener el ambito Funcion padre si existe
      */
-    fun obtenerAmbitoFuncion(): AmbitoFuncion? = if (this is AmbitoFuncion) this
-    else padre?.obtenerAmbitoFuncion()
+    fun obtenerAmbitoTipo(): AmbitoTipo? = if (this is AmbitoTipo) this
+    else padre?.obtenerAmbitoTipo()
 
     /**
      * Metodo toString() para imprimir ambito de manera legible
