@@ -79,13 +79,22 @@ class ExpresionLogica(
     }
 
     override fun getJavaCode(): String {
-        return if (operador == null) {
-            "$izquierda"
-        } else {
-            if (operador?.lexema == "¬") {
-                "$operador [ $izquierda ]"
-            } else {
-                "$izquierda $operador $logico"
+        var codigo =""
+        if (operador?.lexema == "¬"){
+            return if(izquierda != null){
+                codigo += "!(${izquierda.getJavaCode()})"
+                return codigo
+            } else{
+                codigo += "!${logico?.getJavaCode()}"
+                return codigo
+            }
+        }else if(operador != null){
+            return "${izquierda?.getJavaCode()} $operador ${logico?.getJavaCode()}"
+        }else{
+            if (izquierda != null){
+                return izquierda.getJavaCode()
+            }else{
+                return "${logico?.getJavaCode()}"
             }
         }
     }

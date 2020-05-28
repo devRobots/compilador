@@ -87,7 +87,7 @@ class VariableGlobal(
         if (modificador != null){
             codigo += modificador?.getJavaCode()
         }
-        codigo += " ${tipo} ${identificador.lexema.substring(1)}"
+        codigo += " ${tipo.getJavaCode()} ${identificador.getJavaCode()}"
         if(expresion != null){
             codigo += " = ${expresion.getJavaCode()}"
         }else if( metodo != null){

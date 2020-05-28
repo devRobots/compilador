@@ -75,16 +75,6 @@ class ExpresionRelacional(
     }
 
     override fun getJavaCode(): String {
-        var codigo = ""
-        if (operacion.lexema == "¬") {
-            return return if (izquierda != null) {
-                codigo += "!${izquierda.getJavaCode()}"
-                codigo
-            } else {
-                codigo += "!${derecho?.getJavaCode()}"
-                codigo
-            }
-        }
         return "${izquierda?.getJavaCode()} ${operacion.getJavaCode()} ${derecho?.getJavaCode()}"
     }
 }

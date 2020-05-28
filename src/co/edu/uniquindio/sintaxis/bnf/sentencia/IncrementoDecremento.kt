@@ -59,6 +59,6 @@ class IncrementoDecremento(
     }
 
     override fun getJavaCode(): String {
-        return "${identificador.lexema.substring(1)}${operacion.getJavaCode()}"
+        return "${identificador.getJavaCode()}${operacion.getJavaCode()}"
     }
 }

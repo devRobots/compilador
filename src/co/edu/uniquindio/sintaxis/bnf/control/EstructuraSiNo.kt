@@ -99,11 +99,11 @@ class EstructuraSiNo(
     override fun getJavaCode(): String {
         var codigo = "else "
         if(estructuraSi != null){
-            codigo += "${estructuraSi.getJavaCode()}"
+            codigo += estructuraSi.getJavaCode()
         }else{
             codigo += "{\n"
-            for(sentencia in bloqueInstrucciones){
-                codigo += sentencia.getJavaCode()+"\n"
+            for(sentencia: Sentencia in bloqueInstrucciones){
+                codigo += "\t${sentencia.getJavaCode()}\n"
             }
             codigo += "}"
         }

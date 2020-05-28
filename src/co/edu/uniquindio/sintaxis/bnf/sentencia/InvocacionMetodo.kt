@@ -65,4 +65,13 @@ class InvocacionMetodo(
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         TODO("F")
     }
+
+    override fun getJavaCode(): String {
+        var codigo = "${identificador.getJavaCode()}.( "
+        for(argumento: Argumento in listaArgumentos){
+            codigo += argumento.getJavaCode() +","
+        }
+        codigo += ")"
+        return codigo
+    }
 }

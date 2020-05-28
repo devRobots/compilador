@@ -27,11 +27,10 @@ class ExpresionAritmetica(
 ) : Expresion("Expresion Aritmetica") {
 
     override fun toString(): String {
-        var estructura = valor?.toString() ?: izquierda.toString()
+        var estructura: String = valor?.toString() ?: izquierda.toString()
         if (operador != null) {
             estructura += "${operador.lexema}$derecho"
         }
-
         return estructura
     }
 
@@ -91,6 +90,6 @@ class ExpresionAritmetica(
     }
 
     override fun getJavaCode(): String {
-        return "expAritmetica"
+        return ""
     }
 }

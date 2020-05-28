@@ -94,9 +94,9 @@ class  Clase(
         if (modificadorAcceso != null){
             codigo += modificadorAcceso.getJavaCode()
         }
-        codigo += "class ${identificador!!.lexema.substring(1)} {\n"
-        for (bloque in listaBloquesSentencia){
-            codigo += bloque.getJavaCode()
+        codigo += "class ${identificador!!.getJavaCode()}\n"
+        for (bloque: Bloque in listaBloquesSentencia){
+            codigo += "\t"+ bloque.getJavaCode()
         }
         codigo += "}"
         return codigo

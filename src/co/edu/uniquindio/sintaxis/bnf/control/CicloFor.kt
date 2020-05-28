@@ -80,7 +80,6 @@ class CicloFor(
 
     override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         decVariableLocal?.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CicloFor"))
-
         for (sentencia in bloqueInstrucciones) {
             sentencia.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CicloFor"))
         }
@@ -94,5 +93,14 @@ class CicloFor(
         }
 
         asignacionCiclo.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CicloFor"))
+    }
+
+    override fun getJavaCode(): String {
+        var codigo = "for( ${decVariableLocal?.getJavaCode()} : ${expLogica.getJavaCode()} : ${asignacionCiclo.getJavaCode()} ){\n"
+        for (sentencia in bloqueInstrucciones) {
+            codigo += "\t${sentencia.getJavaCode()}\n"
+        }
+        codigo += "}"
+        return codigo
     }
 }

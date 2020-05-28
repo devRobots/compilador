@@ -83,8 +83,8 @@ class EstructuraSi(
 
     override fun getJavaCode(): String {
         var codigo = "if( ${expLogica.getJavaCode()} ){\n"
-        for(sentencia in bloqueInstrucciones){
-            codigo += sentencia.getJavaCode()+"\n"
+        for(sentencia: Sentencia in bloqueInstrucciones){
+            codigo += "\t${sentencia.getJavaCode()}\n"
         }
         codigo += "}"
         return codigo

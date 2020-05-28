@@ -79,7 +79,7 @@ class Asignacion(
     }
 
     override fun getJavaCode(): String {
-        var codigo = "${identificador.lexema.substring(1)} $operador "
+        var codigo = "${identificador.getJavaCode()} ${operador.getJavaCode()} "
         if(expresion!= null){
             codigo += "${expresion.getJavaCode()};"
         }else{

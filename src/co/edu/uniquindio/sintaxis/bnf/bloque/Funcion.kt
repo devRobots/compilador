@@ -113,13 +113,13 @@ class Funcion(
         }else{
             codigo += "void "
         }
-        codigo += "${identificador?.lexema?.substring(1)}("
+        codigo += "${identificador?.getJavaCode()}("
         for(parametro in listaParametros){
-            codigo += parametro.getJavaCode()+","
+            codigo += parametro.getJavaCode() + ","
         }
         codigo += ") {\n"
         for(sentencia in listaSentencias){
-            codigo += sentencia.getJavaCode()+"\n"
+            codigo += "\t"+ "sentencia.getJavaCode()"+"\n"
         }
         codigo += "}"
         return codigo
