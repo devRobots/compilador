@@ -72,7 +72,16 @@ class Token(var lexema: String, var categoria: Categoria, var fila: Int, var col
             if (lexema == "°") {
                 return "*"
             }
-        } else if (categoria == Categoria.CADENA_CARACTERES) {
+        } else if(categoria == Categoria.OPERADOR_ASIGNACION) {
+            if(lexema == "°="){
+                return "*="
+            }
+        }else if(categoria == Categoria.OPERADOR_INCREMENTO){
+            return "++"
+        }else if(categoria == Categoria.OPERADOR_DECREMENTO){
+            return "--"
+        }
+        else if (categoria == Categoria.CADENA_CARACTERES) {
             return lexema.replace("(", "\"").replace(")", "\"")
         } else if (categoria == Categoria.CARACTER) {
             return lexema.replace("\"", "\'")
