@@ -94,6 +94,33 @@ class ExpresionAritmetica(
     }
 
     override fun getJavaCode(): String {
-        return ""
+        var codigo = ""
+        if (izquierda != null) {
+            codigo += "(${izquierda.getJavaCode()}) "
+            if (operador != null) {
+                codigo += operador.getJavaCode()
+                if (derecho != null) {
+                    codigo += derecho.getJavaCode()
+                    return codigo
+                }
+            }else{
+                return codigo
+            }
+            codigo += ")"
+        }else{
+            if(valor != null){
+                codigo += valor?.getJavaCode()
+                if(operador!= null){
+                    codigo += operador.getJavaCode()
+                    if(derecho != null){
+                        codigo += derecho.getJavaCode()
+                        return codigo
+                    }
+                }else{
+                    return codigo
+                }
+            }
+        }
+        return codigo
     }
 }

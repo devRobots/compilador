@@ -23,7 +23,7 @@ class AnalizadorSemantico(private var uc: UnidadCompilacion) {
      */
     fun analizar() {
         llenarTablaSimbolos()
-        // analizarSemantica()
+        //analizarSemantica()  // aqui....
     }
 
     /**
