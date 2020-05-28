@@ -1,6 +1,9 @@
 package co.edu.uniquindio.sintaxis.bnf.control
 
 import co.edu.uniquindio.app.observable.SintaxisObservable
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.bnf.expresion.ExpresionLogica
 import co.edu.uniquindio.sintaxis.bnf.sentencia.IncrementoDecremento
@@ -73,5 +76,14 @@ class CicloFor(
 
         configurarTabla()
         return panel
+    }
+
+    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        decVariableLocal?.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CicloFor"))
+
+    }
+
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        expLogica.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CicloFor"))
     }
 }

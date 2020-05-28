@@ -11,4 +11,4 @@ import co.edu.uniquindio.sintaxis.bnf.sentencia.Sentencia
  *
  * Estructura de Control
  */
-abstract class EstructuraControl(nombre: String) : Sentencia(nombre)
+open class EstructuraControl(nombre: String) : Sentencia(nombre)

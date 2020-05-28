@@ -1,5 +1,8 @@
 package co.edu.uniquindio.sintaxis.bnf.expresion
 
+import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.ErrorSemantico
+import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.Sintaxis
 
 /**
@@ -11,4 +14,6 @@ import co.edu.uniquindio.sintaxis.Sintaxis
  *
  * Expresion
  */
-abstract class Expresion(nombre: String) : Sintaxis(nombre)
+abstract class Expresion(nombre: String) : Sintaxis(nombre) {
+    abstract fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito)
+}

@@ -3,6 +3,7 @@ package co.edu.uniquindio.sintaxis.bnf.bloque
 import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.AmbitoFuncion
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.ListaSintactica
@@ -29,7 +30,7 @@ class Funcion(
 ) : Bloque("Funcion") {
 
     override fun toString(): String {
-        return "$modificadorAcceso ${tipo?.lexema ?: "Void"} $identificador [ ... ] ¿ ... ?"
+        return "$modificadorAcceso ${tipo?.lexema ?: "void"} $identificador [ ... ] ¿ ... ?"
     }
 
     /**
@@ -83,7 +84,7 @@ class Funcion(
         for (argumento in listaParametros) {
             tiposParametros.add(argumento.tipo.lexema)
             if (identificador != null){
-                argumento.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador.lexema))
+                argumento.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, AmbitoFuncion(ambito, identificador.lexema, tipo?.lexema ?: "void"))
             }
         }
 
@@ -97,6 +98,8 @@ class Funcion(
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        TODO("No yet implemented")
+        for (sentencia in listaSentencias) {
+            sentencia.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoFuncion(ambito, identificador!!.lexema, tipo?.lexema ?: "void"))
+        }
     }
 }

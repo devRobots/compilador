@@ -79,6 +79,6 @@ class VariableGlobal(
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-
+        TODO("Cosa por hacer :'v")
     }
 }

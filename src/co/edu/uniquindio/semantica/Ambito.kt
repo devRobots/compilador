@@ -9,7 +9,7 @@ package co.edu.uniquindio.semantica
  *
  * Ambito
  */
-class Ambito(var nombre: String) {
+open class Ambito(var nombre: String) {
     private var padre: Ambito? = null
 
     /**
@@ -18,6 +18,12 @@ class Ambito(var nombre: String) {
     constructor(padre: Ambito, nombre: String) : this(nombre) {
         this.padre = padre
     }
+
+    /**
+     * Metodo que obtener el ambito Funcion padre si existe
+     */
+    fun obtenerAmbitoFuncion(): AmbitoFuncion? = if (this is AmbitoFuncion) this
+    else padre?.obtenerAmbitoFuncion()
 
     /**
      * Metodo toString() para imprimir ambito de manera legible
@@ -40,7 +46,7 @@ class Ambito(var nombre: String) {
      * @return Boolean true si son identicos, false si son diferentes
      */
     override fun equals(other: Any?): Boolean {
-        var otro = other as Ambito
+        val otro = other as Ambito
         if (otro.nombre == nombre) {
             if (otro.padre == padre) {
                 return true

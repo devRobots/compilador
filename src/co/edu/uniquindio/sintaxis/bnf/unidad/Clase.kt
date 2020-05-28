@@ -1,6 +1,7 @@
 package co.edu.uniquindio.sintaxis.bnf.unidad
 
 import co.edu.uniquindio.app.observable.SintaxisObservable
+import co.edu.uniquindio.app.observable.VariableObservable
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
 import co.edu.uniquindio.semantica.ErrorSemantico
@@ -8,6 +9,8 @@ import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.ListaSintactica
 import co.edu.uniquindio.sintaxis.Sintaxis
 import co.edu.uniquindio.sintaxis.bnf.bloque.Bloque
+import co.edu.uniquindio.sintaxis.bnf.bloque.Funcion
+import co.edu.uniquindio.sintaxis.bnf.bloque.VariableGlobal
 
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
@@ -75,7 +78,14 @@ class Clase(
 
     fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         for (bloque in listaBloquesSentencia) {
-            bloque.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador.lexema))
+            if (bloque is VariableGlobal) {
+                bloque.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador.lexema))
+            }
+        }
+        for (bloque in listaBloquesSentencia) {
+            if (bloque is Funcion) {
+                bloque.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(ambito, identificador.lexema))
+            }
         }
     }
 }
