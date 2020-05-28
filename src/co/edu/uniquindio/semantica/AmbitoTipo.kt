@@ -12,5 +12,5 @@ package co.edu.uniquindio.semantica
 class AmbitoTipo(
         padre: Ambito,
         nombre: String,
-        tipoRetorno: String
+        val tipoRetorno: String
 ): Ambito(padre, nombre)

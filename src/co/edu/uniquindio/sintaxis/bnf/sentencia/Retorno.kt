@@ -46,7 +46,7 @@ class Retorno(private val expresion: Expresion?) : Sentencia("Retorno") {
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        TODO("Paila")
+        // TODO("Paila")
     }
 
     override fun getJavaCode(): String {

@@ -55,7 +55,7 @@ class Argumento(private val expresion: Expresion) : Sintaxis("Argumento") {
     }
 
     fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        TODO("idk")
+        expresion.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
     }
 
     override fun getJavaCode(): String {

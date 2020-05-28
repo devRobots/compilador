@@ -253,11 +253,16 @@ class VentanaPrincipalController {
         erroresSintacticos.items.clear()
         erroresSintacticos.refresh()
 
+        erroresSemanticos.items.clear()
+        erroresSemanticos.refresh()
+
         panelErroresLexicos.style = "-fx-text-fill: black;"
         panelErroresSintacticos.style = "-fx-text-fill: black;"
+        panelErroresSemanticos.style = "-fx-text-fill: black;"
 
         panelErroresLexicos.text = "No se encontraron errores lexicos"
         panelErroresSintacticos.text = "No se encontraron errores sintacticos"
+        panelErroresSemanticos.text = "No se encontraron errores semanticos"
     }
 
     /**

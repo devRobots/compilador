@@ -3,6 +3,7 @@ package co.edu.uniquindio.sintaxis.bnf.bloque
 import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.AmbitoTipo
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
 
@@ -79,7 +80,7 @@ class VariableGlobal(
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        TODO("Cosa por hacer :'v")
+        expresion?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, "VariableGlobal", tipo.lexema))
     }
 
     override fun getJavaCode(): String {

@@ -10,7 +10,7 @@ package co.edu.uniquindio.semantica
  * Ambito
  */
 open class Ambito(var nombre: String) {
-    private var padre: Ambito? = null
+    var padre: Ambito? = null
 
     /**
      * Contructor secundario para ambitos anidados

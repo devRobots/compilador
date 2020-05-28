@@ -63,8 +63,16 @@ class ExpresionCadena(
         return panel
     }
 
-    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+    override fun obtenerTipo(): String {
         TODO("Not yet implemented")
+    }
+
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        val ambitoTipo = ambito.obtenerAmbitoTipo()!!
+        if (ambitoTipo.tipoRetorno != "pal") {
+            erroresSemanticos.add(ErrorSemantico("No concuerdan los tipos de dato. Se esperaba un pal en $ambito."))
+        }
+        //TODO("Falta")
     }
 
     override fun getJavaCode(): String {

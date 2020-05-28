@@ -63,7 +63,7 @@ class InvocacionMetodo(
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        TODO("F")
+        // TODO("F")
     }
 
     override fun getJavaCode(): String {

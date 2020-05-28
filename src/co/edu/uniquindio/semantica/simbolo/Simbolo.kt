@@ -11,4 +11,9 @@ import co.edu.uniquindio.semantica.Ambito
  *
  * Simbolo
  */
-open class Simbolo(nombre: String, ambito: Ambito, fila: Int, columna: Int)
+open class Simbolo(
+        nombre: String,
+        ambito: Ambito,
+        fila: Int,
+        columna: Int
+)

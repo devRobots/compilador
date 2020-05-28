@@ -55,7 +55,7 @@ class IncrementoDecremento(
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        TODO("Not yet implemented")
+        // TODO("Not yet implemented")
     }
 
     override fun getJavaCode(): String {

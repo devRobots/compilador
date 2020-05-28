@@ -110,11 +110,15 @@ class TablaSimbolos(private var listaErrores: ArrayList<ErrorSemantico>) {
      *
      * @return Variable si la encontro, null sino la encuentra
      */
-    private fun buscarVariable(nombre: String, ambito: Ambito): Simbolo? {
+    fun buscarVariable(nombre: String, ambito: Ambito): Simbolo? {
         for (simbolo in listaSimbolos) {
             if (simbolo is Variable) {
-                if (nombre == simbolo.nombre && ambito == simbolo.ambito) {
-                    return simbolo
+                var ambitoActual: Ambito? = simbolo.ambito
+                while (ambitoActual != null) {
+                    if (nombre == simbolo.nombre && ambito == ambitoActual) {
+                        return simbolo
+                    }
+                    ambitoActual = ambitoActual.padre
                 }
             }
         }

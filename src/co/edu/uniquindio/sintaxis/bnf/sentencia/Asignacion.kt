@@ -3,8 +3,10 @@ package co.edu.uniquindio.sintaxis.bnf.sentencia
 import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.AmbitoTipo
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
+import co.edu.uniquindio.semantica.simbolo.Variable
 import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
 
 import javafx.scene.control.TreeItem
@@ -75,7 +77,12 @@ class Asignacion(
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        TODO("Not yet implemented")
+        val variable = tablaSimbolos.buscarVariable(identificador.lexema, ambito) as Variable?
+        if (variable != null) {
+            expresion?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, identificador.lexema, variable.tipoDato))
+        } else {
+            erroresSemanticos.add(ErrorSemantico("La variable ${identificador.lexema} no se encuentra declarada"))
+        }
     }
 
     override fun getJavaCode(): String {

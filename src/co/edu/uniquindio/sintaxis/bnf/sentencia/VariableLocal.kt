@@ -3,6 +3,7 @@ package co.edu.uniquindio.sintaxis.bnf.sentencia
 import co.edu.uniquindio.app.observable.SintaxisObservable
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
+import co.edu.uniquindio.semantica.AmbitoTipo
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
 import co.edu.uniquindio.sintaxis.bnf.expresion.Expresion
@@ -78,7 +79,7 @@ class VariableLocal(
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        TODO("Hacer")
+        expresion?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, "VariableLocal", tipo.lexema))
     }
 
     override fun getJavaCode(): String {
