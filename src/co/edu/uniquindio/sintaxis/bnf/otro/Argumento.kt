@@ -48,4 +48,8 @@ class Argumento(private val expresion: Expresion) : Sintaxis("Argumento") {
         configurarTabla()
         return panel
     }
+
+    override fun getJavaCode(): String {
+        return "${expresion.getJavaCode()}"
+    }
 }

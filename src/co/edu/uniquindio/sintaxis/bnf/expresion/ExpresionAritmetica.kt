@@ -82,4 +82,9 @@ class ExpresionAritmetica(
         configurarTabla()
         return panel
     }
+
+    override fun getJavaCode(): String {
+
+        return "expAritmetica"
+    }
 }

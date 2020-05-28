@@ -59,4 +59,12 @@ class ExpresionCadena(
         configurarTabla()
         return panel
     }
+
+    override fun getJavaCode(): String {
+        return if (valor != null) {
+            "${cadena.getJavaCode()} + ${valor.getJavaCode()}"
+        } else {
+            cadena.getJavaCode()
+        }
+    }
 }

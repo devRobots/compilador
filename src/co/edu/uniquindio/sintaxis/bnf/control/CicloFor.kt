@@ -74,4 +74,13 @@ class CicloFor(
         configurarTabla()
         return panel
     }
+
+    override fun getJavaCode(): String {
+        var codigo = "for( ${decVariableLocal?.getJavaCode()} : ${expLogica.getJavaCode()} : ${asignacionCiclo.getJavaCode()} ){\n"
+        for (sentencia in bloqueInstrucciones){
+            codigo += "${sentencia.getJavaCode()}\n"
+        }
+        codigo +="}"
+        return codigo
+    }
 }

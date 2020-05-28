@@ -70,4 +70,18 @@ class EstructuraSiNo(
         configurarTabla()
         return panel
     }
+
+    override fun getJavaCode(): String {
+        var codigo = "else "
+        if(estructuraSi != null){
+            codigo += "${estructuraSi.getJavaCode()}"
+        }else{
+            codigo += "{\n"
+            for(sentencia in bloqueInstrucciones){
+                codigo += sentencia.getJavaCode()+"\n"
+            }
+            codigo += "}"
+        }
+        return codigo
+    }
 }

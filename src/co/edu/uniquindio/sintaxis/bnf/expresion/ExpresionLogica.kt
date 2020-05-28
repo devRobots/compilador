@@ -70,4 +70,16 @@ class ExpresionLogica(
         configurarTabla()
         return panel
     }
+
+    override fun getJavaCode(): String {
+        return if (operador == null) {
+            "$izquierda"
+        } else {
+            if (operador?.lexema == "¬") {
+                "$operador [ $izquierda ]"
+            } else {
+                "$izquierda $operador $logico"
+            }
+        }
+    }
 }

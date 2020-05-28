@@ -66,4 +66,18 @@ class ExpresionRelacional(
         configurarTabla()
         return panel
     }
+
+    override fun getJavaCode(): String {
+        var codigo =""
+        if (operacion.lexema == "¬"){
+            return if(izquierda != null){
+                codigo += "!${izquierda.getJavaCode()}"
+                return codigo
+            } else{
+                codigo += "!${derecho?.getJavaCode()}"
+                return codigo
+            }
+        }
+        return "${izquierda?.getJavaCode()} ${operacion.getJavaCode()} ${derecho?.getJavaCode()}"
+    }
 }
