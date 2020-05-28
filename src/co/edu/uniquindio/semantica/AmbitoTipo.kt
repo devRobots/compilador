@@ -9,7 +9,7 @@ package co.edu.uniquindio.semantica
  *
  * Ambito Funcion
  */
-class AmbitoFuncion(
+class AmbitoTipo(
         padre: Ambito,
         nombre: String,
         tipoRetorno: String
