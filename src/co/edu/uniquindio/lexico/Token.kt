@@ -36,60 +36,47 @@ class Token(var lexema: String, var categoria: Categoria, var fila: Int, var col
         return result
     }
 
-    //TODO: Mira sammy puedes llenar esto xd
-    fun getJavaCode():String{
-        if(categoria == Categoria.IDENTIFICADOR){
-            return "${lexema.substring(1)}"
+    fun getJavaCode(): String {
+        if (categoria == Categoria.IDENTIFICADOR || categoria == Categoria.IDENTIFICADOR_METODO) {
+            return lexema.substring(1)
         }
-        else if (categoria == Categoria.PALABRA_RESERVADA){
+        else if(categoria == Categoria.PALABRA_RESERVADA){
             when(lexema){
-                "caja" -> return "package"
-                "cosa" -> return "class"
-                "meter" -> return "import"
                 "estrato1" -> return "public"
                 "estrato6" -> return "private"
+            }
+        }
+        else if (categoria == Categoria.TIPO_DATO) {
+            when (lexema) {
                 "pal" -> return "String"
                 "dec" -> return "double"
                 "ent" -> return "int"
                 "bit" -> return "char"
                 "bip" -> return "boolean"
-                "saltar" -> return "break"
-                "devolver" -> return "return"
-                "ciclo" -> return "for"
-                "wi" -> return "if"
-                "wo" -> return "else"
-                "durante" -> return "while"
-                "control" -> return "switch"
             }
-        }
-        else if(categoria == Categoria.OPERADOR_RELACIONAL){
-            when (lexema){
+        } else if (categoria == Categoria.OPERADOR_RELACIONAL) {
+            when (lexema) {
                 ">>" -> return ">"
                 "<<" -> return "<"
                 "<-" -> return "<="
                 ">-" -> return ">="
                 "¬-" -> return "!="
             }
-        }
-        else if(categoria == Categoria.OPERADOR_LOGICO){
-            when(lexema){
+        } else if (categoria == Categoria.OPERADOR_LOGICO) {
+            when (lexema) {
                 "^" -> return "&&"
                 "~" -> return "||"
                 "¬" -> return "!"
             }
-        }
-        else if(categoria == Categoria.OPERADOR_ARITMETICO){
-            if (lexema == "°"){
+        } else if (categoria == Categoria.OPERADOR_ARITMETICO) {
+            if (lexema == "°") {
                 return "*"
             }
-        }
-        else if(categoria == Categoria.CADENA_CARACTERES){
+        } else if (categoria == Categoria.CADENA_CARACTERES) {
             return lexema.replace("(", "\"").replace(")", "\"")
-        }
-        else if (categoria == Categoria.CARACTER){
-            return lexema.replace( "\"" , "\'")
-        }
-        else if (categoria == Categoria.ENTERO || categoria == Categoria.REAL){
+        } else if (categoria == Categoria.CARACTER) {
+            return lexema.replace("\"", "\'")
+        } else if (categoria == Categoria.ENTERO || categoria == Categoria.REAL) {
             return "${lexema.substring(1)}"
         }
 

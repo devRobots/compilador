@@ -106,22 +106,22 @@ class Funcion(
     override fun getJavaCode(): String {
         var codigo = ""
         if (modificadorAcceso != null){
-            codigo += modificadorAcceso.getJavaCode()
+            codigo += "${modificadorAcceso.getJavaCode()} "
         }
         if (tipo != null){
-            codigo += tipo.getJavaCode()
+            codigo += "${tipo.getJavaCode()} "
         }else{
             codigo += "void "
         }
-        codigo += "${identificador?.getJavaCode()}("
+        codigo += "${identificador?.getJavaCode()}( "
         for(parametro in listaParametros){
             codigo += parametro.getJavaCode() + ","
         }
-        codigo += ") {\n"
+        codigo = codigo.substring(0,codigo.length-1) + " ) {\n"
         for(sentencia in listaSentencias){
-            codigo += "\t"+ "sentencia.getJavaCode()"+"\n"
+            codigo += "\t${sentencia.getJavaCode()}\n"
         }
-        codigo += "}"
+        codigo += "}\n"
         return codigo
     }
 }

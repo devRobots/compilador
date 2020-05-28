@@ -85,7 +85,7 @@ class VariableGlobal(
     override fun getJavaCode(): String {
         var codigo = ""
         if (modificador != null){
-            codigo += modificador?.getJavaCode()
+            codigo += "${modificador?.getJavaCode()} "
         }
         codigo += " ${tipo.getJavaCode()} ${identificador.getJavaCode()}"
         if(expresion != null){

@@ -66,8 +66,8 @@ class Condicional(
     }
 
     override fun getJavaCode(): String {
-        var codigo = "${estructuraSi.getJavaCode()} "
-        if(estructuraSino != null){ codigo += "${estructuraSino.getJavaCode()}"}
+        var codigo: String = estructuraSi.getJavaCode()
+        if(estructuraSino != null){ codigo += estructuraSino.getJavaCode()}
         return codigo
     }
 }

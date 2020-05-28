@@ -70,11 +70,11 @@ class CicloWhile(
     }
 
     override fun getJavaCode(): String {
-        var codigo = "while( ${expLogica.getJavaCode()}){\n"
+        var codigo = "while( ${expLogica.getJavaCode()} ){\n"
         for (sentencia in listaSentencia){
             codigo += "\t${sentencia.getJavaCode()}\n"
         }
-        codigo += "}"
+        codigo += "}\n"
         return codigo
     }
 }
