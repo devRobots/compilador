@@ -78,10 +78,6 @@ class ExpresionLogica(
         TODO("Not yet implemented")
     }
 
-    override fun obtenerTipo(): String {
-        TODO("Not yet implemented")
-    }
-
     override fun getJavaCode(): String {
         var codigo =""
         if (operador?.lexema == "¬"){

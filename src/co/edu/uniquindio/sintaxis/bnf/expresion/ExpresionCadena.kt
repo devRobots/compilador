@@ -67,10 +67,6 @@ class ExpresionCadena(
         TODO("Not yet implemented")
     }
 
-    override fun obtenerTipo(): String {
-        TODO("Not yet implemented")
-    }
-
     override fun getJavaCode(): String {
         return if (valor != null) {
             "${cadena.getJavaCode()} + ${valor.getJavaCode()}"

@@ -74,10 +74,6 @@ class ExpresionRelacional(
         TODO("Not yet implemented")
     }
 
-    override fun obtenerTipo(): String {
-        TODO("Not yet implemented")
-    }
-
     override fun getJavaCode(): String {
         return "${izquierda?.getJavaCode()} ${operacion.getJavaCode()} ${derecho?.getJavaCode()}"
     }
