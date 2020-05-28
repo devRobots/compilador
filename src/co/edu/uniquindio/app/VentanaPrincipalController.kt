@@ -5,6 +5,7 @@ import co.edu.uniquindio.lexico.AnalizadorLexico
 import co.edu.uniquindio.lexico.ErrorLexico
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.AnalizadorSemantico
+import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.simbolo.Funcion
 import co.edu.uniquindio.semantica.simbolo.Importacion
 import co.edu.uniquindio.semantica.simbolo.Simbolo
@@ -84,8 +85,10 @@ class VentanaPrincipalController {
     @FXML lateinit var mensaje: Label
     @FXML lateinit var erroresLexicos: ListView<String>
     @FXML lateinit var erroresSintacticos: ListView<String>
+    @FXML lateinit var erroresSemanticos: ListView<String>
     @FXML lateinit var panelErroresLexicos: TitledPane
     @FXML lateinit var panelErroresSintacticos: TitledPane
+    @FXML lateinit var panelErroresSemanticos: TitledPane
 
     /**
      * Metodo initialize de JavaFX
@@ -188,6 +191,9 @@ class VentanaPrincipalController {
 
                     val simbolos = analizadorSemantico.tablaSimbolos.listaSimbolos
                     mostrarSimbolos(simbolos)
+
+                    val listaErroresSemanticos = analizadorSemantico.erroresSemanticos
+                    mostrarErroresSemantico(listaErroresSemanticos)
 
                     salida.text = unidadCompilacion.getJavaCode()
 
@@ -328,6 +334,18 @@ class VentanaPrincipalController {
         mostrarMensajeErrores(errores, panelErroresSintacticos, "sintactico")
         erroresSintacticos.items = erroresObservables
         erroresSintacticos.refresh()
+    }
+
+    /**
+     * Genera los errores sintacticos observables para posteriormente
+     * mostrarlos en un ListView
+     */
+    private fun mostrarErroresSemantico(listaErrores: ArrayList<ErrorSemantico>) {
+        val errores: ArrayList<*> = listaErrores
+        val erroresObservables = extraerErroresObservables(errores)
+        mostrarMensajeErrores(errores, panelErroresSemanticos, "semantico")
+        erroresSemanticos.items = erroresObservables
+        erroresSemanticos.refresh()
     }
 
     /**
