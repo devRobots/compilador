@@ -93,7 +93,7 @@ class ExpresionLogica(
                 return codigo
             }
         }else if(operador != null){
-            return "${izquierda?.getJavaCode()} $operador ${logico?.getJavaCode()}"
+            return "${izquierda?.getJavaCode()} ${operador.getJavaCode()} ${logico?.getJavaCode()}"
         }else{
             if (izquierda != null){
                 return izquierda.getJavaCode()

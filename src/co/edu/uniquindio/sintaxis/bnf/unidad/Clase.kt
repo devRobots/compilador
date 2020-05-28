@@ -92,9 +92,9 @@ class  Clase(
     override fun getJavaCode(): String {
         var codigo:String = ""
         if (modificadorAcceso != null){
-            codigo += modificadorAcceso.getJavaCode()
+            codigo += "${modificadorAcceso.getJavaCode()} "
         }
-        codigo += "class ${identificador!!.getJavaCode()}\n"
+        codigo += "class ${identificador!!.getJavaCode()} {\n"
         for (bloque: Bloque in listaBloquesSentencia){
             codigo += "\t"+ bloque.getJavaCode()
         }

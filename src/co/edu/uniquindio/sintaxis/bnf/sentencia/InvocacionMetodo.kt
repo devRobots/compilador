@@ -67,11 +67,11 @@ class InvocacionMetodo(
     }
 
     override fun getJavaCode(): String {
-        var codigo = "${identificador.getJavaCode()}.( "
+        var codigo = "${identificador.getJavaCode()}( "
         for(argumento: Argumento in listaArgumentos){
             codigo += argumento.getJavaCode() +","
         }
-        codigo += ")"
+        codigo = codigo.substring(0,codigo.length-1) + " )"
         return codigo
     }
 }

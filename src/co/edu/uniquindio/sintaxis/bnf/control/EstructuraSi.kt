@@ -86,7 +86,7 @@ class EstructuraSi(
         for(sentencia: Sentencia in bloqueInstrucciones){
             codigo += "\t${sentencia.getJavaCode()}\n"
         }
-        codigo += "}"
+        codigo += "}\n"
         return codigo
     }
 

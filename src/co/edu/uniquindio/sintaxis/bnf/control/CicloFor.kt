@@ -96,11 +96,11 @@ class CicloFor(
     }
 
     override fun getJavaCode(): String {
-        var codigo = "for( ${decVariableLocal?.getJavaCode()} : ${expLogica.getJavaCode()} : ${asignacionCiclo.getJavaCode()} ){\n"
+        var codigo = "for( ${decVariableLocal?.getJavaCode()} ${expLogica.getJavaCode()}; ${asignacionCiclo.getJavaCode()} ){\n"
         for (sentencia in bloqueInstrucciones) {
             codigo += "\t${sentencia.getJavaCode()}\n"
         }
-        codigo += "}"
+        codigo += "}\n"
         return codigo
     }
 }
