@@ -26,7 +26,7 @@ import javafx.scene.layout.GridPane
 class EstructuraSi(
         private val expLogica: ExpresionLogica,
         private val bloqueInstrucciones: ArrayList<Sentencia>
-) : Sintaxis("Estructura Si") {
+) : EstructuraControl("Estructura Si") {
 
     override fun toString(): String {
         return "wi [ $expLogica ] ¿ ... ?"
@@ -67,13 +67,14 @@ class EstructuraSi(
         return panel
     }
 
+    override
     fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         for (sentencia in bloqueInstrucciones) {
             sentencia.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CondicionalSi"))
         }
     }
 
-    fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         expLogica.analizarSemantica(tablaSimbolos, erroresSemanticos, Ambito(ambito, "CondicionalSi"))
 
         for (sentencia in bloqueInstrucciones) {

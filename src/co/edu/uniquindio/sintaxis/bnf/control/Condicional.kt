@@ -62,7 +62,12 @@ class Condicional(
 
     override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         estructuraSi.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, ambito)
+        estructuraSino?.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, ambito)
+    }
 
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+        estructuraSi.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
+        estructuraSino?.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
     }
 
     override fun getJavaCode(): String {

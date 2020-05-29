@@ -25,7 +25,7 @@ class EstructuraSiNo(
         private val bloqueInstrucciones: ArrayList<Sentencia>,
         private val estructuraSi: EstructuraSi?,
         private val estructuraSiNo: EstructuraSiNo?
-) : Sintaxis("Estructura Sino") {
+) : EstructuraControl("Estructura Sino") {
 
     override fun toString(): String = if (estructuraSi != null) {
         "wo $estructuraSi"
@@ -76,7 +76,7 @@ class EstructuraSiNo(
         return panel
     }
 
-    fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+    override fun llenarTablaSimbolos(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         estructuraSi?.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, ambito)
 
         for (sentencia in bloqueInstrucciones) {
@@ -86,7 +86,7 @@ class EstructuraSiNo(
         estructuraSiNo?.llenarTablaSimbolos(tablaSimbolos, erroresSemanticos, ambito)
     }
 
-    fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
+    override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
         estructuraSi?.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
 
         for (sentencia in bloqueInstrucciones) {
