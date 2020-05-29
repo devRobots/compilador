@@ -973,7 +973,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
             backtracking(posicionInicial, cantidadErrores)
         }
 
-        if (tokenActual?.categoria == BOOLEANO || tokenActual?.categoria == IDENTIFICADOR) {
+        if (tokenActual?.categoria == BOOLEANO) {
             val valor = tokenActual
             siguienteToken()
             return ValorLogico(valor, null)

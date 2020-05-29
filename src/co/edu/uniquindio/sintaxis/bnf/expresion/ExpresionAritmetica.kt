@@ -1,10 +1,12 @@
 package co.edu.uniquindio.sintaxis.bnf.expresion
 
 import co.edu.uniquindio.app.observable.SintaxisObservable
+import co.edu.uniquindio.lexico.Categoria
 import co.edu.uniquindio.lexico.Token
 import co.edu.uniquindio.semantica.Ambito
 import co.edu.uniquindio.semantica.ErrorSemantico
 import co.edu.uniquindio.semantica.TablaSimbolos
+import co.edu.uniquindio.semantica.simbolo.Simbolo
 import co.edu.uniquindio.sintaxis.bnf.otro.ValorNumerico
 import javafx.scene.control.TreeItem
 import javafx.scene.layout.GridPane
@@ -84,11 +86,52 @@ class ExpresionAritmetica(
         return panel
     }
 
+    /**
+     * Metodo para Determinar si es una Expresion Aritmetica
+     * <ExpAritmetica> ::= “[“ <ExpAritmetica> “]” [ operadorAritmetico <ExpAritmetica>] |
+     * <ValorNumerico> [operadorAritmetico <ExpAritmetica>]
+     *
+     * @return ExpresionAritmetica si existe, null sino existe
+     */
     override fun obtenerTipoDato(tablaSimbolos: TablaSimbolos, ambito: Ambito): String {
-        val valNumericoTipo = valor?.obtenerTipoDato(tablaSimbolos, ambito)
-        val izquierdaTipo = izquierda?.obtenerTipoDato(tablaSimbolos, ambito)
-
-        return derecho?.obtenerTipoDato(tablaSimbolos, ambito) ?: (valNumericoTipo ?: izquierdaTipo!!)
+        if (izquierda != null) {
+            var izq:String = izquierda.obtenerTipoDato(tablaSimbolos,ambito)
+            if (derecho != null) {
+                var der:String = derecho.obtenerTipoDato(tablaSimbolos,ambito)
+                if(izq == "dec" || der == "dec"){
+                    return "dec"
+                }else if(izq != "null" || der != "null"){
+                    return "ent"
+                }else{
+                    return "null"
+                }
+            }else{
+                return izq
+            }
+        }else{
+            var tipo: String = "null"
+            if(valor != null){
+                if(valor.identificador.categoria == Categoria.ENTERO){
+                    tipo = "ent"
+                }else if(valor.identificador.categoria == Categoria.REAL){
+                    tipo = "dec"
+                }else{
+                    val simbolo = tablaSimbolos.buscarVariable(valor.identificador.lexema,ambito)
+                    if(simbolo != null){
+                        tipo = simbolo.tipoDato
+                    }
+                }
+                if(derecho != null){
+                    var der: String = derecho.obtenerTipoDato(tablaSimbolos,ambito)
+                    if(tipo == "dec" || der == "dec"){
+                        tipo = "dec"
+                    }else if(tipo != "null" || der != "null"){
+                        tipo= "ent"
+                    }
+                }
+            }
+            return tipo
+        }
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {

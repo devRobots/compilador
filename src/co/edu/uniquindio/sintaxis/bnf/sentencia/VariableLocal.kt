@@ -85,7 +85,7 @@ class VariableLocal(
         val tipoFun = metodo?.obtenerTipoDato(tablaSimbolos, ambito) ?: "void"
         val tipoExpr = expresion?.obtenerTipoDato(tablaSimbolos, ambito) ?: "null"
 
-        if (tipo.lexema != tipoFun && tipo.lexema != tipoExpr) {
+        if ((tipo.lexema != tipoFun && tipoExpr == "null")||(tipoFun == "void" && tipo.lexema != tipoExpr)) {
             erroresSemanticos.add(ErrorSemantico("Los tipos de dato no coinciden. Se esperaba un ${tipo.lexema} pero se encontro un ${if (tipoExpr == "null") tipoFun else tipoExpr} en $ambito"))
         }
     }
