@@ -87,19 +87,8 @@ class ExpresionAritmetica(
     override fun obtenerTipoDato(tablaSimbolos: TablaSimbolos, ambito: Ambito): String {
         val valNumericoTipo = valor?.obtenerTipoDato(tablaSimbolos, ambito)
         val izquierdaTipo = izquierda?.obtenerTipoDato(tablaSimbolos, ambito)
-        val derechoTipo = derecho?.obtenerTipoDato(tablaSimbolos, ambito)
 
-        val tipoAmbito = ambito.obtenerAmbitoTipo()?.tipoRetorno
-
-        return if (derechoTipo != null) {
-            if (derechoTipo == tipoAmbito && (derechoTipo == izquierdaTipo || derechoTipo == valNumericoTipo)) {
-                tipoAmbito
-            } else {
-                "null"
-            }
-        } else {
-            valNumericoTipo ?: izquierdaTipo!!
-        }
+        return derecho?.obtenerTipoDato(tablaSimbolos, ambito) ?: (valNumericoTipo ?: izquierdaTipo!!)
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {

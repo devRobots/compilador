@@ -64,8 +64,14 @@ class InvocacionMetodo(
     }
 
     fun obtenerTipoDato(tablaSimbolos: TablaSimbolos, ambito: Ambito): String {
-        val funcion = tablaSimbolos.buscarFuncion(identificador.lexema, obtenerTiposArgumentos(tablaSimbolos, ambito)) as Funcion?
-        return funcion?.tipoRetorno ?: "void"
+        return when(identificador.lexema) {
+            "&syso" -> "void"
+            "&scanner" -> "pal"
+            else -> {
+                val funcion = tablaSimbolos.buscarFuncion(identificador.lexema, obtenerTiposArgumentos(tablaSimbolos, ambito)) as Funcion?
+                funcion?.tipoRetorno ?: "void"
+            }
+        }
     }
 
     private fun obtenerTiposArgumentos(tablaSimbolos: TablaSimbolos, ambito: Ambito): ArrayList<String> {
@@ -80,12 +86,18 @@ class InvocacionMetodo(
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        val funcion = tablaSimbolos.buscarFuncion(identificador.lexema, obtenerTiposArgumentos(tablaSimbolos, ambito)) as Funcion?
-        if (funcion == null) {
-            erroresSemanticos.add(ErrorSemantico("La funcion ${identificador.lexema} no se encuentra definida"))
-        } else {
-            for (argumento in listaArgumentos) {
-                argumento.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
+        when(identificador.lexema) {
+            "&syso" -> return
+            "&scanner" -> return
+            else -> {
+                val funcion = tablaSimbolos.buscarFuncion(identificador.lexema, obtenerTiposArgumentos(tablaSimbolos, ambito)) as Funcion?
+                if (funcion == null) {
+                    erroresSemanticos.add(ErrorSemantico("La funcion ${identificador.lexema} no se encuentra definida"))
+                } else {
+                    for (argumento in listaArgumentos) {
+                        argumento.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
+                    }
+                }
             }
         }
     }

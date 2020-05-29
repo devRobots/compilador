@@ -60,8 +60,8 @@ class ValorNumerico(val signo: Token?, val identificador: Token) : Sintaxis("Val
             variable?.tipoDato ?: "null"
         } else {
             when(identificador.categoria) {
-                Categoria.ENTERO -> "dec"
-                Categoria.REAL -> "ent"
+                Categoria.ENTERO -> "ent"
+                Categoria.REAL -> "dec"
                 else -> "null"
             }
         }
