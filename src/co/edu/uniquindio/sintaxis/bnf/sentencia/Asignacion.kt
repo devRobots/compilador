@@ -77,11 +77,13 @@ class Asignacion(
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        val variable = tablaSimbolos.buscarVariable(identificador.lexema, ambito) as Variable?
+        val variable = tablaSimbolos.buscarVariable(identificador.lexema, ambito)
         if (variable != null) {
             expresion?.analizarSemantica(tablaSimbolos, erroresSemanticos, AmbitoTipo(ambito, identificador.lexema, variable.tipoDato))
+            metodo?.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
             val tipoExpr = expresion?.obtenerTipoDato(tablaSimbolos, ambito)
-            if (variable.tipoDato != tipoExpr) {
+            val tipoFun = metodo?.obtenerTipoDato(tablaSimbolos, ambito)
+            if (variable.tipoDato != tipoExpr || variable.tipoDato != tipoFun) {
                 erroresSemanticos.add(ErrorSemantico("Los tipos de dato no coinciden. Se esperaba un ${ambito.obtenerAmbitoTipo()!!.tipoRetorno} pero se encontro un $tipoExpr en $ambito"))
             }
         } else {

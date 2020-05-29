@@ -56,7 +56,7 @@ class IncrementoDecremento(
     }
 
     override fun analizarSemantica(tablaSimbolos: TablaSimbolos, erroresSemanticos: ArrayList<ErrorSemantico>, ambito: Ambito) {
-        val variable = tablaSimbolos.buscarVariable(identificador.lexema, ambito) as Variable?
+        val variable = tablaSimbolos.buscarVariable(identificador.lexema, ambito)
         if (variable != null) {
             if (variable.tipoDato != "ent" && variable.tipoDato != "dec") {
                 erroresSemanticos.add(ErrorSemantico("Los tipos de dato no coinciden. Se esperaba un ent o dec pero se encontro un ${variable.tipoDato} en $ambito"))
