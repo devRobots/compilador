@@ -109,12 +109,12 @@ class Funcion(
     override fun getJavaCode(): String {
         var codigo = ""
         if (modificadorAcceso != null){
-            codigo += "${modificadorAcceso.getJavaCode()} "
+            codigo += "${modificadorAcceso.getJavaCode()} static "
         }
-        codigo += tipo?.getJavaCode() ?: "static void"
-        codigo += if(identificador?.lexema == "&principal") {" main ( String[] args " }
+        codigo += tipo?.getJavaCode() ?: "void"
+        if(identificador?.lexema == "&principal") { codigo += " main ( String[] args " }
         else {
-            " ${identificador?.getJavaCode()}( "
+            codigo += " ${identificador?.getJavaCode()}( "
             for (parametro in listaParametros) {
                 codigo += parametro.getJavaCode() + ","
             }

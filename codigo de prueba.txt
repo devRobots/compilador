@@ -1,0 +1,58 @@
+
+: se crea la clase
+cosa @Principal ¿
+	:/
+  	   Apartir de la clase  cualquier cosa
+	/:
+        estrato1 &principal[ ] ¿ 
+		ent @a = #73!
+		dec @b = [@a ° *3.8  ] / *4.0 !
+		&syso[ @b ]!
+		bip @relacional = #7 << #12 !
+		&syso [ @relacional ]!
+
+		&ejemplo[]!
+	?
+	
+	estrato1 &ejemplo []¿
+		&syso[(hola mundo)]!
+	?
+?
+: se crea la clase
+cosa @Principal ¿
+	:/
+  	   Apartir de la clase  cualquier cosa
+	/:
+        estrato1 &principal[ ] ¿ 
+		&ejemplo3[]!
+	?
+	
+	estrato1 &ejemplo []¿
+		ent @suma = &sumar[#3, #45]!
+		&syso[@suma]!
+	?
+	
+	estrato6 ent &sumar [ent @a, ent @b]¿
+		devolver [@a+@b]!
+	?
+
+	estrato1 &ejemplo2 []¿
+		ent @num = #0!
+		ciclo[ent @i= #0!  | @i << #5 | @i^+]¿
+			@num += @i!
+		?
+		&syso [@num]!
+	?
+	
+	estrato6 &ejemplo3 []¿
+		wi[.true]¿
+			wi[#5<<*3.6]¿
+				&syso[(menor)]!
+			?wo¿
+				&syso[(mayor)]!
+			?
+		?wo ¿
+			&syso[(hola mundo)]!
+		?
+	?
+?
