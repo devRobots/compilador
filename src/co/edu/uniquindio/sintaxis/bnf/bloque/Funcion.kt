@@ -92,7 +92,7 @@ class Funcion(
         tablaSimbolos.agregarFuncion(identificador!!.lexema, tipo?.lexema, modificadorAcceso?.lexema, obtenerTiposParametros())
 
         for (parametro in listaParametros) {
-            tablaSimbolos.agregarVariable(parametro.identificador.lexema, parametro.tipo.lexema, null, ambito, parametro.identificador.fila, parametro.identificador.columna)
+            tablaSimbolos.agregarVariable(parametro.identificador.lexema, parametro.tipo.lexema, null, Ambito(ambito, identificador.lexema), parametro.identificador.fila, parametro.identificador.columna)
         }
 
         for (sentencia in listaSentencias) {
