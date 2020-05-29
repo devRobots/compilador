@@ -83,8 +83,8 @@ class Asignacion(
             metodo?.analizarSemantica(tablaSimbolos, erroresSemanticos, ambito)
             val tipoExpr = expresion?.obtenerTipoDato(tablaSimbolos, ambito)
             val tipoFun = metodo?.obtenerTipoDato(tablaSimbolos, ambito)
-            if (variable.tipoDato != tipoExpr || variable.tipoDato != tipoFun) {
-                erroresSemanticos.add(ErrorSemantico("Los tipos de dato no coinciden. Se esperaba un ${ambito.obtenerAmbitoTipo()!!.tipoRetorno} pero se encontro un $tipoExpr en $ambito"))
+            if (variable.tipoDato != tipoExpr && variable.tipoDato != tipoFun) {
+                erroresSemanticos.add(ErrorSemantico("Los tipos de dato no coinciden. Se esperaba un ${ambito.obtenerAmbitoTipo()!!.tipoRetorno} pero se encontro un ${tipoExpr ?: tipoFun} en $ambito"))
             }
         } else {
             erroresSemanticos.add(ErrorSemantico("La variable ${identificador.lexema} no se encuentra declarada"))

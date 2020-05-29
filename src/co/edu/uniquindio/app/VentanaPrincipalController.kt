@@ -195,11 +195,13 @@ class VentanaPrincipalController {
                     val listaErroresSemanticos = analizadorSemantico.erroresSemanticos
                     mostrarErroresSemantico(listaErroresSemanticos)
 
-                    salida.text = unidadCompilacion.getJavaCode()
+                    if (listaErroresSemanticos.isEmpty()) {
+                        salida.text = unidadCompilacion.getJavaCode()
 
-                    if (mensaje.text.isBlank()) {
-                        mensaje.text = "Se completo el analisis semantico"
-                        mensaje.style = "-fx-text-fill: darkgreen;"
+                        if (mensaje.text.isBlank()) {
+                            mensaje.text = "¡Se completo la compilacion!"
+                            mensaje.style = "-fx-text-fill: darkgreen;"
+                        }
                     }
                 }
             }
