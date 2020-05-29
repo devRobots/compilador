@@ -111,8 +111,8 @@ class Funcion(
         if (modificadorAcceso != null){
             codigo += "${modificadorAcceso.getJavaCode()} "
         }
-        codigo += tipo?.getJavaCode() ?: "void "
-        codigo += if(identificador?.lexema == "&principal") "main ( " else "${identificador?.getJavaCode()}( "
+        codigo += tipo?.getJavaCode() ?: "void"
+        codigo += if(identificador?.lexema == "&principal") " main ( " else " ${identificador?.getJavaCode()}( "
         for(parametro in listaParametros){
             codigo += parametro.getJavaCode() + ","
         }

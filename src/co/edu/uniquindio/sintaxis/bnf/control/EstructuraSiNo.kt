@@ -100,6 +100,9 @@ class EstructuraSiNo(
         var codigo = "else "
         if(estructuraSi != null){
             codigo += estructuraSi.getJavaCode()
+            if(estructuraSiNo != null){
+            codigo += estructuraSiNo.getJavaCode()
+            }
         }else{
             codigo += "{\n"
             for(sentencia: Sentencia in bloqueInstrucciones){

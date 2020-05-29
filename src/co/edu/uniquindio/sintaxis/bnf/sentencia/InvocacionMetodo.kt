@@ -104,7 +104,7 @@ class InvocacionMetodo(
 
     override fun getJavaCode(): String {
         var codigo = when (identificador.lexema) {
-            "&syso" -> "JOptionPane.showMessajeDialog(null, "
+            "&syso" -> "JOptionPane.showMessageDialog(null, "
             "&scanner" -> "JOptionPane.showInputDialog( "
             else -> "${identificador.getJavaCode()}( "
         }
