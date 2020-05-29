@@ -37,7 +37,9 @@ class UnidadCompilacion(
         val observable = SintaxisObservable(this)
         val treeItem = TreeItem(observable)
 
-        treeItem.children.add(paquete?.getTreeItem())
+        if(paquete != null){
+            treeItem.children.add(paquete!!.getTreeItem())
+        }
 
         treeItem.children.add(listaSintacticaImportacion.getTreeItem())
 

@@ -742,7 +742,7 @@ class AnalizadorSintactico(private val tokens: ArrayList<Token>) {
                 siguienteToken()
             }
         }
-        var tipo:Token? = tokenActual!! //TODO: cambiar
+        var tipo:Token? = null
         if (tokenActual?.categoria == TIPO_DATO) {
             tipo = tokenActual!!
             centinela = true
