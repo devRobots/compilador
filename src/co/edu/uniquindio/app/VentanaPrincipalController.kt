@@ -41,6 +41,7 @@ class VentanaPrincipalController {
      */
     @FXML lateinit var texto: TextArea
     @FXML lateinit var salida: TextArea
+    @FXML lateinit var btnEjecutar: Button
 
     /**
      * Elementos del Analizador Lexico
@@ -210,6 +211,9 @@ class VentanaPrincipalController {
 
     @FXML
     fun ejecutar() {
+        btnEjecutar.disableProperty().set(true)
+        btnEjecutar.text = "Exportando..."
+
         val alerta = Alert(Alert.AlertType.INFORMATION)
         alerta.headerText = "Verdad que te engañe?"
         alerta.contentText = "xdxdxd"
@@ -218,13 +222,18 @@ class VentanaPrincipalController {
         if (salida.text.isNotBlank()) {
             File("src/Principal.java").writeText( salida.text )
             try {
-                val p = Runtime.getRuntime().exec("javac src/Principal.java")
-                p.waitFor()
-                Runtime.getRuntime().exec("java Principal", null, File("src"))
+                val p1 = Runtime.getRuntime().exec("javac src/Principal.java")
+                p1.waitFor()
+                btnEjecutar.text = "Ejecutando..."
+                val p2 = Runtime.getRuntime().exec("java Principal", null, File("src"))
+                p2.waitFor()
             } catch (ea: Exception) {
                 ea.printStackTrace()
             }
         }
+
+        btnEjecutar.text = "Exportar y Ejecutar"
+        btnEjecutar.disableProperty().set(false)
     }
 
     /**
