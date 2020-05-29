@@ -111,10 +111,13 @@ class Funcion(
         if (modificadorAcceso != null){
             codigo += "${modificadorAcceso.getJavaCode()} "
         }
-        codigo += tipo?.getJavaCode() ?: "void"
-        codigo += if(identificador?.lexema == "&principal") " main ( " else " ${identificador?.getJavaCode()}( "
-        for(parametro in listaParametros){
-            codigo += parametro.getJavaCode() + ","
+        codigo += tipo?.getJavaCode() ?: "static void"
+        codigo += if(identificador?.lexema == "&principal") {" main ( String[] args " }
+        else {
+            " ${identificador?.getJavaCode()}( "
+            for (parametro in listaParametros) {
+                codigo += parametro.getJavaCode() + ","
+            }
         }
         codigo = codigo.substring(0,codigo.length-1) + " ) {\n"
         for(sentencia in listaSentencias){

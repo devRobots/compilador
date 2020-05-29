@@ -225,8 +225,7 @@ class VentanaPrincipalController {
                 val p1 = Runtime.getRuntime().exec("javac src/Principal.java")
                 p1.waitFor()
                 btnEjecutar.text = "Ejecutando..."
-                val p2 = Runtime.getRuntime().exec("java Principal", null, File("src"))
-                p2.waitFor()
+                Runtime.getRuntime().exec("java Principal", null, File("src"))
             } catch (ea: Exception) {
                 ea.printStackTrace()
             }
